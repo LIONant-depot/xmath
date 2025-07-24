@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/build/xmath_unitest.vs2022/.vs/xmath_unitest.vs2022
+/build/xmath_unitest.vs2022/x64/Debug
+/build/xmath_unitest.vs2022/xmath_un.43a572a0/x64/Debug
