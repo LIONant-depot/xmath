@@ -80,6 +80,7 @@ namespace xmath
         static consteval    fvec3_t     fromRight               (void)                                              noexcept;
         static consteval    fvec3_t     fromForward             (void)                                              noexcept;
         static consteval    fvec3_t     fromBack                (void)                                              noexcept;
+        static inline       fvec3_t     fromRandomUnitVector    (void)                                              noexcept;
 
         // Static methods
         static inline       float       Dot                     (const fvec3_t& a, const fvec3_t& b)                noexcept;
@@ -88,7 +89,6 @@ namespace xmath
         static inline       fvec3_t     Max                     (const fvec3_t& a, const fvec3_t& b)                noexcept;
         static inline       fvec3_t     Lerp                    (const fvec3_t& a, const fvec3_t& b, float t)       noexcept;
         static inline       float       Distance                (const fvec3_t& a, const fvec3_t& b)                noexcept;
-        static inline       fvec3_t     RandomUnitVector        ( void )                                            noexcept;
 
         // Static methods as members
         inline              float       Dot                     (const fvec3_t& a)                      const       noexcept;
@@ -97,7 +97,7 @@ namespace xmath
         inline              fvec3_t     Max                     (const fvec3_t& a)                      const       noexcept;
         inline              fvec3_t     Lerp                    (const fvec3_t& a, float t)             const       noexcept;
         inline              float       Distance                (const fvec3_t& a)                      const       noexcept;
-        inline              float       DistanceSqr             (const fvec3_t& v)                      const       noexcept;
+        inline              float       DistanceSquare          (const fvec3_t& v)                      const       noexcept;
 
         // Instance methods - Basic operations
         inline              float       Length                  (void)                                  const       noexcept;
@@ -182,6 +182,8 @@ namespace xmath
         inline              fvec3_t&    RotateZ                 (radian rz)                                         noexcept;
         inline              fvec3_t     RotateCopy              (const radian3& r)                      const       noexcept;
         inline              fvec3_t&    Rotate                  (const radian3& r)                                  noexcept;
+        inline              fvec3_t&    RotateInverse           (const radian3& r)                                  noexcept;
+        inline              fvec3_t     RotateInverseCopy       (const radian3& r)                      const       noexcept;
         inline              fvec3_t     Reflection              (const fvec3_t& normal)                 const       noexcept;
         inline              fvec3_t&    GridSnap                (float gridX, float gridY, float gridZ)             noexcept;
         inline              bool        isRightHanded           (const fvec3_t& p1, const fvec3_t& p2)  const       noexcept;

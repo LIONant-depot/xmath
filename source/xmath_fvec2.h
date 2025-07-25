@@ -39,7 +39,10 @@ namespace xmath
 
         // Assignment and conversion operators
         constexpr           fvec2&      operator =              (const fvec2&)                                      noexcept = default;
-        constexpr                       operator std::array<double,2> ()                                const       noexcept;
+        constexpr                       operator std::array<double,2> (void)                            const       noexcept;
+        inline                          operator std::string    (void)                                  const       noexcept;
+        std::string                     ToString                (void)                                  const       noexcept;
+        inline friend std::ostream&     operator<<              (std::ostream& os, const fvec2& vec)                noexcept;
 
         // Static properties
         static constexpr    fvec2       fromZero                (void)                                              noexcept;
@@ -50,6 +53,7 @@ namespace xmath
         static constexpr    fvec2       fromDown                (void)                                              noexcept;
         static constexpr    fvec2       fromLeft                (void)                                              noexcept;
         static constexpr    fvec2       fromRight               (void)                                              noexcept;
+        static inline       fvec2       fromRandomUnitVector    (void)                                              noexcept;
 
         // Static methods
         static constexpr    float       Dot                     (const fvec2& a, const fvec2& b)                    noexcept;
@@ -104,6 +108,8 @@ namespace xmath
         inline              fvec2&      Mod                     ( float divisor )                                   noexcept;
         inline              fvec2       ClampCopy               ( float min_val, float max_val)         const       noexcept;
         inline              fvec2&      Clamp                   ( float min_val, float max_val)                     noexcept;
+        inline              fvec2       ClampCopy               ( const fvec2& min, const fvec2& max )  const       noexcept;
+        inline              fvec2&      Clamp                   ( const fvec2& min, const fvec2& max )              noexcept;
         inline              fvec2       Step                    ( float edge)                           const       noexcept;
         inline              fvec2       SmoothStep              ( float edge0, float edge1 )            const       noexcept;
         inline              fvec2       LogCopy                 ( void )                                const       noexcept;

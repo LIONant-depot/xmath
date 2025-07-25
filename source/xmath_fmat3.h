@@ -4,6 +4,18 @@
 #endif
 namespace xmath
 {
+    //------------------------------------------------------------------------------
+    // details::f_mat3
+    //------------------------------------------------------------------------------
+    //
+    // Internal data layouts for 3x3 float matrix (column-major storage).
+    //
+    // Notes:
+    //  simd_data: Padded to 3x4 for SSE alignment/efficiency (floatx4 columns).
+    //  cpu_data: Compact 3x3 without padding.
+    //  Unions provide flexible access: columns, cells (col-major), flat elements, or named members (m_rowcol).
+    //  Aligned to 16 bytes for SIMD variant.
+    //
     namespace details::f_mat3
     {
         struct alignas(16) simd_data
@@ -38,6 +50,23 @@ namespace xmath
         };
     }
 
+    //------------------------------------------------------------------------------
+    // fmat3_t
+    //------------------------------------------------------------------------------
+    //
+    // Templated 3x3 float matrix class (column-major, optional SIMD via SSE).
+    //
+    // Notes:
+    //  Template<bool t_use_simd_v="">: true for SIMD (padded columns), false for CPU (compact).
+    //  Internal storage column-major; accessors feel row-major (op()(row,col)).
+    //  Supports affine transforms (rotation, scale); no translation (use fmat4 for 3D homogeneous).
+    //  Does not initialize if default constructed; use fromIdentity/setupIdentity.
+    //  Prioritizes performance: mutable ops chainable, shorter names.
+    //  Immutable ops suffixed Copy (e.g., RotateCopy).
+    //  Asserts finite matrices in ops; isFinite for checks.
+    //  Constexpr where possible; inline implementations.
+    //  Assumes right-hand rule for rotations; extracts to quats/vecs.
+    //
     template <bool T_USE_SIMD_V>
     struct fmat3_t : std::conditional_t<T_USE_SIMD_V, details::f_mat3::simd_data, details::f_mat3::cpu_data>
     {

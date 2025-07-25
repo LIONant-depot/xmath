@@ -4,6 +4,18 @@
 #endif
 namespace xmath
 {
+    //------------------------------------------------------------------------------
+    // details::f_mat4
+    //------------------------------------------------------------------------------
+    //
+    // Internal data layouts for 4x4 float matrix (column-major storage).
+    //
+    // Notes:
+    //  simd_data: 4x4 with SSE alignment (floatx4 columns).
+    //  cpu_data: Compact 4x4.
+    //  Unions provide flexible access: columns, cells (col-major), flat elements, or named members (m_rowcol).
+    //  Aligned to 16 bytes for SIMD variant.
+    //
     namespace details::f_mat4
     {
         struct alignas(16) simd_data
@@ -40,6 +52,24 @@ namespace xmath
         };
     }
 
+    //------------------------------------------------------------------------------
+    // fmat4_t
+    //------------------------------------------------------------------------------
+    //
+    // Templated 4x4 float matrix class (column-major, optional SIMD via SSE).
+    //
+    // Notes:
+    //  Template<bool t_use_simd_v="">: true for SIMD, false for CPU.
+    //  Internal storage column-major; accessors feel row-major (op()(row,col)).
+    //  Supports 3D transformations (translation, rotation, scale, projection); homogeneous coords.
+    //  Does not initialize if default constructed; use fromIdentity/setupIdentity.
+    //  Prioritizes performance: mutable ops chainable (&#x26; return), shorter names.
+    //  Immutable ops suffixed Copy (e.g., RotateCopy).
+    //  Asserts finite matrices in ops; isFinite for checks.
+    //  Constexpr where possible; inline implementations.
+    //  Assumes right-hand rule for rotations; extracts to quats/vecs.
+    //  Projection matrices for graphics (perspective, ortho, look-at, billboard).
+    //
     template <bool T_USE_SIMD_V>
     struct fmat4_t : std::conditional_t<T_USE_SIMD_V, details::f_mat4::simd_data, details::f_mat4::cpu_data>
     {
@@ -59,6 +89,7 @@ namespace xmath
         static inline    fmat4_t        fromTranslation         (const fvec3& t)                                    noexcept;
         static inline    fmat4_t        fromRotation            (const fquat& q)                                    noexcept;
         static inline    fmat4_t        fromRotation            (const fvec3& axis, radian angle)                   noexcept;
+        static inline    fmat4_t        fromRotation            (const radian3& Euler)                              noexcept;
         static inline    fmat4_t        fromScale               (const fvec3& s)                                    noexcept;
         static inline    fmat4_t        fromPerspective         (radian fov, float aspect, float near_plane, float far_plane) noexcept;
         static inline    fmat4_t        fromPerspective         (float left, float right, float bottom, float top, float near_plane, float far_plane) noexcept;
@@ -76,7 +107,7 @@ namespace xmath
         inline fmat4_t&                 setupZero               (void)                                              noexcept;
         inline fmat4_t&                 setupTranslation        (const fvec3& t)                                    noexcept;
         inline fmat4_t&                 setupRotation           (const fquat& q)                                    noexcept;
-        inline fmat4_t&                 setupRotation           (const fvec3& euler)                                noexcept;
+        inline fmat4_t&                 setupRotation           (const radian3& euler)                              noexcept;
         inline fmat4_t&                 setupScale              (const fvec3& s)                                    noexcept;
         inline fmat4_t&                 setupScale              (float s)                                           noexcept;
 

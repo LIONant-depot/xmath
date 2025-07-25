@@ -147,7 +147,7 @@ namespace xmath
     //
     template <bool V>
     inline fmat4_t<V>::fmat4_t(const radian3& Euler) noexcept
-        : fmat4_t(fquat(Euler))
+        : fmat4_t( fromRotation(Euler))
     {
     }
 
@@ -429,6 +429,24 @@ namespace xmath
     inline fmat4_t<V> fmat4_t<V>::fromRotation(const fvec3& axis, radian angle) noexcept
     {
         return fmat4_t<V>(fquat(axis, angle));
+    }
+
+    //------------------------------------------------------------------------------
+    // fromRotation
+    //------------------------------------------------------------------------------
+    //
+    // Constructor from Euler angles.
+    //
+    // Params:
+    //  euler - Euler angles in radians (pitch, yaw, roll).
+    //
+    // Returns:
+    //  fromRotation matrix.
+    //
+    template <bool V>
+    inline fmat4_t<V> fmat4_t<V>::fromRotation(const radian3& Euler) noexcept
+    {
+        return fromRotation(fquat(Euler));
     }
 
     //------------------------------------------------------------------------------
@@ -759,7 +777,7 @@ namespace xmath
     //  Reference (chainable).
     //
     template <bool V>
-    inline fmat4_t<V>& fmat4_t<V>::setupRotation(const fvec3& euler) noexcept
+    inline fmat4_t<V>& fmat4_t<V>::setupRotation(const radian3& euler) noexcept
     {
         *this = fmat4_t<V>(euler);
         return *this;

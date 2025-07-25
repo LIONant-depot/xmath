@@ -43,6 +43,12 @@ namespace xmath
         inline                          fvec4                       (const fvec2& xy, const fvec2& zw)                  noexcept;
         inline                          fvec4                       (std::span<float> Span)                             noexcept;
 
+        // Assignment and conversion operators
+        constexpr                       operator std::array<double,4>(void)                                 const       noexcept;
+        inline                          operator std::string        (void)                                  const       noexcept;
+        std::string                     ToString                    (void)                                  const       noexcept;
+        inline friend std::ostream&     operator<<                  (std::ostream& os, const fvec4& vec)                noexcept;
+
         // Static properties
         static constexpr    fvec4       fromZero                    (void)                                              noexcept;
         static constexpr    fvec4       fromOne                     (void)                                              noexcept;
@@ -56,6 +62,7 @@ namespace xmath
         static constexpr    fvec4       fromRight                   (void)                                              noexcept;
         static constexpr    fvec4       fromForward                 (void)                                              noexcept;
         static constexpr    fvec4       fromBack                    (void)                                              noexcept;
+        static inline       fvec4       fromRandomUnitVector        (void)                                              noexcept;
 
         // Static methods
         static inline       float       Dot                         (const fvec4& a, const fvec4& b)                    noexcept;
@@ -83,14 +90,62 @@ namespace xmath
         inline              fvec4&      NormalizeSafe               (void)                                              noexcept;
         inline              bool        isFinite                    (void)                                      const   noexcept;
         inline              bool        isInRange                   (float min, float max)                      const   noexcept;
-        inline              fvec4       OneOverCopy                 (void)                                      const   noexcept;
-        inline              fvec4&      OneOver                     (void)                                              noexcept;
-        inline              fvec4       AbsCopy                     (void)                                      const   noexcept;
-        inline              fvec4&      Abs                         (void)                                              noexcept;
         inline              fvec4       Reflection                  (const fvec4& normal)                       const   noexcept;
         inline              float       DistanceSquare              (const fvec4& v)                            const   noexcept;
         inline              radian      AngleBetween                (const fvec4& v)                            const   noexcept;
         inline              fvec4&      GridSnap                    (float gridX, float gridY, float gridZ, float gridW)noexcept;
+
+        // Instance methods - Component-wise math
+        inline              fvec4       AbsCopy                     (void)                                      const   noexcept;
+        inline              fvec4&      Abs                         (void)                                              noexcept;
+        inline              fvec4       OneOverCopy                 (void)                                      const   noexcept;
+        inline              fvec4&      OneOver                     (void)                                              noexcept;
+        inline              fvec4       SqrtCopy                    ( void )                                    const   noexcept;
+        inline              fvec4&      Sqrt                        ( void )                                            noexcept;
+        inline              fvec4       InvSqrtFastCopy             ( void )                                    const   noexcept;
+        inline              fvec4       InvSqrtCopy                 ( void )                                    const   noexcept;
+        inline              fvec4&      InvSqrt                     ( void )                                            noexcept;
+        inline              fvec4&      InvSqrtFast                 ( void )                                            noexcept;
+        inline              fvec4       SignCopy                    ( void )                                    const   noexcept;
+        inline              fvec4&      Sign                        ( void )                                            noexcept;
+        inline              fvec4       FloorCopy                   ( void )                                    const   noexcept;
+        inline              fvec4&      Floor                       ( void )                                            noexcept;
+        inline              fvec4       CeilCopy                    ( void )                                    const   noexcept;
+        inline              fvec4&      Ceil                        ( void )                                            noexcept;
+        inline              fvec4       FractCopy                   ( void )                                    const   noexcept;
+        inline              fvec4&      Fract                       ( void )                                            noexcept;
+        inline              fvec4       RoundCopy                   ( void )                                    const   noexcept;
+        inline              fvec4&      Round                       ( void )                                            noexcept;
+        inline              fvec4       TruncCopy                   ( void )                                    const   noexcept;
+        inline              fvec4&      Trunc                       ( void )                                            noexcept;
+        inline              fvec4       ModCopy                     ( float divisor )                           const   noexcept;
+        inline              fvec4&      Mod                         ( float divisor )                                   noexcept;
+        inline              fvec4       ClampCopy                   ( float min_val, float max_val)             const   noexcept;
+        inline              fvec4&      Clamp                       ( float min_val, float max_val)                     noexcept;
+        inline              fvec4       ClampCopy                   ( const fvec4& min, const fvec4& max)       const   noexcept;
+        inline              fvec4&      Clamp                       ( const fvec4& min, const fvec4& max)               noexcept;
+        inline              fvec4       Step                        ( float edge)                               const   noexcept;
+        inline              fvec4       SmoothStep                  ( float edge0, float edge1 )                const   noexcept;
+        inline              fvec4       LogCopy                     ( void )                                    const   noexcept;
+        inline              fvec4&      Log                         ( void )                                            noexcept;
+        inline              fvec4       Log2Copy                    ( void )                                    const   noexcept;
+        inline              fvec4&      Log2                        ( void )                                            noexcept;
+        inline              fvec4       PowCopy                     (float exp)                                 const   noexcept;
+        inline              fvec4&      Pow                         (float exp)                                         noexcept;
+        inline              fvec4       SinCopy                     ( void )                                    const   noexcept;
+        inline              fvec4&      Sin                         ( void )                                            noexcept;
+        inline              fvec4       CosCopy                     ( void )                                    const   noexcept;
+        inline              fvec4&      Cos                         ( void )                                            noexcept;
+        inline              fvec4       TanCopy                     ( void )                                    const   noexcept;
+        inline              fvec4&      Tan                         ( void )                                            noexcept;
+        inline              fvec4       AsinCopy                    ( void )                                    const   noexcept;
+        inline              fvec4&      Asin                        ( void )                                            noexcept;
+        inline              fvec4       AcosCopy                    ( void )                                    const   noexcept;
+        inline              fvec4&      Acos                        ( void )                                            noexcept;
+        inline              fvec4       AtanCopy                    ( void )                                    const   noexcept;
+        inline              fvec4&      Atan                        ( void )                                            noexcept;
+        inline              fvec4       Atan2Copy                   (const fvec4& x)                            const   noexcept;
+        inline              fvec4&      Atan2                       (const fvec4& x)                                    noexcept;
 
         // Swizzle methods for float (HLSL-style, return copy with swizzled components)
         inline              float       x                           (void)                                      const   noexcept;

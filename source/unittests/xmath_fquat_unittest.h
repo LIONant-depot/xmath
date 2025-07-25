@@ -194,7 +194,7 @@ namespace xmath::unit_test::_fquat
 
         // LookRotation
         fvec3 forward(0.0f, 0.0f, 1.0f);
-        fquat_t<V> look = fquat_t<V>::LookRotation(forward, up);
+        fquat_t<V> look = fquat_t<V>::LookRotation(forward, fvec3::fromUp());
         assert(quat_approx_equal(look, fquat_t<V>::fromIdentity()));
 
         // RandomUnitQuaternion

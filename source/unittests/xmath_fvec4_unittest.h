@@ -71,24 +71,27 @@ namespace xmath::unit_test::_fvec4
         fvec4 unit_w = fvec4::fromUnitW();
         assert(unit_w.m_X == 0.f && unit_w.m_Y == 0.f && unit_w.m_Z == 0.f && unit_w.m_W == 1.f);
 
+        fvec4 up = fvec4::fromUp();
+        assert(up.m_X == 0.f && up.m_Y == 1.f && up.m_Z == 0.f && up.m_W == 0.f);
 
-        fvec4 Up = fvec4::fromUp();
-        assert(Up.m_X == 0.f && Up.m_Y == 1.f && Up.m_Z == 0.f && Up.m_W == 0.f);
+        fvec4 down = fvec4::fromDown();
+        assert(down.m_X == 0.f && down.m_Y == -1.f && down.m_Z == 0.f && down.m_W == 0.f);
 
-        fvec4 Down = fvec4::fromDown();
-        assert(Down.m_X == 0.f && Down.m_Y == -1.f && Down.m_Z == 0.f && Down.m_W == 0.f);
+        fvec4 left = fvec4::fromLeft();
+        assert(left.m_X == -1.f && left.m_Y == 0.f && left.m_Z == 0.f && left.m_W == 0.f);
 
-        fvec4 Right = fvec4::fromRight();
-        assert(Right.m_X == 1.f && Right.m_Y == 0.f && Right.m_Z == 0.f && Right.m_W == 0.f);
+        fvec4 right = fvec4::fromRight();
+        assert(right.m_X == 1.f && right.m_Y == 0.f && right.m_Z == 0.f && right.m_W == 0.f);
 
-        fvec4 Left = fvec4::fromLeft();
-        assert(Left.m_X == -1.f && Left.m_Y == 0.f && Left.m_Z == 0.f && Left.m_W == 0.f);
+        fvec4 forward = fvec4::fromForward();
+        assert(forward.m_X == 0.f && forward.m_Y == 0.f && forward.m_Z == 1.f && forward.m_W == 0.f);
 
-        fvec4 Forward = fvec4::fromForward();
-        assert(Forward.m_X == 0.f && Forward.m_Y == 0.f && Forward.m_Z == 1.f && Forward.m_W == 0.f);
+        fvec4 back = fvec4::fromBack();
+        assert(back.m_X == 0.f && back.m_Y == 0.f && back.m_Z == -1.f && back.m_W == 0.f);
 
-        fvec4 Back = fvec4::fromBack();
-        assert(Back.m_X == 0.f && Back.m_Y == 0.f && Back.m_Z == -1.f && Back.m_W == 0.f);
+        // Test fromRandomUnitVector - check if length is approximately 1
+        fvec4 random_unit = fvec4::fromRandomUnitVector();
+        assert(ApproxEqual(random_unit.Length(), 1.f, 1e-4f));
 
         // Static methods
         float dot = fvec4::Dot(v1, v1);
@@ -131,6 +134,13 @@ namespace xmath::unit_test::_fvec4
         fvec4 zero_norm_safe_mut = zero;
         zero_norm_safe_mut.NormalizeSafe();
         assert(zero_norm_safe_mut == zero);
+
+        fvec4 hom_copy = fvec4(2.f, 4.f, 6.f, 2.f).HomogeneousCopy();
+        assert(hom_copy == fvec4(1.f, 2.f, 3.f, 1.f));
+
+        fvec4 hom_mut = fvec4(2.f, 4.f, 6.f, 2.f);
+        hom_mut.Homogenize();
+        assert(hom_mut == fvec4(1.f, 2.f, 3.f, 1.f));
 
         assert(v1.isFinite());
 
@@ -222,6 +232,231 @@ namespace xmath::unit_test::_fvec4
         // Friend operators
         assert(2.f * v1 == fvec4(2.f, 4.f, 6.f, 8.f));
         assert(-v1 == fvec4(-1.f, -2.f, -3.f, -4.f));
+
+        // Component-wise math
+        fvec4 pos_v(1.f, 2.f, 3.f, 4.f);
+        neg_v = (-1.f, -2.f, -3.f, -4.f);
+        fvec4 mixed_v(-1.f, 2.f, -3.f, 4.f);
+
+        fvec4 abs_c = mixed_v.AbsCopy();
+        assert(ApproxEqual(abs_c, pos_v));
+
+        fvec4 abs_m = mixed_v;
+        abs_m.Abs();
+        assert(ApproxEqual(abs_m, pos_v));
+
+        fvec4 one_over_c = pos_v.OneOverCopy();
+        assert(ApproxEqual(one_over_c, fvec4(1.f, 0.5f, 1.f / 3.f, 0.25f)));
+
+        fvec4 one_over_m = pos_v;
+        one_over_m.OneOver();
+        assert(ApproxEqual(one_over_m, fvec4(1.f, 0.5f, 1.f / 3.f, 0.25f)));
+
+        fvec4 sqrt_c = fvec4(4.f, 9.f, 16.f, 25.f).SqrtCopy();
+        assert(ApproxEqual(sqrt_c, fvec4(2.f, 3.f, 4.f, 5.f)));
+
+        fvec4 sqrt_m = fvec4(4.f, 9.f, 16.f, 25.f);
+        sqrt_m.Sqrt();
+        assert(ApproxEqual(sqrt_m, fvec4(2.f, 3.f, 4.f, 5.f)));
+
+        // Test SmoothStep
+        fvec4 smoothstep = fvec4(0.f, 0.25f, 0.5f, 0.75f).SmoothStep(0.f, 1.f);
+        assert(ApproxEqual(smoothstep.m_X, 0.f));
+        assert(ApproxEqual(smoothstep.m_Y, 0.15625f, 1e-4f));
+        assert(ApproxEqual(smoothstep.m_Z, 0.5f));
+        assert(ApproxEqual(smoothstep.m_W, 0.84375f, 1e-4f));
+
+        // Test InvSqrtCopy (accurate)
+        fvec4 inv_sqrt_c = fvec4(4.f, 9.f, 16.f, 25.f).InvSqrtCopy();
+        assert(ApproxEqual(inv_sqrt_c, fvec4(0.5f, 1.f / 3.f, 0.25f, 0.2f), 1e-5f));
+
+        // Test InvSqrtCopyFast (fast, lower precision)
+        fvec4 inv_sqrt_fast_c = fvec4(4.f, 9.f, 16.f, 25.f).InvSqrtFastCopy();
+        assert(ApproxEqual(inv_sqrt_fast_c, fvec4(0.5f, 1.f / 3.f, 0.25f, 0.2f), 1e-3f));
+
+        // Test in-place InvSqrt (accurate)
+        fvec4 inv_sqrt_m = fvec4(4.f, 9.f, 16.f, 25.f);
+        inv_sqrt_m.InvSqrt();
+
+        assert(ApproxEqual(inv_sqrt_m, fvec4(0.5f, 1.f / 3.f, 0.25f, 0.2f), 1e-5f));
+        inv_sqrt_m = fvec4(4.f, 9.f, 16.f, 25.f);
+
+        inv_sqrt_m.InvSqrt();
+        assert(ApproxEqual(inv_sqrt_m, fvec4(0.5f, 1.f / 3.f, 0.25f, 0.2f)));
+
+        fvec4 sign_c = mixed_v.SignCopy();
+        assert(ApproxEqual(sign_c, fvec4(-1.f, 1.f, -1.f, 1.f)));
+
+        fvec4 sign_m = mixed_v;
+        sign_m.Sign();
+        assert(ApproxEqual(sign_m, fvec4(-1.f, 1.f, -1.f, 1.f)));
+
+        fvec4 floor_c = fvec4(1.8f, 2.2f, -3.7f, 4.5f).FloorCopy();
+        assert(ApproxEqual(floor_c, fvec4(1.f, 2.f, -4.f, 4.f)));
+
+        fvec4 floor_m = fvec4(1.8f, 2.2f, -3.7f, 4.5f);
+        floor_m.Floor();
+        assert(ApproxEqual(floor_m, fvec4(1.f, 2.f, -4.f, 4.f)));
+
+        fvec4 ceil_c = fvec4(1.2f, 2.8f, -3.1f, 4.5f).CeilCopy();
+        assert(ApproxEqual(ceil_c, fvec4(2.f, 3.f, -3.f, 5.f)));
+
+        fvec4 ceil_m = fvec4(1.2f, 2.8f, -3.1f, 4.5f);
+        ceil_m.Ceil();
+        assert(ApproxEqual(ceil_m, fvec4(2.f, 3.f, -3.f, 5.f)));
+
+        fvec4 fract_c = fvec4(1.2f, 2.8f, -3.1f, 4.5f).FractCopy();
+        assert(ApproxEqual(fract_c, fvec4(0.2f, 0.8f, -0.1f, 0.5f), 1e-4f));
+
+        fvec4 fract_m = fvec4(1.2f, 2.8f, -3.1f, 4.5f);
+        fract_m.Fract();
+        assert(ApproxEqual(fract_m, fvec4(0.2f, 0.8f, -0.1f, 0.5f), 1e-4f));
+
+        fvec4 round_c = fvec4(1.2f, 2.8f, -3.1f, 4.5f).RoundCopy();
+        assert(ApproxEqual(round_c, fvec4(1.f, 3.f, -3.f, 4.f)));
+
+        fvec4 round_m = fvec4(1.2f, 2.8f, -3.1f, 4.5f);
+        round_m.Round();
+        assert(ApproxEqual(round_m, fvec4(1.f, 3.f, -3.f, 4.f)));
+
+        fvec4 trunc_c = fvec4(1.2f, 2.8f, -3.1f, 4.5f).TruncCopy();
+        assert(ApproxEqual(trunc_c, fvec4(1.f, 2.f, -3.f, 4.f)));
+
+        fvec4 trunc_m = fvec4(1.2f, 2.8f, -3.1f, 4.5f);
+        trunc_m.Trunc();
+        assert(ApproxEqual(trunc_m, fvec4(1.f, 2.f, -3.f, 4.f)));
+
+        fvec4 mod_c = fvec4(5.f, 8.f, -3.f, 4.f).ModCopy(3.f);
+        assert(ApproxEqual(mod_c, fvec4(2.f, 2.f, 0.f, 1.f)));
+
+        fvec4 mod_m = fvec4(5.f, 8.f, -3.f, 4.f);
+        mod_m.Mod(3.f);
+        assert(ApproxEqual(mod_m, fvec4(2.f, 2.f, 0.f, 1.f)));
+
+        fvec4 clamp_s_c = fvec4(-1.f, 0.5f, 2.f, 3.f).ClampCopy(0.f, 2.f);
+        assert(ApproxEqual(clamp_s_c, fvec4(0.f, 0.5f, 2.f, 2.f)));
+
+        fvec4 clamp_s_m = fvec4(-1.f, 0.5f, 2.f, 3.f);
+        clamp_s_m.Clamp(0.f, 2.f);
+        assert(ApproxEqual(clamp_s_m, fvec4(0.f, 0.5f, 2.f, 2.f)));
+
+        fvec4 clamp_v_c = fvec4(-1.f, 0.5f, 2.f, 3.f).ClampCopy(fvec4(0.f, 0.f, 1.f, 2.f), fvec4(2.f, 2.f, 3.f, 4.f));
+        assert(ApproxEqual(clamp_v_c, fvec4(0.f, 0.5f, 2.f, 3.f)));
+
+        fvec4 clamp_v_m = fvec4(-1.f, 0.5f, 2.f, 3.f);
+        clamp_v_m.Clamp(fvec4(0.f, 0.f, 1.f, 2.f), fvec4(2.f, 2.f, 3.f, 4.f));
+        assert(ApproxEqual(clamp_v_m, fvec4(0.f, 0.5f, 2.f, 3.f)));
+
+        fvec4 step = fvec4(-1.f, 0.5f, 1.f, 2.f).Step(1.f);
+        assert(ApproxEqual(step, fvec4(0.f, 0.f, 1.f, 1.f)));
+
+        // Test SmoothStep
+        smoothstep = fvec4(0.f, 0.25f, 0.5f, 0.75f).SmoothStep(0.f, 1.f);
+        assert(ApproxEqual(smoothstep.m_X, 0.f));
+        assert(ApproxEqual(smoothstep.m_Y, 0.15625f, 1e-4f));
+        assert(ApproxEqual(smoothstep.m_Z, 0.5f));
+        assert(ApproxEqual(smoothstep.m_W, 0.84375f, 1e-4f));
+        // Test with fvec4(0.f, 0.25f, 0.5f, 0.75f)
+        // Expected: 0, 0.15625, 0.5, 0.84375
+
+        fvec4 log_c = fvec4(1.f, xmath::e_v, xmath::e_v * xmath::e_v, 8.f).LogCopy();
+        assert(ApproxEqual(log_c.m_X, 0.f));
+        assert(ApproxEqual(log_c.m_Y, 1.f));
+        assert(ApproxEqual(log_c.m_Z, 2.f));
+        assert(ApproxEqual(log_c.m_W, std::log(8.f)));
+
+        fvec4 log_m = fvec4(1.f, xmath::e_v, xmath::e_v * xmath::e_v, 8.f);
+        log_m.Log();
+        assert(ApproxEqual(log_m, log_c));
+
+        fvec4 log2_c = fvec4(1.f, 2.f, 4.f, 8.f).Log2Copy();
+        assert(ApproxEqual(log2_c.m_X, 0.f));
+        assert(ApproxEqual(log2_c.m_Y, 1.f));
+        assert(ApproxEqual(log2_c.m_Z, 2.f));
+        assert(ApproxEqual(log2_c.m_W, 3.f));
+
+        fvec4 log2_m = fvec4(1.f, 2.f, 4.f, 8.f);
+        log2_m.Log2();
+        assert(ApproxEqual(log2_m, log2_c));
+
+        fvec4 pow_c = fvec4(2.f, 3.f, 4.f, 5.f).PowCopy(2.f);
+        assert(ApproxEqual(pow_c, fvec4(4.f, 9.f, 16.f, 25.f)));
+
+        fvec4 pow_m = fvec4(2.f, 3.f, 4.f, 5.f);
+        pow_m.Pow(2.f);
+        assert(ApproxEqual(pow_m, fvec4(4.f, 9.f, 16.f, 25.f)));
+
+        fvec4 sin_c = fvec4(0.f, xmath::pi_v.m_Value / 2.f, xmath::pi_v.m_Value, 3 * xmath::pi_v.m_Value / 2.f).SinCopy();
+        assert(ApproxEqual(sin_c.m_X, 0.f));
+        assert(ApproxEqual(sin_c.m_Y, 1.f));
+        assert(ApproxEqual(sin_c.m_Z, 0.f, 1e-4f));
+        assert(ApproxEqual(sin_c.m_W, -1.f, 1e-4f));
+
+        fvec4 sin_m = fvec4(0.f, xmath::pi_v.m_Value / 2.f, xmath::pi_v.m_Value, 3 * xmath::pi_v.m_Value / 2.f);
+        sin_m.Sin();
+        assert(ApproxEqual(sin_m, sin_c));
+
+        fvec4 cos_c = fvec4(0.f, xmath::pi_v.m_Value / 2.f, xmath::pi_v.m_Value, 3 * xmath::pi_v.m_Value / 2.f).CosCopy();
+        assert(ApproxEqual(cos_c.m_X, 1.f));
+        assert(ApproxEqual(cos_c.m_Y, 0.f, 1e-4f));
+        assert(ApproxEqual(cos_c.m_Z, -1.f, 1e-4f));
+        assert(ApproxEqual(cos_c.m_W, 0.f, 1e-4f));
+
+        fvec4 cos_m = fvec4(0.f, xmath::pi_v.m_Value / 2.f, xmath::pi_v.m_Value, 3 * xmath::pi_v.m_Value / 2.f);
+        cos_m.Cos();
+        assert(ApproxEqual(cos_m, cos_c));
+
+        fvec4 tan_c = fvec4(0.f, xmath::pi_v.m_Value / 4.f, xmath::pi_v.m_Value / 2.f - 0.01f, -xmath::pi_v.m_Value / 4.f).TanCopy();
+        assert(ApproxEqual(tan_c.m_X, 0.f));
+        assert(ApproxEqual(tan_c.m_Y, 1.f));
+        assert(ApproxEqual(tan_c.m_Z, xmath::Tan(xmath::pi_v / 2.f - radian(0.01f)), 1e-2f));
+        assert(ApproxEqual(tan_c.m_W, -1.f));
+
+        fvec4 tan_m = fvec4(0.f, xmath::pi_v.m_Value / 4.f, xmath::pi_v.m_Value / 2.f - 0.01f, -xmath::pi_v.m_Value / 4.f);
+        tan_m.Tan();
+        assert(ApproxEqual(tan_m, tan_c));
+
+        fvec4 asin_c = fvec4(0.f, 0.5f, 1.f, -0.5f).AsinCopy();
+        assert(ApproxEqual(asin_c.m_X, 0.f));
+        assert(ApproxEqual(asin_c.m_Y, xmath::pi_v.m_Value / 6.f, 1e-4f));
+        assert(ApproxEqual(asin_c.m_Z, xmath::pi_v.m_Value / 2.f, 1e-4f));
+        assert(ApproxEqual(asin_c.m_W, -xmath::pi_v.m_Value / 6.f, 1e-4f));
+
+        fvec4 asin_m = fvec4(0.f, 0.5f, 1.f, -0.5f);
+        asin_m.Asin();
+        assert(ApproxEqual(asin_m, asin_c));
+
+        fvec4 acos_c = fvec4(1.f, 0.5f, 0.f, -0.5f).AcosCopy();
+        assert(ApproxEqual(acos_c.m_X, 0.f));
+        assert(ApproxEqual(acos_c.m_Y, xmath::pi_v.m_Value / 3.f, 1e-4f));
+        assert(ApproxEqual(acos_c.m_Z, xmath::pi_v.m_Value / 2.f, 1e-4f));
+        assert(ApproxEqual(acos_c.m_W, 2 * xmath::pi_v.m_Value / 3.f, 1e-4f));
+
+        fvec4 acos_m = fvec4(1.f, 0.5f, 0.f, -0.5f);
+        acos_m.Acos();
+        assert(ApproxEqual(acos_m, acos_c));
+
+        fvec4 atan_c = fvec4(0.f, 1.f, std::sqrt(3.f), -1.f).AtanCopy();
+        assert(ApproxEqual(atan_c.m_X, 0.f));
+        assert(ApproxEqual(atan_c.m_Y, xmath::pi_v.m_Value / 4.f, 1e-4f));
+        assert(ApproxEqual(atan_c.m_Z, xmath::pi_v.m_Value / 3.f, 1e-4f));
+        assert(ApproxEqual(atan_c.m_W, -xmath::pi_v.m_Value / 4.f, 1e-4f));
+
+        fvec4 atan_m = fvec4(0.f, 1.f, std::sqrt(3.f), -1.f);
+        atan_m.Atan();
+        assert(ApproxEqual(atan_m, atan_c));
+
+        fvec4 y(3.f, 4.f, 0.f, -3.f);
+        fvec4 x(4.f, 3.f, 1.f, 4.f);
+        fvec4 atan2_c = y.Atan2Copy(x);
+        assert(ApproxEqual(atan2_c.m_X, xmath::Atan2(3.f, 4.f).m_Value));
+        assert(ApproxEqual(atan2_c.m_Y, xmath::Atan2(4.f, 3.f).m_Value));
+        assert(ApproxEqual(atan2_c.m_Z, xmath::Atan2(0.f, 1.f).m_Value));
+        assert(ApproxEqual(atan2_c.m_W, xmath::Atan2(-3.f, 4.f).m_Value));
+
+        fvec4 atan2_m = y;
+        atan2_m.Atan2(x);
+        assert(ApproxEqual(atan2_m, atan2_c));
     }
 }
 

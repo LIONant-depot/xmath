@@ -672,20 +672,38 @@ namespace xmath
     // Returns:
     //  Quaternion for look.
     //
-    template <bool V >
+    template <bool V>
     inline fquat_t<V> fquat_t<V>::LookRotation(const fvec3& forward, const fvec3& up) noexcept
     {
         assert(forward.isFinite() && up.isFinite());
         assert(!forward.isNearlyZero(1e-6f) && !up.isNearlyZero(1e-6f));
         fvec3 f = forward.NormalizeSafeCopy();
-        fvec3 u = up.NormalizeSafeCopy();
+        fvec3 u = up - f * f.Dot(up);
+
+        if (u.LengthSq() < 1e-6f) 
+        {
+            assert(false && "forward and up are pointing in the same direction in LookRotation");
+
+            // Parallel case: choose arbitrary perpendicular up
+            u = f.Perpendicular(fvec3(0.f, 1.f, 0.f));
+            if (u.LengthSq() < 1e-6f) 
+            {
+                u = f.Perpendicular(fvec3(0.f, 0.f, 1.f));
+            }
+            u = u.NormalizeSafeCopy();
+        }
+        else 
+        {
+            u = u.NormalizeSafeCopy();
+        }
+
         fvec3 r = u.Cross(f).NormalizeSafeCopy();
-        u = f.Cross(r);
+        u = f.Cross(r);  // Recompute u to ensure orthogonality
         float trace = r.m_X + u.m_Y + f.m_Z;
         if (trace > 0.0f) 
         {
             float s = 0.5f / xmath::Sqrt(trace + 1.0f);
-            return fquat_t<V>( (u.m_Z - f.m_Y) * s, (f.m_X - r.m_Z) * s, (r.m_Y - u.m_X) * s, 0.25f / s );
+            return fquat_t<V>((u.m_Z - f.m_Y) * s, (f.m_X - r.m_Z) * s, (r.m_Y - u.m_X) * s, 0.25f / s);
         }
         else if (r.m_X > u.m_Y && r.m_X > f.m_Z) 
         {

@@ -7,20 +7,35 @@ namespace xmath
     //------------------------------------------------------------------------------
     // Constructors
     //------------------------------------------------------------------------------
+    //
+    // Constructs a vector with specified x and y components.
+    //
+    // Parameters:
+    //  x - The x component.
+    //  y - The y component.
+    //
     constexpr fvec2::fvec2(float x, float y) noexcept
         : m_X(x), m_Y(y)
     {
     }
 
     //------------------------------------------------------------------------------
-
+    // Constructs a vector with all components set to the same value.
+    //
+    // Parameters:
+    //  value - The value for all components.
+    //
     constexpr fvec2::fvec2(float value) noexcept
         : m_X(value), m_Y(value)
     {
     }
 
     //------------------------------------------------------------------------------
-
+    // Constructs a vector from a span of floats (at least 2 elements).
+    //
+    // Parameters:
+    //  Span - The span containing at least x and y values.
+    //
     constexpr fvec2::fvec2(std::span<float> Span) noexcept
     {
         if (Span.size() >= 2)
@@ -31,18 +46,65 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-
-    constexpr fvec2::fvec2(const std::array<double, 2>& Conversion) noexcept
+    // Constructs a vector from an array of doubles, casting to float.
+    //
+    // Parameters:
+    //  Conversion - The array with x and y values.
+    //
+    constexpr fvec2::fvec2(const std::array<double, 2>& Conversion ) noexcept
     {
         m_X = static_cast<float>(Conversion[0]);
         m_Y = static_cast<float>(Conversion[1]);
     }
 
     //------------------------------------------------------------------------------
-
-    constexpr fvec2::operator std::array<double, 2>() const noexcept
+    // Conversion to array of doubles.
+    //
+    // Returns:
+    //  An array with x and y as doubles.
+    //
+    constexpr fvec2::operator std::array<double,2> (void) const noexcept
     {
-        return { m_X, m_Y };
+        return { static_cast<double>(m_X), static_cast<double>(m_Y) };
+    }
+
+    //------------------------------------------------------------------------------
+    // Conversion to string representation.
+    //
+    // Returns:
+    //  A string in "(x, y)" format.
+    //
+    inline fvec2::operator std::string(void) const noexcept
+    {
+        return ToString();
+    }
+
+    //------------------------------------------------------------------------------
+    // Returns a string representation of the vector.
+    //
+    // Returns:
+    //  A string in "(x, y)" format.
+    //
+    std::string fvec2::ToString(void) const noexcept
+    {
+        return std::format("({}, {})", m_X, m_Y);
+    }
+
+    //------------------------------------------------------------------------------
+    // operator<<
+    //
+    // Overloads the stream output operator to print the vector in "(x, y)" format.
+    //
+    // Parameters:
+    //    os   - The output stream.
+    //    vec  - The vector to print.
+    //
+    // Returns:
+    //    Reference to the output stream.
+    //
+    inline std::ostream& operator<< (std::ostream& os, const fvec2& vec) noexcept
+    {
+        return os << '(' << vec.m_X << ", " << vec.m_Y << ')';
     }
 
     //------------------------------------------------------------------------------
@@ -72,7 +134,7 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // UnitX
+    // fromUnitX
     //------------------------------------------------------------------------------
     //
     // Returns the unit vector along the X-axis (1, 0).
@@ -83,7 +145,7 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // UnitY
+    // fromUnitY
     //------------------------------------------------------------------------------
     //
     // Returns the unit vector along the Y-axis (0, 1).
@@ -94,7 +156,7 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // Up
+    // fromUp
     //------------------------------------------------------------------------------
     //
     // Returns the up direction vector (0, 1).
@@ -105,7 +167,7 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // Down
+    // fromDown
     //------------------------------------------------------------------------------
     //
     // Returns the down direction vector (0, -1).
@@ -116,7 +178,7 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // Left
+    // fromLeft
     //------------------------------------------------------------------------------
     //
     // Returns the left direction vector (-1, 0).
@@ -127,7 +189,7 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // Right
+    // fromRight
     //------------------------------------------------------------------------------
     //
     // Returns the right direction vector (1, 0).
@@ -135,6 +197,24 @@ namespace xmath
     constexpr fvec2 fvec2::fromRight(void) noexcept
     {
         return fvec2(1.f, 0.f);
+    }
+
+    //------------------------------------------------------------------------------
+    // fromRandomUnitVector
+    //------------------------------------------------------------------------------
+    //
+    // Returns a random unit vector.
+    //
+    // Returns:
+    //  A normalized random vector.
+    //
+    // Notes:
+    //  Uses rand() for randomness; seed if needed.
+    //
+    inline fvec2 fvec2::fromRandomUnitVector(void) noexcept
+    {
+        float angle = static_cast<float>(rand()) / RAND_MAX * 2.f * 3.1415926535f;
+        return fvec2(std::cos(angle), std::sin(angle));
     }
 
     //------------------------------------------------------------------------------
@@ -361,528 +441,8 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // Instance methods
+    // Instance methods - Basic operations
     //------------------------------------------------------------------------------
-
-    //------------------------------------------------------------------------------
-    // Sin
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise sine of the vector (in radians).
-    //
-    // Returns:
-    //  A vector with the sine of each component.
-    //
-    inline fvec2 fvec2::SinCopy() const noexcept
-    {
-        return fvec2(xmath::Sin(xmath::radian{m_X}), xmath::Sin(xmath::radian{m_Y}));
-    }
-
-    //------------------------------------------------------------------------------
-    // Cos
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise cosine of the vector (in radians).
-    //
-    // Returns:
-    //  A vector with the cosine of each component.
-    //
-    inline fvec2 fvec2::CosCopy() const noexcept
-    {
-        return fvec2(xmath::Cos(xmath::radian{ m_X }), xmath::Cos(xmath::radian{ m_Y }));
-    }
-
-    //------------------------------------------------------------------------------
-    // Tan
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise tangent of the vector (in radians).
-    //
-    // Returns:
-    //  A vector with the tangent of each component.
-    //
-    inline fvec2 fvec2::TanCopy() const noexcept
-    {
-        return fvec2(xmath::Tan(xmath::radian{ m_X }), xmath::Tan(xmath::radian{ m_Y }));
-    }
-
-    //------------------------------------------------------------------------------
-    // Asin
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise arcsine of the vector.
-    //
-    // Returns:
-    //  A vector with the arcsine of each component (in radians).
-    //
-    inline fvec2 fvec2::AsinCopy() const noexcept
-    {
-        return fvec2(xmath::Asin(m_X).m_Value, xmath::Asin(m_Y).m_Value);
-    }
-
-    //------------------------------------------------------------------------------
-    // Acos
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise arccosine of the vector.
-    //
-    // Returns:
-    //  A vector with the arccosine of each component (in radians).
-    //
-    inline fvec2 fvec2::AcosCopy() const noexcept
-    {
-        return fvec2(xmath::Acos(m_X).m_Value, xmath::Acos(m_Y).m_Value);
-    }
-
-    //------------------------------------------------------------------------------
-    // Atan
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise arctangent of the vector.
-    //
-    // Returns:
-    //  A vector with the arctangent of each component (in radians).
-    //
-    inline fvec2 fvec2::AtanCopy() const noexcept
-    {
-        return fvec2(xmath::Atan(m_X).m_Value, xmath::Atan(m_Y).m_Value);
-    }
-
-    //------------------------------------------------------------------------------
-    // Atan2Copy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise arctangent of y/x, considering the quadrant.
-    //
-    // Parameters:
-    //  x - The vector containing x components.
-    //
-    // Returns:
-    //  A vector with the arctangent of each y/x pair (in radians).
-    //
-    inline fvec2 fvec2::Atan2Copy(const fvec2& x) const noexcept
-    {
-        return fvec2(xmath::Atan2(m_X, x.m_X).m_Value, xmath::Atan2(m_Y, x.m_Y).m_Value);
-    }
-
-    //------------------------------------------------------------------------------
-
-    inline fvec2& fvec2::Atan2(const fvec2& x) noexcept
-    {
-        return *this = Atan2(x);
-    }
-
-    //------------------------------------------------------------------------------
-    // Exp
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise exponential (e^x) of the vector.
-    //
-    // Returns:
-    //  A vector with the exponential of each component.
-    //
-    inline fvec2 fvec2::ExpCopy() const noexcept
-    {
-        return fvec2(xmath::Exp(m_X), xmath::Exp(m_Y));
-    }
-
-    //------------------------------------------------------------------------------
-    // LogCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise natural logarithm of the vector.
-    //
-    // Returns:
-    //  A vector with the natural log of each component.
-    //
-    inline fvec2 fvec2::LogCopy() const noexcept
-    {
-        return fvec2(xmath::Log(m_X), xmath::Log(m_Y));
-    }
-
-    //------------------------------------------------------------------------------
-    // Log
-    //------------------------------------------------------------------------------
-    //
-    // Computes the natural logarithm of the vector in-place.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Log() noexcept
-    {
-        return *this = LogCopy();
-    }
-
-    //------------------------------------------------------------------------------
-    // Log2Copy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise base-2 logarithm of the vector.
-    //
-    // Returns:
-    //  A vector with the base-2 log of each component.
-    //
-    inline fvec2 fvec2::Log2Copy() const noexcept
-    {
-        return fvec2(xmath::Log2(m_X), xmath::Log2(m_Y));
-    }
-
-    //------------------------------------------------------------------------------
-    // Log2
-    //------------------------------------------------------------------------------
-    //
-    // Computes the base-2 logarithm of the vector in-place.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Log2() noexcept
-    {
-        return *this = Log2Copy();
-    }
-
-    //------------------------------------------------------------------------------
-    // PowCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise power (base^exp) of the vector.
-    //
-    // Parameters:
-    //  exp - The exponent (scalar).
-    //
-    // Returns:
-    //  A vector with each component raised to the exponent.
-    //
-    inline fvec2 fvec2::PowCopy(float exp) const noexcept
-    {
-        return fvec2(xmath::Pow(m_X, exp), xmath::Pow(m_Y, exp));
-    }
-
-    //------------------------------------------------------------------------------
-    // Pow
-    //------------------------------------------------------------------------------
-    //
-    // Computes the power of the vector in-place.
-    //
-    // Parameters:
-    //  exp - The exponent (scalar).
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Pow(float exp) noexcept
-    {
-        return *this = PowCopy(exp);
-    }
-
-    //------------------------------------------------------------------------------
-    // SqrtCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise square root of the vector.
-    //
-    // Returns:
-    //  A vector with the square root of each component.
-    //
-    inline fvec2 fvec2::SqrtCopy() const noexcept
-    {
-        return fvec2(xmath::Sqrt(m_X), xmath::Sqrt(m_Y));
-    }
-
-    //------------------------------------------------------------------------------
-    // Sqrt
-    //------------------------------------------------------------------------------
-    //
-    // Computes the square root of the vector in-place.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Sqrt() noexcept
-    {
-        return *this = SqrtCopy();
-    }
-
-    //------------------------------------------------------------------------------
-    // InvSqrtCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise inverse square root (1/sqrt(x)) of the vector.
-    //
-    // Returns:
-    //  A vector with the inverse square root of each component.
-    //
-    inline fvec2 fvec2::InvSqrtCopy() const noexcept
-    {
-        return fvec2(xmath::InvSqrt(m_X), xmath::InvSqrt(m_Y));
-    }
-
-    //------------------------------------------------------------------------------
-    // InvSqrt
-    //------------------------------------------------------------------------------
-    //
-    // Computes the inverse square root of the vector in-place.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::InvSqrt() noexcept
-    {
-        return *this = InvSqrtCopy();
-    }
-
-    //------------------------------------------------------------------------------
-    // SignCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise sign of the vector.
-    //
-    // Returns:
-    //  A vector with -1 (negative), 0 (zero), or 1 (positive) per component.
-    //
-    inline fvec2 fvec2::SignCopy() const noexcept
-    {
-        return fvec2((m_X > 0.f) ? 1.f : (m_X < 0.f) ? -1.f : 0.f,
-            (m_Y > 0.f) ? 1.f : (m_Y < 0.f) ? -1.f : 0.f);
-    }
-
-    //------------------------------------------------------------------------------
-    // Sign
-    //------------------------------------------------------------------------------
-    //
-    // Computes the sign of the vector in-place.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Sign() noexcept
-    {
-        return *this = SignCopy();
-    }
-
-    //------------------------------------------------------------------------------
-    // FloorCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise floor of the vector.
-    //
-    // Returns:
-    //  A vector with the floor of each component.
-    //
-    inline fvec2 fvec2::FloorCopy() const noexcept
-    {
-        return fvec2(xmath::Floor(m_X), xmath::Floor(m_Y));
-    }
-
-    //------------------------------------------------------------------------------
-    // Floor
-    //------------------------------------------------------------------------------
-    //
-    // Computes the floor of the vector in-place.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Floor() noexcept
-    {
-        return *this = FloorCopy();
-    }
-
-    //------------------------------------------------------------------------------
-    // CeilCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise ceiling of the vector.
-    //
-    // Returns:
-    //  A vector with the ceiling of each component.
-    //
-    inline fvec2 fvec2::CeilCopy() const noexcept
-    {
-        return fvec2(xmath::Ceil(m_X), xmath::Ceil(m_Y));
-    }
-
-    //------------------------------------------------------------------------------
-    // Ceil
-    //------------------------------------------------------------------------------
-    //
-    // Computes the ceiling of the vector in-place.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Ceil() noexcept
-    {
-        return *this = CeilCopy();
-    }
-
-    //------------------------------------------------------------------------------
-    // FractCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise fractional part of the vector.
-    //
-    // Returns:
-    //  A vector with the fractional part of each component.
-    //
-    inline fvec2 fvec2::FractCopy() const noexcept
-    {
-        return fvec2(m_X - xmath::Floor(m_X), m_Y - xmath::Floor(m_Y));
-    }
-
-    //------------------------------------------------------------------------------
-    // Fract
-    //------------------------------------------------------------------------------
-    //
-    // Computes the fractional part of the vector in-place.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Fract() noexcept
-    {
-        return *this = FractCopy();
-    }
-
-    //------------------------------------------------------------------------------
-    // ModCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise modulo of the vector by a scalar divisor.
-    //
-    // Parameters:
-    //  divisor - The scalar divisor.
-    //
-    // Returns:
-    //  A vector with the modulo of each component.
-    //
-    inline fvec2 fvec2::ModCopy(float divisor) const noexcept
-    {
-        return fvec2(xmath::FMod( m_X, divisor), xmath::FMod(m_Y, divisor));
-    }
-
-    //------------------------------------------------------------------------------
-    // Mod
-    //------------------------------------------------------------------------------
-    //
-    // Computes the modulo of the vector in-place by a scalar divisor.
-    //
-    // Parameters:
-    //  divisor - The scalar divisor.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Mod(float divisor) noexcept
-    {
-        return *this = ModCopy(divisor);
-    }
-
-    //------------------------------------------------------------------------------
-    // ClampCopy
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise clamping of the vector between min and max.
-    //
-    // Parameters:
-    //  min_val - The minimum value.
-    //  max_val - The maximum value.
-    //
-    // Returns:
-    //  A vector with each component clamped.
-    //
-    inline fvec2 fvec2::ClampCopy(float min_val, float max_val) const noexcept
-    {
-        return fvec2(xmath::Clamp(m_X, min_val, max_val), xmath::Clamp(m_Y, min_val, max_val));
-    }
-
-    //------------------------------------------------------------------------------
-    // Clamp
-    //------------------------------------------------------------------------------
-    //
-    // Computes the clamping of the vector in-place between min and max.
-    //
-    // Parameters:
-    //  min_val - The minimum value.
-    //  max_val - The maximum value.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Clamp(float min_val, float max_val) noexcept
-    {
-        return *this = ClampCopy(min_val, max_val);
-    }
-
-    //------------------------------------------------------------------------------
-    // Step
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise step function.
-    //
-    // Parameters:
-    //  edge - The edge value.
-    //
-    // Returns:
-    //  A vector with 0 (if component < edge) or 1 (otherwise).
-    //
-    inline fvec2 fvec2::Step(float edge) const noexcept
-    {
-        return fvec2((m_X < edge) ? 0.f : 1.f, (m_Y < edge) ? 0.f : 1.f);
-    }
-
-    //------------------------------------------------------------------------------
-    // SmoothStep
-    //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise smoothstep interpolation.
-    //
-    // Parameters:
-    //  edge0 - The lower edge.
-    //  edge1 - The upper edge.
-    //
-    // Returns:
-    //  A vector with smoothstep interpolation per component.
-    //
-    inline fvec2 fvec2::SmoothStep(float edge0, float edge1) const noexcept
-    {
-        float tx = xmath::Clamp((m_X - edge0) / (edge1 - edge0), 0.f, 1.f);
-        float ty = xmath::Clamp((m_Y - edge0) / (edge1 - edge0), 0.f, 1.f);
-        return fvec2(tx * tx * (3.f - 2.f * tx), ty * ty * (3.f - 2.f * ty));
-    }
-
-    //------------------------------------------------------------------------------
-    // Sin
-    //------------------------------------------------------------------------------
-    //
-    // Computes the sine of the vector in-place (in radians).
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Sin() noexcept
-    {
-        m_X = xmath::Sin(xmath::radian{m_X});
-        m_Y = xmath::Sin(xmath::radian{m_Y});
-        return *this;
-    }
-
-    //------------------------------------------------------------------------------
-    // Cos
-    //------------------------------------------------------------------------------
-    //
-    // Computes the cosine of the vector in-place (in radians).
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Cos() noexcept
-    {
-        m_X = xmath::Cos(xmath::radian{ m_X});
-        m_Y = xmath::Cos(xmath::radian{ m_Y});
-        return *this;
-    }
 
     //------------------------------------------------------------------------------
     // Length
@@ -896,26 +456,6 @@ namespace xmath
     inline float fvec2::Length(void) const noexcept
     {
         return xmath::Sqrt(LengthSq());
-    }
-
-    //------------------------------------------------------------------------------
-    // length
-    //------------------------------------------------------------------------------
-    //
-    // Computes magnitude (Euclidean length) of vector.
-    //
-    // Returns:
-    //  sqrt(m_X^2 + m_Y^2 + z^2) >=0.
-    //
-    // Notes:
-    //  SIMD uses dot + sqrt; scalar fallback.
-    //  Assumes finite; asserts validity.
-    //
-    inline fvec2 fvec2::LimitLengthCopy(float MaxLength) const noexcept
-    {
-        auto l = LengthSq();
-        if (l <= (MaxLength * MaxLength)) return *this;
-        return (*this) * (MaxLength * xmath::InvSqrt(l));
     }
 
     //------------------------------------------------------------------------------
@@ -1012,6 +552,25 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
+    // LimitLengthCopy
+    //------------------------------------------------------------------------------
+    //
+    // Returns a copy with length limited to MaxLength.
+    //
+    // Parameters:
+    //  MaxLength - The maximum length.
+    //
+    // Returns:
+    //  The limited vector.
+    //
+    inline fvec2 fvec2::LimitLengthCopy(float MaxLength) const noexcept
+    {
+        float l = LengthSq();
+        if (l <= (MaxLength * MaxLength)) return *this;
+        return (*this) * (MaxLength * xmath::InvSqrt(l));
+    }
+
+    //------------------------------------------------------------------------------
     // isFinite
     //------------------------------------------------------------------------------
     //
@@ -1044,6 +603,58 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
+    // Equals
+    //------------------------------------------------------------------------------
+    //
+    // Checks if this vector is approximately equal to another within a tolerance.
+    //
+    // Parameters:
+    //  other - The vector to compare.
+    //  tolerance - The epsilon tolerance.
+    //
+    // Returns:
+    //  True if equal within tolerance, false otherwise.
+    //
+    inline bool fvec2::Equals(const fvec2& other, float tolerance) const noexcept
+    {
+        return xmath::Abs(m_X - other.m_X) <= tolerance && xmath::Abs(m_Y - other.m_Y) <= tolerance;
+    }
+
+    //------------------------------------------------------------------------------
+    // Instance methods - Component-wise math
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
+    // AbsCopy
+    //------------------------------------------------------------------------------
+    //
+    // Returns a copy with absolute value components.
+    //
+    // Returns:
+    //  The absolute vector.
+    //
+    constexpr fvec2 fvec2::AbsCopy(void) const noexcept
+    {
+        return fvec2(xmath::Abs(m_X), xmath::Abs(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // Abs
+    //------------------------------------------------------------------------------
+    //
+    // Computes absolute values in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    constexpr fvec2& fvec2::Abs(void) noexcept
+    {
+        m_X = xmath::Abs(m_X);
+        m_Y = xmath::Abs(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
     // OneOverCopy
     //------------------------------------------------------------------------------
     //
@@ -1067,7 +678,7 @@ namespace xmath
     // Computes reciprocal in-place.
     //
     // Returns:
-    //  Reference to self (chainable).
+    //  Reference to this vector (chainable).
     //
     // Notes:
     //  Assumes non-zero components; may produce inf/NaN.
@@ -1080,34 +691,717 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // AbsCopy
+    // SqrtCopy
     //------------------------------------------------------------------------------
     //
-    // Returns a copy with absolute value components.
+    // Computes the component-wise square root of the vector.
     //
     // Returns:
-    //  The absolute vector.
+    //  A vector with the square root of each component.
     //
-    constexpr fvec2 fvec2::AbsCopy(void) const noexcept
+    inline fvec2 fvec2::SqrtCopy(void) const noexcept
     {
-        return fvec2(std::abs(m_X), std::abs(m_Y));
+        return fvec2(xmath::Sqrt(m_X), xmath::Sqrt(m_Y));
     }
 
     //------------------------------------------------------------------------------
-    // Abs
+    // Sqrt
     //------------------------------------------------------------------------------
     //
-    // Computes absolute values in-place.
+    // Computes the square root of the vector in-place.
     //
     // Returns:
-    //  Reference to self (chainable).
+    //  Reference to this vector (chainable).
     //
-    constexpr fvec2& fvec2::Abs(void) noexcept
+    inline fvec2& fvec2::Sqrt(void) noexcept
     {
-        m_X = xmath::Abs(m_X);
-        m_Y = xmath::Abs(m_Y);
+        m_X = xmath::Sqrt(m_X);
+        m_Y = xmath::Sqrt(m_Y);
         return *this;
     }
+
+    //------------------------------------------------------------------------------
+    // InvSqrtCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise inverse square root (1/sqrt(x)) of the vector.
+    //
+    // Returns:
+    //  A vector with the inverse square root of each component.
+    //
+    inline fvec2 fvec2::InvSqrtCopy(void) const noexcept
+    {
+        return fvec2(xmath::InvSqrt(m_X), xmath::InvSqrt(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // InvSqrt
+    //------------------------------------------------------------------------------
+    //
+    // Computes the inverse square root of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::InvSqrt(void) noexcept
+    {
+        m_X = xmath::InvSqrt(m_X);
+        m_Y = xmath::InvSqrt(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // SignCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise sign of the vector.
+    //
+    // Returns:
+    //  A vector with -1 (negative), 0 (zero), or 1 (positive) per component.
+    //
+    inline fvec2 fvec2::SignCopy(void) const noexcept
+    {
+        return fvec2((m_X > 0.f) ? 1.f : (m_X < 0.f) ? -1.f : 0.f,
+                     (m_Y > 0.f) ? 1.f : (m_Y < 0.f) ? -1.f : 0.f);
+    }
+
+    //------------------------------------------------------------------------------
+    // Sign
+    //------------------------------------------------------------------------------
+    //
+    // Computes the sign of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Sign(void) noexcept
+    {
+        m_X = (m_X > 0.f) ? 1.f : (m_X < 0.f) ? -1.f : 0.f;
+        m_Y = (m_Y > 0.f) ? 1.f : (m_Y < 0.f) ? -1.f : 0.f;
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // FloorCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise floor of the vector.
+    //
+    // Returns:
+    //  A vector with the floor of each component.
+    //
+    inline fvec2 fvec2::FloorCopy(void) const noexcept
+    {
+        return fvec2(xmath::Floor(m_X), xmath::Floor(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // Floor
+    //------------------------------------------------------------------------------
+    //
+    // Computes the floor of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Floor(void) noexcept
+    {
+        m_X = xmath::Floor(m_X);
+        m_Y = xmath::Floor(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // CeilCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise ceiling of the vector.
+    //
+    // Returns:
+    //  A vector with the ceiling of each component.
+    //
+    inline fvec2 fvec2::CeilCopy(void) const noexcept
+    {
+        return fvec2(xmath::Ceil(m_X), xmath::Ceil(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // Ceil
+    //------------------------------------------------------------------------------
+    //
+    // Computes the ceiling of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Ceil(void) noexcept
+    {
+        m_X = xmath::Ceil(m_X);
+        m_Y = xmath::Ceil(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // FractCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise fractional part of the vector.
+    //
+    // Returns:
+    //  A vector with the fractional part of each component.
+    //
+    inline fvec2 fvec2::FractCopy(void) const noexcept
+    {
+        return fvec2(m_X - xmath::Floor(m_X), m_Y - xmath::Floor(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // Fract
+    //------------------------------------------------------------------------------
+    //
+    // Computes the fractional part of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Fract(void) noexcept
+    {
+        m_X -= xmath::Floor(m_X);
+        m_Y -= xmath::Floor(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // RoundCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise rounding of the vector to the nearest integer.
+    //
+    // Returns:
+    //  A vector with the rounded value of each component.
+    //
+    inline fvec2 fvec2::RoundCopy(void) const noexcept
+    {
+        return fvec2(xmath::Round(m_X), xmath::Round(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // Round
+    //------------------------------------------------------------------------------
+    //
+    // Computes the rounding of the vector in-place to the nearest integer.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Round(void) noexcept
+    {
+        m_X = xmath::Round(m_X);
+        m_Y = xmath::Round(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // TruncCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise truncation of the vector (towards zero).
+    //
+    // Returns:
+    //  A vector with the truncated value of each component.
+    //
+    inline fvec2 fvec2::TruncCopy(void) const noexcept
+    {
+        return fvec2(xmath::Trunc(m_X), xmath::Trunc(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // Trunc
+    //------------------------------------------------------------------------------
+    //
+    // Computes the truncation of the vector in-place (towards zero).
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Trunc(void) noexcept
+    {
+        m_X = xmath::Trunc(m_X);
+        m_Y = xmath::Trunc(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // ModCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise modulo of the vector by a scalar divisor.
+    //
+    // Parameters:
+    //  divisor - The scalar divisor.
+    //
+    // Returns:
+    //  A vector with the modulo of each component.
+    //
+    inline fvec2 fvec2::ModCopy(float divisor) const noexcept
+    {
+        return fvec2(xmath::FMod(m_X, divisor), xmath::FMod(m_Y, divisor));
+    }
+
+    //------------------------------------------------------------------------------
+    // Mod
+    //------------------------------------------------------------------------------
+    //
+    // Computes the modulo of the vector in-place by a scalar divisor.
+    //
+    // Parameters:
+    //  divisor - The scalar divisor.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Mod(float divisor) noexcept
+    {
+        m_X = xmath::FMod(m_X, divisor);
+        m_Y = xmath::FMod(m_Y, divisor);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // ClampCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise clamping of the vector between min and max.
+    //
+    // Parameters:
+    //  min_val - The minimum value.
+    //  max_val - The maximum value.
+    //
+    // Returns:
+    //  A vector with each component clamped.
+    //
+    inline fvec2 fvec2::ClampCopy(float min_val, float max_val) const noexcept
+    {
+        return fvec2(xmath::Clamp(m_X, min_val, max_val), xmath::Clamp(m_Y, min_val, max_val));
+    }
+
+    //------------------------------------------------------------------------------
+    // Clamp
+    //------------------------------------------------------------------------------
+    //
+    // Computes the clamping of the vector in-place between min and max.
+    //
+    // Parameters:
+    //  min_val - The minimum value.
+    //  max_val - The maximum value.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Clamp(float min_val, float max_val) noexcept
+    {
+        m_X = xmath::Clamp(m_X, min_val, max_val);
+        m_Y = xmath::Clamp(m_Y, min_val, max_val);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // Step
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise step function.
+    //
+    // Parameters:
+    //  edge - The edge value.
+    //
+    // Returns:
+    //  A vector with 0 (if component < edge) or 1 (otherwise).
+    //
+    inline fvec2 fvec2::Step(float edge) const noexcept
+    {
+        return fvec2((m_X < edge) ? 0.f : 1.f, (m_Y < edge) ? 0.f : 1.f);
+    }
+
+    //------------------------------------------------------------------------------
+    // SmoothStep
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise smoothstep interpolation.
+    //
+    // Parameters:
+    //  edge0 - The lower edge.
+    //  edge1 - The upper edge.
+    //
+    // Returns:
+    //  A vector with smoothstep interpolation per component.
+    //
+    inline fvec2 fvec2::SmoothStep(float edge0, float edge1) const noexcept
+    {
+        float tx = xmath::Clamp((m_X - edge0) / (edge1 - edge0), 0.f, 1.f);
+        float ty = xmath::Clamp((m_Y - edge0) / (edge1 - edge0), 0.f, 1.f);
+        return fvec2(tx * tx * (3.f - 2.f * tx), ty * ty * (3.f - 2.f * ty));
+    }
+
+    //------------------------------------------------------------------------------
+    // LogCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise natural logarithm of the vector.
+    //
+    // Returns:
+    //  A vector with the natural log of each component.
+    //
+    inline fvec2 fvec2::LogCopy(void) const noexcept
+    {
+        return fvec2(xmath::Log(m_X), xmath::Log(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // Log
+    //------------------------------------------------------------------------------
+    //
+    // Computes the natural logarithm of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Log(void) noexcept
+    {
+        m_X = xmath::Log(m_X);
+        m_Y = xmath::Log(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // Log2Copy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise base-2 logarithm of the vector.
+    //
+    // Returns:
+    //  A vector with the base-2 log of each component.
+    //
+    inline fvec2 fvec2::Log2Copy(void) const noexcept
+    {
+        return fvec2(xmath::Log2(m_X), xmath::Log2(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // Log2
+    //------------------------------------------------------------------------------
+    //
+    // Computes the base-2 logarithm of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Log2(void) noexcept
+    {
+        m_X = xmath::Log2(m_X);
+        m_Y = xmath::Log2(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // PowCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise power (base^exp) of the vector.
+    //
+    // Parameters:
+    //  exp - The exponent (scalar).
+    //
+    // Returns:
+    //  A vector with each component raised to the exponent.
+    //
+    inline fvec2 fvec2::PowCopy(float exp) const noexcept
+    {
+        return fvec2(xmath::Pow(m_X, exp), xmath::Pow(m_Y, exp));
+    }
+
+    //------------------------------------------------------------------------------
+    // Pow
+    //------------------------------------------------------------------------------
+    //
+    // Computes the power of the vector in-place.
+    //
+    // Parameters:
+    //  exp - The exponent (scalar).
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Pow(float exp) noexcept
+    {
+        m_X = xmath::Pow(m_X, exp);
+        m_Y = xmath::Pow(m_Y, exp);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // SinCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise sine of the vector (in radians).
+    //
+    // Returns:
+    //  A vector with the sine of each component.
+    //
+    inline fvec2 fvec2::SinCopy(void) const noexcept
+    {
+        return fvec2(xmath::Sin(radian{m_X}), xmath::Sin(radian{m_Y}));
+    }
+
+    //------------------------------------------------------------------------------
+    // Sin
+    //------------------------------------------------------------------------------
+    //
+    // Computes the sine of the vector in-place (in radians).
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Sin(void) noexcept
+    {
+        m_X = xmath::Sin(radian{m_X});
+        m_Y = xmath::Sin(radian{m_Y});
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // CosCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise cosine of the vector (in radians).
+    //
+    // Returns:
+    //  A vector with the cosine of each component.
+    //
+    inline fvec2 fvec2::CosCopy(void) const noexcept
+    {
+        return fvec2(xmath::Cos(radian{m_X}), xmath::Cos(radian{m_Y}));
+    }
+
+    //------------------------------------------------------------------------------
+    // Cos
+    //------------------------------------------------------------------------------
+    //
+    // Computes the cosine of the vector in-place (in radians).
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Cos(void) noexcept
+    {
+        m_X = xmath::Cos(radian{m_X});
+        m_Y = xmath::Cos(radian{m_Y});
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // TanCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise tangent of the vector (in radians).
+    //
+    // Returns:
+    //  A vector with the tangent of each component.
+    //
+    inline fvec2 fvec2::TanCopy(void) const noexcept
+    {
+        return fvec2(xmath::Tan(radian{m_X}), xmath::Tan(radian{m_Y}));
+    }
+
+    //------------------------------------------------------------------------------
+    // Tan
+    //------------------------------------------------------------------------------
+    //
+    // Computes the tangent of the vector in-place (in radians).
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Tan(void) noexcept
+    {
+        m_X = xmath::Tan(radian{m_X});
+        m_Y = xmath::Tan(radian{m_Y});
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // AsinCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise arcsine of the vector.
+    //
+    // Returns:
+    //  A vector with the arcsine of each component (in radians).
+    //
+    inline fvec2 fvec2::AsinCopy(void) const noexcept
+    {
+        return fvec2(xmath::Asin(m_X).m_Value, xmath::Asin(m_Y).m_Value);
+    }
+
+    //------------------------------------------------------------------------------
+    // Asin
+    //------------------------------------------------------------------------------
+    //
+    // Computes the arcsine of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Asin(void) noexcept
+    {
+        m_X = xmath::Asin(m_X).m_Value;
+        m_Y = xmath::Asin(m_Y).m_Value;
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // AcosCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise arccosine of the vector.
+    //
+    // Returns:
+    //  A vector with the arccosine of each component (in radians).
+    //
+    inline fvec2 fvec2::AcosCopy(void) const noexcept
+    {
+        return fvec2(xmath::Acos(m_X).m_Value, xmath::Acos(m_Y).m_Value);
+    }
+
+    //------------------------------------------------------------------------------
+    // Acos
+    //------------------------------------------------------------------------------
+    //
+    // Computes the arccosine of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Acos(void) noexcept
+    {
+        m_X = xmath::Acos(m_X).m_Value;
+        m_Y = xmath::Acos(m_Y).m_Value;
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // AtanCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise arctangent of the vector.
+    //
+    // Returns:
+    //  A vector with the arctangent of each component (in radians).
+    //
+    inline fvec2 fvec2::AtanCopy(void) const noexcept
+    {
+        return fvec2(xmath::Atan(m_X).m_Value, xmath::Atan(m_Y).m_Value);
+    }
+
+    //------------------------------------------------------------------------------
+    // Atan
+    //------------------------------------------------------------------------------
+    //
+    // Computes the arctangent of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Atan(void) noexcept
+    {
+        m_X = xmath::Atan(m_X).m_Value;
+        m_Y = xmath::Atan(m_Y).m_Value;
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // Atan2Copy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise arctangent of y/x, considering the quadrant.
+    //
+    // Parameters:
+    //  x - The vector containing x components.
+    //
+    // Returns:
+    //  A vector with the arctangent of each y/x pair (in radians).
+    //
+    inline fvec2 fvec2::Atan2Copy(const fvec2& x) const noexcept
+    {
+        return fvec2(xmath::Atan2(m_Y, x.m_X).m_Value, xmath::Atan2(m_Y, x.m_Y).m_Value);
+    }
+
+    //------------------------------------------------------------------------------
+    // Atan2
+    //------------------------------------------------------------------------------
+    //
+    // Computes the arctangent of y/x in-place, considering the quadrant.
+    //
+    // Parameters:
+    //  x - The vector containing x components.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Atan2(const fvec2& x) noexcept
+    {
+        return *this = Atan2Copy(x);
+    }
+
+    //------------------------------------------------------------------------------
+    // SignedAngleBetween
+    //------------------------------------------------------------------------------
+    //
+    // Computes the signed angle between this vector and another (in radians).
+    //
+    // Parameters:
+    //  v - The other vector.
+    //
+    // Returns:
+    //  The signed angle.
+    //
+    inline radian fvec2::SignedAngleBetween(const fvec2& v) const noexcept
+    {
+        return xmath::Atan2(Cross(v), Dot(v));
+    }
+
+    //------------------------------------------------------------------------------
+    // ExpCopy
+    //------------------------------------------------------------------------------
+    //
+    // Computes the component-wise exponential (e^x) of the vector.
+    //
+    // Returns:
+    //  A vector with the exponential of each component.
+    //
+    inline fvec2 fvec2::ExpCopy(void) const noexcept
+    {
+        return fvec2(xmath::Exp(m_X), xmath::Exp(m_Y));
+    }
+
+    //------------------------------------------------------------------------------
+    // Exp
+    //------------------------------------------------------------------------------
+    //
+    // Computes the exponential of the vector in-place.
+    //
+    // Returns:
+    //  Reference to this vector (chainable).
+    //
+    inline fvec2& fvec2::Exp(void) noexcept
+    {
+        m_X = xmath::Exp(m_X);
+        m_Y = xmath::Exp(m_Y);
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // Instance methods - Geometry
+    //------------------------------------------------------------------------------
 
     //------------------------------------------------------------------------------
     // Reflection
@@ -1179,7 +1473,7 @@ namespace xmath
     //  gridY - Grid size for Y.
     //
     // Returns:
-    //  Reference to self (chainable).
+    //  Reference to this vector (chainable).
     //
     constexpr fvec2& fvec2::GridSnap(float gridX, float gridY) noexcept
     {
@@ -1203,39 +1497,42 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // Determines which side of a line a is point on.
-    //
-    // Note that the value returned divided by the distance from line_v1 to line_v2
-    // is the minimum distance from the point to the line.  That may be useful 
-    // for determining the distance relationship between points, without actually
-    // having to calculate the distance.
-    //
-    // pt:		Point
-    // line_v1: Endpoint of the line
-    // line_v2: Endpoint of the line
-    //
-    // returns: > 0.0f if pt is to the left of the line (line_v1->line_v2)
-    //				< 0.0f if pt is to the right of the line (line_v1->line_v2)
-    //				= 0.0f if pt is on the line
-    //
+    // WhichSideOfLine
     //------------------------------------------------------------------------------
+    //
+    // Determines which side of a line the point is on.
+    //
+    // Parameters:
+    //  V0 - First endpoint of the line.
+    //  V1 - Second endpoint of the line.
+    //
+    // Returns:
+    //  >0 if left, <0 if right, =0 if on the line.
+    //
+    // Notes:
+    //  The return value divided by distance(V0,V1) is the min distance to the line.
+    //
     constexpr float fvec2::WhichSideOfLine(const fvec2& V0, const fvec2& V1) const noexcept
     {
         return ((m_Y - V0.m_Y) * (V1.m_X - V0.m_X) - (m_X - V0.m_X) * (V1.m_Y - V0.m_Y));
     }
 
     //------------------------------------------------------------------------------
-    // Returns the closest point on the 2D LINE defined by line_v1 and line_v2
-    // to the point pt.  Note that output is NOT necissarily between line_v1
-    // and line_v2.
-    //
-    // Reference: http://astronomy.swin.edu.au/~pbourke/geometry/pointline/
-    //
-    // out:		(output) Closest point on the line.
-    // pt:		Point
-    // line_v1:	First point on the line.
-    // line_v2: Second point on the line.
+    // ClosestPointInLine
     //------------------------------------------------------------------------------
+    //
+    // Returns the closest point on the infinite line to this point.
+    //
+    // Parameters:
+    //  V0 - First point on the line.
+    //  V1 - Second point on the line.
+    //
+    // Returns:
+    //  The closest point on the line.
+    //
+    // Notes:
+    //  Not limited to the segment between V0 and V1.
+    //
     inline fvec2 fvec2::ClosestPointInLine(const fvec2& V0, const fvec2& V1) const noexcept
     {
         // safety checks
@@ -1244,19 +1541,22 @@ namespace xmath
         float u = (m_X - V1.m_X) * (V1.m_X - V0.m_X) + (m_Y - V0.m_Y) * (V1.m_Y - V0.m_Y);
         u /= (V0 - V1).LengthSq();
 
-        return V0.Lerp( V1, u );
+        return V0.Lerp(V1, u);
     }
 
     //------------------------------------------------------------------------------
-    // Returns the closest point on the 2D LINESEGMENT defined by line_v1 and line_v2
-    // to the point pt.  Note that output WILL BE between line_v1 and line_v2 (or 
-    // equal to one of them).
-    //
-    // out:		(output) Closest point on the line segment.
-    // pt:		Point
-    // line_v1: Endpoint of the line segment.
-    // line_v2: Endpoint of the line segment.
+    // ClosestPointInLineSegment
     //------------------------------------------------------------------------------
+    //
+    // Returns the closest point on the line segment to this point.
+    //
+    // Parameters:
+    //  V0 - First endpoint of the segment.
+    //  V1 - Second endpoint of the segment.
+    //
+    // Returns:
+    //  The closest point on the segment.
+    //
     inline fvec2 fvec2::ClosestPointInLineSegment(const fvec2& V0, const fvec2& V1) const noexcept
     {
         // degenerate case
@@ -1269,26 +1569,9 @@ namespace xmath
         u /= (V0 - V1).LengthSq();
 
         // cap u to the range [0..1]
-        u = xmath::Range(u, 0.0f, 1.0f);
+        u = xmath::Clamp(u, 0.0f, 1.0f);
 
-        return V0.Lerp(V1, u );
-    }
-
-    //------------------------------------------------------------------------------
-    // SignedAngleBetween
-    //------------------------------------------------------------------------------
-    //
-    // Computes the signed angle between this vector and another (in radians).
-    //
-    // Parameters:
-    //  v - The other vector.
-    //
-    // Returns:
-    //  The signed angle.
-    //
-    inline radian fvec2::SignedAngleBetween(const fvec2& v) const noexcept
-    {
-        return xmath::Atan2(Cross(v), Dot(v));
+        return V0.Lerp(V1, u);
     }
 
     //------------------------------------------------------------------------------
@@ -1324,7 +1607,12 @@ namespace xmath
     //
     inline fvec2& fvec2::Rotate(radian angle) noexcept
     {
-        return *this = RotateCopy(angle);
+        float c = xmath::Cos(angle);
+        float s = xmath::Sin(angle);
+        float new_x = m_X * c - m_Y * s;
+        m_Y = m_X * s + m_Y * c;
+        m_X = new_x;
+        return *this;
     }
 
     //------------------------------------------------------------------------------
@@ -1358,138 +1646,175 @@ namespace xmath
     //
     inline fvec2& fvec2::Project(const fvec2& onto) noexcept
     {
-        return *this = ProjectCopy(onto);
+        *this = ProjectCopy(onto);
+        return *this;
     }
 
     //------------------------------------------------------------------------------
-    // RoundCopy
+    // Swizzle methods for float (HLSL-style, return copy with swizzled components)
     //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise rounding of the vector to the nearest integer.
-    //
-    // Returns:
-    //  A vector with the rounded value of each component.
-    //
-    inline fvec2 fvec2::RoundCopy() const noexcept
+
+    constexpr float fvec2::x(void) const noexcept
     {
-        return fvec2(xmath::Round(m_X), xmath::Round(m_Y));
+        return m_X;
     }
 
-    //------------------------------------------------------------------------------
-    // Round
-    //------------------------------------------------------------------------------
-    //
-    // Computes the rounding of the vector in-place to the nearest integer.
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Round() noexcept
+    constexpr float fvec2::y(void) const noexcept
     {
-        m_X = xmath::Round(m_X); m_Y = xmath::Round(m_Y); return *this;
+        return m_Y;
     }
 
     //------------------------------------------------------------------------------
-    // TruncCopy
+    // Swizzle methods for fvec2 (HLSL-style, return copy with swizzled components)
     //------------------------------------------------------------------------------
-    //
-    // Computes the component-wise truncation of the vector (towards zero).
-    //
-    // Returns:
-    //  A vector with the truncated value of each component.
-    //
-    inline fvec2 fvec2::TruncCopy() const noexcept
+
+    constexpr fvec2 fvec2::xx(void) const noexcept
     {
-        return fvec2(xmath::Trunc(m_X), xmath::Trunc(m_Y));
+        return fvec2(m_X, m_X);
     }
 
-    //------------------------------------------------------------------------------
-    // Trunc
-    //------------------------------------------------------------------------------
-    //
-    // Computes the truncation of the vector in-place (towards zero).
-    //
-    // Returns:
-    //  Reference to this vector (chainable).
-    //
-    inline fvec2& fvec2::Trunc() noexcept
+    constexpr fvec2 fvec2::xy(void) const noexcept
     {
-        return *this = TruncCopy();
+        return fvec2(m_X, m_Y);
     }
 
-    //------------------------------------------------------------------------------
-    // Equals
-    //------------------------------------------------------------------------------
-    //
-    // Checks if this vector is approximately equal to another within a tolerance.
-    //
-    // Parameters:
-    //  other - The vector to compare.
-    //  tolerance - The epsilon tolerance.
-    //
-    // Returns:
-    //  True if equal within tolerance, false otherwise.
-    //
-    inline bool fvec2::Equals(const fvec2& other, float tolerance) const noexcept
+    constexpr fvec2 fvec2::yx(void) const noexcept
     {
-        return xmath::Abs(m_X - other.m_X) <= tolerance && xmath::Abs(m_Y - other.m_Y) <= tolerance;
+        return fvec2(m_Y, m_X);
+    }
+
+    constexpr fvec2 fvec2::yy(void) const noexcept
+    {
+        return fvec2(m_Y, m_Y);
     }
 
     //------------------------------------------------------------------------------
-    // Swizzle methods for float
+    // Swizzle methods for fvec3 (HLSL-style, return copy with swizzled components)
     //------------------------------------------------------------------------------
 
-    //------------------------------------------------------------------------------
-    // x
-    //------------------------------------------------------------------------------
-    //
-    // Returns the x component.
-    //
-    constexpr float fvec2::x(void) const noexcept { return m_X; }
-    constexpr float fvec2::y(void) const noexcept { return m_Y; }
+    constexpr fvec3 fvec2::xxx(void) const noexcept
+    {
+        return fvec3(m_X, m_X, m_X);
+    }
+
+    constexpr fvec3 fvec2::xxy(void) const noexcept
+    {
+        return fvec3(m_X, m_X, m_Y);
+    }
+
+    constexpr fvec3 fvec2::xyx(void) const noexcept
+    {
+        return fvec3(m_X, m_Y, m_X);
+    }
+
+    constexpr fvec3 fvec2::xyy(void) const noexcept
+    {
+        return fvec3(m_X, m_Y, m_Y);
+    }
+
+    constexpr fvec3 fvec2::yxx(void) const noexcept
+    {
+        return fvec3(m_Y, m_X, m_X);
+    }
+
+    constexpr fvec3 fvec2::yxy(void) const noexcept
+    {
+        return fvec3(m_Y, m_X, m_Y);
+    }
+
+    constexpr fvec3 fvec2::yyx(void) const noexcept
+    {
+        return fvec3(m_Y, m_Y, m_X);
+    }
+
+    constexpr fvec3 fvec2::yyy(void) const noexcept
+    {
+        return fvec3(m_Y, m_Y, m_Y);
+    }
 
     //------------------------------------------------------------------------------
-    // Swizzle methods for fvec2
+    // Swizzle methods for fvec4 (HLSL-style, return copy with swizzled components)
     //------------------------------------------------------------------------------
 
-    constexpr fvec2 fvec2::xx(void) const noexcept { return fvec2(m_X, m_X); }
-    constexpr fvec2 fvec2::xy(void) const noexcept { return fvec2(m_X, m_Y); }
-    constexpr fvec2 fvec2::yx(void) const noexcept { return fvec2(m_Y, m_X); }
-    constexpr fvec2 fvec2::yy(void) const noexcept { return fvec2(m_Y, m_Y); }
+    inline fvec4 fvec2::xxxx(void) const noexcept
+    {
+        return fvec4(m_X, m_X, m_X, m_X);
+    }
 
-    //------------------------------------------------------------------------------
-    // Swizzle methods for fvec3
-    //------------------------------------------------------------------------------
+    inline fvec4 fvec2::xxxy(void) const noexcept
+    {
+        return fvec4(m_X, m_X, m_X, m_Y);
+    }
 
-    constexpr fvec3 fvec2::xxx(void) const noexcept { return fvec3(m_X, m_X, m_X); }
-    constexpr fvec3 fvec2::xxy(void) const noexcept { return fvec3(m_X, m_X, m_Y); }
-    constexpr fvec3 fvec2::xyx(void) const noexcept { return fvec3(m_X, m_Y, m_X); }
-    constexpr fvec3 fvec2::xyy(void) const noexcept { return fvec3(m_X, m_Y, m_Y); }
-    constexpr fvec3 fvec2::yxx(void) const noexcept { return fvec3(m_Y, m_X, m_X); }
-    constexpr fvec3 fvec2::yxy(void) const noexcept { return fvec3(m_Y, m_X, m_Y); }
-    constexpr fvec3 fvec2::yyx(void) const noexcept { return fvec3(m_Y, m_Y, m_X); }
-    constexpr fvec3 fvec2::yyy(void) const noexcept { return fvec3(m_Y, m_Y, m_Y); }
+    inline fvec4 fvec2::xxyx(void) const noexcept
+    {
+        return fvec4(m_X, m_X, m_Y, m_X);
+    }
 
-    //------------------------------------------------------------------------------
-    // Swizzle methods for fvec4
-    //------------------------------------------------------------------------------
+    inline fvec4 fvec2::xxyy(void) const noexcept
+    {
+        return fvec4(m_X, m_X, m_Y, m_Y);
+    }
 
-    inline fvec4 fvec2::xxxx(void) const noexcept { return fvec4(m_X, m_X, m_X, m_X); }
-    inline fvec4 fvec2::xxxy(void) const noexcept { return fvec4(m_X, m_X, m_X, m_Y); }
-    inline fvec4 fvec2::xxyx(void) const noexcept { return fvec4(m_X, m_X, m_Y, m_X); }
-    inline fvec4 fvec2::xxyy(void) const noexcept { return fvec4(m_X, m_X, m_Y, m_Y); }
-    inline fvec4 fvec2::xyxx(void) const noexcept { return fvec4(m_X, m_Y, m_X, m_X); }
-    inline fvec4 fvec2::xyxy(void) const noexcept { return fvec4(m_X, m_Y, m_X, m_Y); }
-    inline fvec4 fvec2::xyyx(void) const noexcept { return fvec4(m_X, m_Y, m_Y, m_X); }
-    inline fvec4 fvec2::xyyy(void) const noexcept { return fvec4(m_X, m_Y, m_Y, m_Y); }
-    inline fvec4 fvec2::yxxx(void) const noexcept { return fvec4(m_Y, m_X, m_X, m_X); }
-    inline fvec4 fvec2::yxxy(void) const noexcept { return fvec4(m_Y, m_X, m_X, m_Y); }
-    inline fvec4 fvec2::yxyx(void) const noexcept { return fvec4(m_Y, m_X, m_Y, m_X); }
-    inline fvec4 fvec2::yxyy(void) const noexcept { return fvec4(m_Y, m_X, m_Y, m_Y); }
-    inline fvec4 fvec2::yyxx(void) const noexcept { return fvec4(m_Y, m_Y, m_X, m_X); }
-    inline fvec4 fvec2::yyxy(void) const noexcept { return fvec4(m_Y, m_Y, m_X, m_Y); }
-    inline fvec4 fvec2::yyyx(void) const noexcept { return fvec4(m_Y, m_Y, m_Y, m_X); }
-    inline fvec4 fvec2::yyyy(void) const noexcept { return fvec4(m_Y, m_Y, m_Y, m_Y); }
+    inline fvec4 fvec2::xyxx(void) const noexcept
+    {
+        return fvec4(m_X, m_Y, m_X, m_X);
+    }
+
+    inline fvec4 fvec2::xyxy(void) const noexcept
+    {
+        return fvec4(m_X, m_Y, m_X, m_Y);
+    }
+
+    inline fvec4 fvec2::xyyx(void) const noexcept
+    {
+        return fvec4(m_X, m_Y, m_Y, m_X);
+    }
+
+    inline fvec4 fvec2::xyyy(void) const noexcept
+    {
+        return fvec4(m_X, m_Y, m_Y, m_Y);
+    }
+
+    inline fvec4 fvec2::yxxx(void) const noexcept
+    {
+        return fvec4(m_Y, m_X, m_X, m_X);
+    }
+
+    inline fvec4 fvec2::yxxy(void) const noexcept
+    {
+        return fvec4(m_Y, m_X, m_X, m_Y);
+    }
+
+    inline fvec4 fvec2::yxyx(void) const noexcept
+    {
+        return fvec4(m_Y, m_X, m_Y, m_X);
+    }
+
+    inline fvec4 fvec2::yxyy(void) const noexcept
+    {
+        return fvec4(m_Y, m_X, m_Y, m_Y);
+    }
+
+    inline fvec4 fvec2::yyxx(void) const noexcept
+    {
+        return fvec4(m_Y, m_Y, m_X, m_X);
+    }
+
+    inline fvec4 fvec2::yyxy(void) const noexcept
+    {
+        return fvec4(m_Y, m_Y, m_X, m_Y);
+    }
+
+    inline fvec4 fvec2::yyyx(void) const noexcept
+    {
+        return fvec4(m_Y, m_Y, m_Y, m_X);
+    }
+
+    inline fvec4 fvec2::yyyy(void) const noexcept
+    {
+        return fvec4(m_Y, m_Y, m_Y, m_Y);
+    }
 
     //------------------------------------------------------------------------------
     // Operator overloads
@@ -1507,7 +1832,7 @@ namespace xmath
     // Returns:
     //  The sum vector.
     //
-    constexpr fvec2 fvec2::operator+ (const fvec2& other) const noexcept
+    constexpr fvec2 fvec2::operator+(const fvec2& other) const noexcept
     {
         return fvec2(m_X + other.m_X, m_Y + other.m_Y);
     }
@@ -1524,7 +1849,7 @@ namespace xmath
     // Returns:
     //  The difference vector.
     //
-    constexpr fvec2 fvec2::operator- (const fvec2& other) const noexcept
+    constexpr fvec2 fvec2::operator-(const fvec2& other) const noexcept
     {
         return fvec2(m_X - other.m_X, m_Y - other.m_Y);
     }
@@ -1541,7 +1866,7 @@ namespace xmath
     // Returns:
     //  The scaled vector.
     //
-    constexpr fvec2 fvec2::operator* (float scalar) const noexcept
+    constexpr fvec2 fvec2::operator*(float scalar) const noexcept
     {
         return fvec2(m_X * scalar, m_Y * scalar);
     }
@@ -1561,9 +1886,10 @@ namespace xmath
     // Notes:
     //  Assumes scalar != 0.
     //
-    constexpr fvec2 fvec2::operator/ (float scalar) const noexcept
+    constexpr fvec2 fvec2::operator/(float scalar) const noexcept
     {
-        return fvec2(m_X / scalar, m_Y / scalar);
+        float inv = 1.f / scalar;
+        return *this * inv;
     }
 
     //------------------------------------------------------------------------------
@@ -1576,9 +1902,9 @@ namespace xmath
     //  other - The vector to add.
     //
     // Returns:
-    //  Reference to self (chainable).
+    //  Reference to this vector (chainable).
     //
-    constexpr fvec2& fvec2::operator+= (const fvec2& other) noexcept
+    constexpr fvec2& fvec2::operator+=(const fvec2& other) noexcept
     {
         m_X += other.m_X;
         m_Y += other.m_Y;
@@ -1595,9 +1921,9 @@ namespace xmath
     //  other - The vector to subtract.
     //
     // Returns:
-    //  Reference to self (chainable).
+    //  Reference to this vector (chainable).
     //
-    constexpr fvec2& fvec2::operator-= (const fvec2& other) noexcept
+    constexpr fvec2& fvec2::operator-=(const fvec2& other) noexcept
     {
         m_X -= other.m_X;
         m_Y -= other.m_Y;
@@ -1614,9 +1940,9 @@ namespace xmath
     //  scalar - The scalar value.
     //
     // Returns:
-    //  Reference to self (chainable).
+    //  Reference to this vector (chainable).
     //
-    constexpr fvec2& fvec2::operator*= (float scalar) noexcept
+    constexpr fvec2& fvec2::operator*=(float scalar) noexcept
     {
         m_X *= scalar;
         m_Y *= scalar;
@@ -1633,16 +1959,15 @@ namespace xmath
     //  scalar - The scalar value.
     //
     // Returns:
-    //  Reference to self (chainable).
+    //  Reference to this vector (chainable).
     //
     // Notes:
     //  Assumes scalar != 0.
     //
-    constexpr fvec2& fvec2::operator/= (float scalar) noexcept
+    constexpr fvec2& fvec2::operator/=(float scalar) noexcept
     {
-        m_X /= scalar;
-        m_Y /= scalar;
-        return *this;
+        float inv = 1.f / scalar;
+        return *this *= inv;
     }
 
     //------------------------------------------------------------------------------
@@ -1657,7 +1982,7 @@ namespace xmath
     // Returns:
     //  True if equal, false otherwise.
     //
-    constexpr bool fvec2::operator== (const fvec2& other) const noexcept
+    constexpr bool fvec2::operator==(const fvec2& other) const noexcept
     {
         return m_X == other.m_X && m_Y == other.m_Y;
     }
@@ -1674,7 +1999,7 @@ namespace xmath
     // Returns:
     //  True if not equal, false otherwise.
     //
-    constexpr bool fvec2::operator!= (const fvec2& other) const noexcept
+    constexpr bool fvec2::operator!=(const fvec2& other) const noexcept
     {
         return !(*this == other);
     }
@@ -1694,7 +2019,7 @@ namespace xmath
     // Notes:
     //  Asserts index in [0,1].
     //
-    constexpr float fvec2::operator[] (std::int32_t index) const noexcept
+    constexpr float fvec2::operator[](std::int32_t index) const noexcept
     {
         assert(index >= 0 && index < 2);
         return m_Elements[index];
@@ -1715,7 +2040,7 @@ namespace xmath
     // Notes:
     //  Asserts index in [0,1].
     //
-    constexpr float& fvec2::operator[] (std::int32_t index) noexcept
+    constexpr float& fvec2::operator[](std::int32_t index) noexcept
     {
         assert(index >= 0 && index < 2);
         return m_Elements[index];
@@ -1738,7 +2063,7 @@ namespace xmath
     // Returns:
     //  The scaled vector.
     //
-    constexpr fvec2 operator* (float scalar, const fvec2& v) noexcept
+    constexpr fvec2 operator*(float scalar, const fvec2& v) noexcept
     {
         return v * scalar;
     }
@@ -1760,3 +2085,4 @@ namespace xmath
         return fvec2(-v.m_X, -v.m_Y);
     }
 }
+
