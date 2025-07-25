@@ -2,11 +2,14 @@
 
 ## Overview
 
-The `fvec2` class represents a 2D vector using single-precision floating-point numbers (`float`). It is part of the `xmath` namespace and is designed for high-performance mathematical operations in applications such as game development, graphics, simulations, and scientific computing. Unlike SIMD-optimized variants, `fvec2` prioritizes simplicity and portability without relying on vector extensions.
+The `fvec2` class represents a 2D vector using single-precision floating-point numbers (`float`). It is part of the `xmath` namespace and is 
+designed for high-performance mathematical operations in applications such as game development, graphics, simulations, and scientific computing. 
+Unlike SIMD-optimized variants, `fvec2` prioritizes simplicity and portability without relying on vector extensions.
 
 ### Key Features
 - **Uninitialized Default Construction**: For performance, default-constructed instances do not initialize memory. Always initialize explicitly if needed.
-- **Mutable vs. Immutable Operations**: Methods that modify the vector in-place (mutable) have shorter names and return `*this` for chaining (e.g., `Normalize()`). Copying variants are suffixed with `_Copy` (e.g., `NormalizeCopy()`).
+- **Mutable vs. Immutable Operations**: Methods that modify the vector in-place (mutable) have shorter names and return `*this` for chaining 
+       (e.g., `Normalize()`). Copying variants are suffixed with `_Copy` (e.g., `NormalizeCopy()`).
 - **Constexpr Support**: Many operations are `constexpr` for compile-time evaluation, targeting C++20.
 - **Validation**: Includes checks like `isFinite()` and assertions for finite components in debug builds.
 - **Swizzling**: HLSL-style swizzle methods for component rearrangement, supporting up to `fvec4` returns.

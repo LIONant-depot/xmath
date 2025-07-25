@@ -2,7 +2,9 @@
 
 ## Overview
 
-The `fvec4` class represents a 4D vector using single-precision floating-point numbers (`float`), optimized for SIMD operations via SSE (using `floatx4`, likely `__m128`). It is part of the `xmath` namespace and is aligned to 16 bytes for performance. This class is ideal for graphics (e.g., homogeneous coordinates in 3D transformations, RGBA colors), simulations, and high-dimensional math where SIMD acceleration matters.
+The `fvec4` class represents a 4D vector using single-precision floating-point numbers (`float`), optimized for SIMD operations via SSE 
+(using `floatx4`, likely `__m128`). It is part of the `xmath` namespace and is aligned to 16 bytes for performance. This class is ideal for graphics 
+(e.g., homogeneous coordinates in 3D transformations, RGBA colors), simulations, and high-dimensional math where SIMD acceleration matters.
 
 Unlike `fvec3_t`, `fvec4` is not templated and always uses SIMD padding. The fourth component (`w`) is often used for perspective division in graphics or as a weight in other contexts.
 

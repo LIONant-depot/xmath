@@ -2,11 +2,14 @@
 
 ## Overview
 
-The `fmat4_t` class is a templated 4x4 matrix implementation in the `xmath` namespace, using single-precision floating-point (`float`) components in column-major order. It supports two specializations:
-- **SIMD Variant (`fmat4_t<true>`)**: Optimized with SSE (`floatx4` columns, 4x4 aligned to 16 bytes), for faster transformations in graphics/physics.
-- **CPU Variant (`fmat4_t<false>`)**: Compact 4x4 layout without padding, for memory efficiency or non-SSE platforms.
+The `fmat4_t` class is a templated 4x4 matrix implementation in the `xmath` namespace, using single-precision floating-point (`float`) 
+components in column-major order. It supports two specializations:
+- **SIMD Variant (`fmat4`)**: Optimized with SSE (`floatx4` columns, 4x4 aligned to 16 bytes), for faster transformations in graphics/physics.
+- **CPU Variant (`fmat4d`)**: Compact 4x4 layout without padding, for memory efficiency or non-SSE platforms.
 
-Designed for affine 3D transformations (translation, rotation, scale, projection) using homogeneous coordinates. Assumes right-hand rule for rotations. Prioritizes performance with mutable (in-place, chainable) and immutable (Copy-suffixed) operations. Uninitialized by default; use `fromIdentity()` or setup methods. Internal storage is column-major, but accessors (`()(row, col)`) feel row-major for usability.
+Designed for affine 3D transformations (translation, rotation, scale, projection) using homogeneous coordinates. Assumes right-hand rule for rotations. 
+Prioritizes performance with mutable (in-place, chainable) and immutable (Copy-suffixed) operations. Uninitialized by default; use `fromIdentity()` 
+or setup methods. Internal storage is column-major, but accessors (`()(row, col)`) feel row-major for usability.
 
 ### Key Features
 - **Column-Major Storage**: Compatible with OpenGL/DirectX; unions for flexible access (columns, cells, elements, named m_rowcol).
@@ -23,7 +26,8 @@ Designed for affine 3D transformations (translation, rotation, scale, projection
 Requires `xmath_flinear.h`. Column-major for graphics APIs.
 
 ### Comparison to Similar Classes
-- Like GLM's `glm::mat4` but with SIMD specialization, mutable chaining (e.g., `Translate(t).Rotate(q)`), and specialized inverses (`InverseSRT` for scale-rotation-translation). GLM is more general; this is optimized for 3D affine transforms.
+- Like GLM's `glm::mat4` but with SIMD specialization, mutable chaining (e.g., `Translate(t).Rotate(q)`), and specialized inverses 
+      (`InverseSRT` for scale-rotation-translation). GLM is more general; this is optimized for 3D affine transforms.
 - Similar to Eigen's `Eigen::Matrix4f` with better game features (e.g., `ExtractPosition` to fvec3, `fromLookAt`); SIMD variant rivals Eigen's but with easier extraction to quat/Euler.
 - Engine analogs: Unreal's `FMatrix`, Godot's `Projection` or `Transform3D`, but standalone and templated.
 
@@ -40,7 +44,7 @@ Requires `xmath_flinear.h`. Column-major for graphics APIs.
 #include "xmath_flinear.h"  // Assumes includes
 
 int main() {
-    xmath::fmat4_t<true> mat = xmath::fmat4_t<true>::fromIdentity();
+    xmath::fmat4 mat = xmath::fmat4::fromIdentity();
     mat.Translate(fvec3(1,0,0)).RotateX(xmath::pi_over2_v);  // Translate then rotate
     fvec3 transformed = mat * fvec3(0,1,0);  // Position transform
     fquat rot = mat.ExtractRotation();  // To quat
@@ -54,14 +58,14 @@ int main() {
 
 | Constructor | Description | Example |
 |-------------|-------------|---------|
-| `fmat4_t()` | Default (uninitialized). | `fmat4_t<true> mat;` |
-| `fmat4_t(float diagonal)` | Diagonal matrix. | `fmat4_t<true>(2.0f);` // Scale 2, w=1 |
-| `fmat4_t(const std::array<float, 16>& arr)` | From array (col-major). | `std::array<float,16> a = {...}; fmat4_t<true>(a);` |
+| `fmat4_t()` | Default (uninitialized). | `fmat4 mat;` |
+| `fmat4_t(float diagonal)` | Diagonal matrix. | `fmat4(2.0f);` // Scale 2, w=1 |
+| `fmat4_t(const std::array<float, 16>& arr)` | From array (col-major). | `std::array<float,16> a = {...}; fmat4(a);` |
 | `fmat4_t(std::span<const float, 16> span)` | From span (col-major). | Similar to array. |
-| `fmat4_t(const fquat& q)` | From quaternion rotation. | `fmat4_t<true>(quat);` |
-| `fmat4_t(const radian3& Euler)` | From Euler angles (ZXY). | `fmat4_t<true>(euler);` |
-| `fmat4_t(const fvec3& translation, const fquat& rotation, const fvec3& scale)` | From TRS. | `fmat4_t<true>(t, r, s);` |
-| `explicit fmat4_t(const fmat4_t<!T_USE_SIMD_V>& other)` | Convert SIMD/CPU. | `fmat4_t<true>(cpu_mat);` |
+| `fmat4_t(const fquat& q)` | From quaternion rotation. | `fmat4(quat);` |
+| `fmat4_t(const radian3& Euler)` | From Euler angles (ZXY). | `fmat4(euler);` |
+| `fmat4_t(const fvec3& translation, const fquat& rotation, const fvec3& scale)` | From TRS. | `fmat4(t, r, s);` |
+| `explicit fmat4_t(const fmat4_t<!T_USE_SIMD_V>& other)` | Convert SIMD/CPU. | `fmat4(cpu_mat);` |
 
 ## Static Constructors
 
@@ -218,7 +222,7 @@ fvec3 dir = view.TransformDirection(vec);  // Direction
 ### Chaining Operations
 Build model matrix:
 ```cpp
-fmat4_t<true> model;
+fmat4 model;
 model.setupIdentity().Translate(pos).Rotate(q).Scale(s);  // TRS order
 fquat rot = model.ExtractRotation();  // To quat
 ```
@@ -228,21 +232,21 @@ Compose matrices:
 ```cpp
 model.Rotate(fquat());  // Post-rotate
 model.PreTranslate(offset);  // Pre-translate
-fmat4_t copy = model.RotateCopy(fquat());  // Immutable
+fmat4 copy = model.RotateCopy(fquat());  // Immutable
 ```
 
 ### Projection for Graphics
 Camera projection:
 ```cpp
-fmat4_t<true> proj = fmat4_t<true>::fromPerspective(fov, aspect, near, far);
-fmat4_t<true> viewproj = proj * view;  // Compose
+fmat4 proj = fmat4::fromPerspective(fov, aspect, near, far);
+fmat4 viewproj = proj * view;  // Compose
 model.ClearTranslation();  // Reset position
 ```
 
 ### Advanced: Inverse and Orthogonalize
 For inverse transform:
 ```cpp
-fmat4_t inv = mat.InverseSRT();  // Faster for SRT
+fmat4 inv = mat.InverseSRT();  // Faster for SRT
 mat.Orthogonalize();  // Make orthogonal
 float det = mat.Determinant();  // 1 for rotation/scale
 mat.SanityCheck();  // Debug assert

@@ -2,9 +2,11 @@
 
 ## Overview
 
-The `fquat_t` class is a templated 4D quaternion implementation in the `xmath` namespace, supporting single-precision floating-point (`float`) components. It comes in two specializations:
-- **`fquat` (likely alias for `fquat_t<true>`)**: SIMD-optimized using SSE (`floatx4`, assumed `__m128`). Aligned to 16 bytes, pads with `m_W` (real part) and `m_XYZ` (imaginary vector). Faster for rotations but uses more memory and requires aligned allocation.
-- **`fquat` CPU variant (likely alias for `fquat_t<false>`)**: Standard CPU version with exactly 4 floats, no SIMD or padding. Portable but slower for bulk operations.
+The `fquat_t` class is a templated 4D quaternion implementation in the `xmath` namespace, supporting single-precision floating-point (`float`) 
+components. It comes in two specializations:
+- **`fquat` (likely alias for `fquat`)**: SIMD-optimized using SSE (`floatx4`, assumed `__m128`). Aligned to 16 bytes, pads with `m_W` (real part) 
+      and `m_XYZ` (imaginary vector). Faster for rotations but uses more memory and requires aligned allocation.
+- **`fquat` CPU variant (likely alias for `fquatd`)**: Standard CPU version with exactly 4 floats, no SIMD or padding. Portable but slower for bulk operations.
 
 Quaternions are ideal for 3D rotations, avoiding gimbal lock, and are used in graphics, physics, and animations. The class assumes right-hand rule for rotations and prioritizes performance with mutable (in-place, chainable) and immutable (copy-suffixed) operations.
 
@@ -27,21 +29,21 @@ Requires `xmath_flinear.h`. Emphasizes performance—use `const` for safety. Ass
 - Engine analogs: Unreal's `FQuat`, Godot's `Quaternion`, but standalone and templated.
 
 ### Performance Considerations
-- **SIMD (`fquat_t<true>`)**: ~4x faster for dot/Slerp on SSE hardware; ensure aligned memory.
-- **CPU (`fquat_t<false>`)**: Scalar ops; use for non-SSE platforms or memory saving.
+- **SIMD (`fquat`)**: ~4x faster for dot/Slerp on SSE hardware; ensure aligned memory.
+- **CPU (`fquatd`)**: Scalar ops; use for non-SSE platforms or memory saving.
 - **Interpolation**: `LerpFast` for quick approx; `SlerpAccurate` for precision.
-- Tip: Convert CPU to SIMD for hot paths: `fquat_t<true> simd_q(cpu_q);`.
+- Tip: Convert CPU to SIMD for hot paths: `fquat simd_q(cpu_q);`.
 
 ### Quick Start Example
 ```cpp
 #include "xmath_flinear.h"  // Assumes includes
 
 int main() {
-    xmath::fquat_t<true> q = xmath::fquat_t<true>::fromAxisAngle(fvec3::fromUnitX(), xmath::pi_over2_v);  // 90° around X
+    xmath::fquat q = xmath::fquat::fromAxisAngle(fvec3::fromUnitX(), xmath::pi_over2_v);  // 90° around X
     q.Normalize();  // Ensure unit
     fvec3 rotated = q * fvec3::fromUnitY();  // Rotate (0,1,0) to (0,0,1)
-    fquat_t<true> target = xmath::fquat_t<true>::fromIdentity();
-    fquat_t<true> interp = q.Slerp(target, 0.5f);  // Halfway
+    fquat target = xmath::fquat::fromIdentity();
+    fquat interp = q.Slerp(target, 0.5f);  // Halfway
 
     std::cout << q.ToString() << std::endl;  // e.g., "[0.707, 0, 0, 0.707]"
     return 0;
@@ -52,15 +54,15 @@ int main() {
 
 | Constructor | Description | Example |
 |-------------|-------------|---------|
-| `fquat_t()` | Default (uninitialized). | `fquat_t<true> q;` |
-| `fquat_t(float x, float y, float z, float w)` | From components (imaginary x,y,z; real w). | `fquat_t<true>(0,0,0,1);` // Identity |
-| `fquat_t(const fvec3& axis, radian angle)` | From axis-angle. | `fquat_t<true>(fvec3::fromUnitX(), xmath::pi_over2_v);` |
-| `fquat_t(const radian3& euler)` | From Euler angles (ZXY order). | `fquat_t<true>(radian3(0,0,xmath::pi_over2_v));` |
-| `fquat_t(const fvec3& from, const fvec3& to, const fvec3& up)` | From-to rotation. | `fquat_t<true>(start, end, up);` |
-| `fquat_t(const fvec3& forward, const fvec3& up)` | Look rotation. | `fquat_t<true>(dir, up);` |
+| `fquat_t()` | Default (uninitialized). | `fquat q;` |
+| `fquat_t(float x, float y, float z, float w)` | From components (imaginary x,y,z; real w). | `fquat(0,0,0,1);` // Identity |
+| `fquat_t(const fvec3& axis, radian angle)` | From axis-angle. | `fquat(fvec3::fromUnitX(), xmath::pi_over2_v);` |
+| `fquat_t(const radian3& euler)` | From Euler angles (ZXY order). | `fquat(radian3(0,0,xmath::pi_over2_v));` |
+| `fquat_t(const fvec3& from, const fvec3& to, const fvec3& up)` | From-to rotation. | `fquat(start, end, up);` |
+| `fquat_t(const fvec3& forward, const fvec3& up)` | Look rotation. | `fquat(dir, up);` |
 | `explicit fquat_t(const floatx4& reg)` (SIMD only) | From SSE register. | Low-level. |
-| `fquat_t(const fquat_t<!T_USE_SIMD_V>& other)` | Convert between SIMD/CPU. | `fquat_t<true> simd(cpu_q);` |
-| `fquat_t(const std::array<double, 4>& conversion)` | From doubles. | `fquat_t<true>(arr);` |
+| `fquat_t(const fquat_t<!T_USE_SIMD_V>& other)` | Convert between SIMD/CPU. | `fquat simd(cpu_q);` |
+| `fquat_t(const std::array<double, 4>& conversion)` | From doubles. | `fquat(arr);` |
 
 ## Assignment and Conversion Operators
 
@@ -187,7 +189,7 @@ Instance versions available (e.g., `this->Dot(other)`).
 ### Basic Quaternion Creation and Rotation
 Create and rotate:
 ```cpp
-fquat_t<true> q = fquat_t<true>::fromAxisAngle(fvec3::fromUnitY(), xmath::pi_over2_v);  // 90° around Y
+fquat q = fquat::fromAxisAngle(fvec3::fromUnitY(), xmath::pi_over2_v);  // 90° around Y
 fvec3 rotated = q * fvec3::fromUnitX();  // (1,0,0) to (0,0,-1)
 q.Inverse();  // Invert rotation
 ```
@@ -195,16 +197,16 @@ q.Inverse();  // Invert rotation
 ### Interpolation for Animation
 Smooth rotation:
 ```cpp
-fquat_t<true> start = fquat_t<true>::fromIdentity();
-fquat_t<true> end = fquat_t<true>::fromAxisAngle(fvec3::fromUnitZ(), xmath::pi_v);
-fquat_t<true> slerp = start.Slerp(end, 0.5f);  // Halfway
-fquat_t<true> squad = start.Squad(tangentA, end, tangentB, 0.5f);  // Cubic
+fquat start = fquat::fromIdentity();
+fquat end = fquat::fromAxisAngle(fvec3::fromUnitZ(), xmath::pi_v);
+fquat slerp = start.Slerp(end, 0.5f);  // Halfway
+fquat squad = start.Squad(tangentA, end, tangentB, 0.5f);  // Cubic
 ```
 
 ### From-To and Look Rotation
 Camera look-at:
 ```cpp
-fquat_t<true> look = fquat_t<true>::LookRotation(target - position, fvec3::fromUp());
+fquat look = fquat::LookRotation(target - position, fvec3::fromUp());
 fvec3 forward = look.Forward();  // Direction
 radian3 euler = look.ToEuler();  // To Euler
 ```
@@ -212,13 +214,13 @@ radian3 euler = look.ToEuler();  // To Euler
 ### Advanced: Delta and Log/Exp
 Compute delta rotation:
 ```cpp
-fquat_t<true> delta = start.Delta(end);
-fquat_t<true> log = delta.LogCopy();  // Log for advanced interp
-fquat_t<true> exp = log.ExpCopy();  // Exp back
+fquat delta = start.Delta(end);
+fquat log = delta.LogCopy();  // Log for advanced interp
+fquat exp = log.ExpCopy();  // Exp back
 ```
 
 ### Performance Tips
-- **SIMD**: Use `fquat_t<true>` for batched rotations; align arrays to 16 bytes.
+- **SIMD**: Use `fquat` for batched rotations; align arrays to 16 bytes.
 - **Normalization**: Call `NormalizeSafe()` once after construction/modification.
 - **Interpolation**: `LerpFast` for speed; `SlerpAccurate` for precision.
 - **Vector Rotation**: `q * v` is optimized; use for many vectors.

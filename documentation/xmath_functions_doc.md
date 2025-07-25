@@ -2,9 +2,13 @@
 
 ## Overview
 
-The `xmath_functions.h` header in the `xmath` namespace provides a collection of mathematical constants and functions for common numerical operations, focusing on floating-point arithmetic. It includes exponential, logarithmic, power, modulo, rounding, clamping, interpolation, and validation functions, all designed for performance in applications like game development, graphics, and scientific computing. The functions are templated where possible for flexibility with `float` or `double`, and many are `constexpr` or `inline noexcept` for compile-time evaluation and efficiency.
+The `xmath_functions.h` header in the `xmath` namespace provides a collection of mathematical constants and functions for common numerical operations, 
+focusing on floating-point arithmetic. It includes exponential, logarithmic, power, modulo, rounding, clamping, interpolation, and validation functions, 
+all designed for performance in applications like game development, graphics, and scientific computing. The functions are templated where possible for 
+flexibility with `float` or `double`, and many are `constexpr` or `inline noexcept` for compile-time evaluation and efficiency.
 
-This header is header-only and uses `std::numbers` for constants. It complements other `xmath` utilities (e.g., trigonometry in `xmath_trigonometry.h`), providing general-purpose math without dependencies on vectors or matrices.
+This header is header-only and uses `std::numbers` for constants. It complements other `xmath` utilities (e.g., trigonometry in `xmath_trigonometry.h`), 
+providing general-purpose math without dependencies on vectors or matrices.
 
 ### Key Features
 - **Constants**: Predefined mathematical values like e, ln(2), sqrt(2), and a float tolerance (0.001f).
@@ -18,7 +22,8 @@ This header is header-only and uses `std::numbers` for constants. It complements
 
 ### Comparison to Similar Libraries
 - Unlike GLM's math functions (which are vector-focused), `xmath_functions.h` is scalar-oriented with extras like `ModFX` (modulo with quotient output) and `SolvedQuadraticRoots`.
-- Compared to Eigen's utilities, it's lighter and C++20-focused (e.g., concepts for templates), with game-friendly features like `flt_tol_v` for approximate comparisons. Eigen integrates better with matrices, but this header is standalone.
+- Compared to Eigen's utilities, it's lighter and C++20-focused (e.g., concepts for templates), with game-friendly features like `flt_tol_v` 
+     for approximate comparisons. Eigen integrates better with matrices, but this header is standalone.
 - Engine analogs: Similar to Unity's `Mathf` or Unreal's `FMath`, but more templated and constexpr-capable for modern C++.
 
 ### Usage Notes

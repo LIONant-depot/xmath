@@ -2,13 +2,15 @@
 
 ## Overview
 
-The `xmath_trigonometry.h` header in the `xmath` namespace provides type-safe angle representations and trigonometric functions optimized for mathematical computations in applications like game development, graphics, and physics simulations. It defines:
+The `xmath_trigonometry.h` header in the `xmath` namespace provides type-safe angle representations and trigonometric functions optimized for mathematical computations 
+in applications like game development, graphics, and physics simulations. It defines:
 - **Angle Types**: `radian` (float radians), `degree` (float degrees), `dradian` (double radians), `ddegree` (double degrees) as strongly-typed wrappers.
 - **Trigonometric Functions**: Standard functions (`Sin`, `Cos`, `Tan`, `Asin`, `Acos`, `ATan`, `ATan2`) and utilities (`SinCos`, `ModAngle`, `ModAngle2`, `MinAngleDiff`, `LerpAngle`).
 - **Constants**: Convenient aliases for π and related values (`pi_v`, `pi2_v`, `pi_over2_v`, `pi_over4_v`).
 - **Conversions**: Templates `DegToRad` and `RadToDeg`, plus user-defined literals (e.g., `90.0_xdeg`, `1.0_xrad`).
 
-This header is header-only, requiring no external dependencies beyond the C++ standard library (`<numbers>` for π). It emphasizes type safety, performance, and usability, avoiding SIMD for portability but providing inline functions for efficiency.
+This header is header-only, requiring no external dependencies beyond the C++ standard library (`<numbers>` for π). It emphasizes type safety, performance, and usability, 
+avoiding SIMD for portability but providing inline functions for efficiency.
 
 ### Key Features
 - **Strong Typing**: `radian` and `degree` prevent mixing units; conversions via `getRadians()`, `getDegrees()`, or constructors.
@@ -20,7 +22,8 @@ This header is header-only, requiring no external dependencies beyond the C++ st
 
 ### Comparison to Similar Libraries
 - Unlike GLM's trigonometric functions (which operate on raw floats or `glm::vecN`), `xmath` uses `radian`/`degree` for type safety, similar to `radian3`'s approach but for scalar angles.
-- Compared to Eigen's math utilities, `xmath_trigonometry.h` is lighter, avoiding matrix dependencies, and provides game-focused features like `MinAngleDiff` and literals. Eigen's functions are more integrated with its matrix types.
+- Compared to Eigen's math utilities, `xmath_trigonometry.h` is lighter, avoiding matrix dependencies, and provides game-focused features like `MinAngleDiff` and 
+      literals. Eigen's functions are more integrated with its matrix types.
 - Engine analogs: Similar to Unity's `Mathf` (but type-safe with `radian`) or Unreal's `FMath`, but standalone and more explicit with angle types.
 
 ### Usage Notes
@@ -38,8 +41,8 @@ int main() {
     xmath::radian angle = 90.0_xdeg.getRadians();  // Convert 90° to π/2 radians
     float s = xmath::Sin(angle);  // sin(π/2) = 1.0
     float c = xmath::Cos(angle);  // cos(π/2) ≈ 0.0
-    xmath::radian target = xmath::pi_v;  // 180°
-    xmath::radian diff = xmath::MinAngleDiff(angle, target);  // -π/2
+    auto target = xmath::pi_v;  // 180°
+    auto diff   = xmath::MinAngleDiff(angle, target);  // -π/2
 
     std::cout << "Sine: " << s << ", Diff: " << float(diff) << " rad" << std::endl;
     return 0;

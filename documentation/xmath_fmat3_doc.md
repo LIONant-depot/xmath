@@ -2,11 +2,13 @@
 
 ## Overview
 
-The `fmat3_t` class is a templated 3x3 matrix implementation in the `xmath` namespace, using single-precision floating-point (`float`) components in column-major order. It supports two specializations:
-- **SIMD Variant (`fmat3_t<true>`)**: Optimized with SSE (`floatx4` columns, padded to 3x4), aligned to 16 bytes for faster operations like multiplication.
-- **CPU Variant (`fmat3_t<false>`)**: Compact 3x3 layout without padding, for memory efficiency or non-SSE platforms.
+The `fmat3_t` class is a templated 3x3 matrix implementation in the `xmath` namespace, using single-precision floating-point (`float`) components in column-major order. 
+It supports two specializations:
+- **SIMD Variant (`fmat3`)**: Optimized with SSE (`floatx4` columns, padded to 3x4), aligned to 16 bytes for faster operations like multiplication.
+- **CPU Variant (`fmat3d`)**: Compact 3x3 layout without padding, for memory efficiency or non-SSE platforms.
 
-Designed for linear transformations like rotation and scaling (no translation; use `fmat4_t` for affine). Assumes right-hand rule for rotations. Prioritizes performance with mutable (in-place, chainable) and immutable (Copy-suffixed) operations. Uninitialized by default; use `fromIdentity()` or setup methods.
+Designed for linear transformations like rotation and scaling (no translation; use `fmat4_t` for affine). Assumes right-hand rule for rotations. 
+Prioritizes performance with mutable (in-place, chainable) and immutable (Copy-suffixed) operations. Uninitialized by default; use `fromIdentity()` or setup methods.
 
 ### Key Features
 - **Column-Major Storage**: Internal layout, but accessors (`()(row, col)`) feel row-major.
@@ -22,13 +24,14 @@ Designed for linear transformations like rotation and scaling (no translation; u
 Requires `xmath_flinear.h`. Column-major for compatibility with OpenGL/DirectX conventions.
 
 ### Comparison to Similar Classes
-- Like GLM's `glm::mat3` but with SIMD specialization, mutable chaining (e.g., `RotateX(angle)`), and safety checks like `SanityCheck`. GLM is more general-purpose; this is optimized for 3D transforms.
+- Like GLM's `glm::mat3` but with SIMD specialization, mutable chaining (e.g., `RotateX(angle)`), and safety checks like `SanityCheck`. GLM is more general-purpose; 
+      this is optimized for 3D transforms.
 - Similar to Eigen's `Eigen::Matrix3f` with better game features (e.g., `ExtractRotation` to quaternion, direction vectors); SIMD variant rivals Eigen's but with easier setup from Euler/quat.
 - Engine analogs: Unreal's `FMatrix` (but 4x4), Godot's `Basis` (3x3), but standalone and templated.
 
 ### Performance Considerations
-- **SIMD (`fmat3_t<true>`)**: Faster mul/transform (~4x on SSE); align instances to 16 bytes.
-- **CPU (`fmat3_t<false>`)**: Smaller size (36 vs 48 bytes); use for embedded or non-SSE.
+- **SIMD (`fmat3`)**: Faster mul/transform (~4x on SSE); align instances to 16 bytes.
+- **CPU (`fmat3d`)**: Smaller size (36 vs 48 bytes); use for embedded or non-SSE.
 - **Chaining**: Mutable methods return `*this` for fluency: `mat.setupIdentity().RotateX(angle).Scale(s);`.
 - **Inverse/Det**: Assume invertible; check det !=0.
 - Tip: Convert CPU to SIMD for hot paths: `fmat3_t<true> simd_mat(cpu_mat);`.
@@ -38,7 +41,7 @@ Requires `xmath_flinear.h`. Column-major for compatibility with OpenGL/DirectX c
 #include "xmath_flinear.h"  // Assumes includes
 
 int main() {
-    xmath::fmat3_t<true> mat = xmath::fmat3_t<true>::fromIdentity();
+    xmath::fmat3 mat = xmath::fmat3::fromIdentity();
     mat.RotateX(xmath::pi_over2_v);  // 90° around X
     fvec3 transformed = mat * fvec3::fromUnitY();  // (0,1,0) to (0,0,1)
     fquat rot = mat.ExtractRotation();  // To quat
@@ -52,14 +55,14 @@ int main() {
 
 | Constructor | Description | Example |
 |-------------|-------------|---------|
-| `fmat3_t()` | Default (uninitialized). | `fmat3_t<true> mat;` |
-| `fmat3_t(float diagonal)` | Diagonal matrix. | `fmat3_t<true>(2.0f);` // Scale 2 |
-| `fmat3_t(const std::array<float, 9>& arr)` | From array (col-major). | `std::array<float,9> a = {1,0,0,0,1,0,0,0,1}; fmat3_t<true>(a);` |
+| `fmat3_t()` | Default (uninitialized). | `fmat3 mat;` |
+| `fmat3_t(float diagonal)` | Diagonal matrix. | `fmat3(2.0f);` // Scale 2 |
+| `fmat3_t(const std::array<float, 9>& arr)` | From array (col-major). | `std::array<float,9> a = {1,0,0,0,1,0,0,0,1}; fmat3(a);` |
 | `fmat3_t(std::span<const float, 9> span)` | From span (col-major). | Similar to array. |
-| `fmat3_t(const fquat& q)` | From quaternion rotation. | `fmat3_t<true>(quat);` |
-| `fmat3_t(const radian3& Euler)` | From Euler angles (ZXY). | `fmat3_t<true>(euler);` |
-| `fmat3_t(const fquat& rotation, const fvec3& scale)` | From rotation + scale. | `fmat3_t<true>(q, s);` |
-| `explicit fmat3_t(const fmat3_t<!T_USE_SIMD_V>& other)` | Convert SIMD/CPU. | `fmat3_t<true>(cpu_mat);` |
+| `fmat3_t(const fquat& q)` | From quaternion rotation. | `fmat3(quat);` |
+| `fmat3_t(const radian3& Euler)` | From Euler angles (ZXY). | `fmat3(euler);` |
+| `fmat3_t(const fquat& rotation, const fvec3& scale)` | From rotation + scale. | `fmat3(q, s);` |
+| `explicit fmat3_t(const fmat3_t<!T_USE_SIMD_V>& other)` | Convert SIMD/CPU. | `fmat3(cpu_mat);` |
 
 ## Static Constructors
 
@@ -190,7 +193,7 @@ int main() {
 ### Basic Matrix Creation and Transform
 Create rotation matrix:
 ```cpp
-fmat3_t<true> mat = fmat3_t<true>::fromRotationX(xmath::pi_over2_v);  // 90° X
+fmat3 mat = fmat3::fromRotationX(xmath::pi_over2_v);  // 90° X
 fvec3 transformed = mat * fvec3::fromUnitY();  // (0,1,0) to (0,0,1)
 mat.Transpose();  // Transpose in-place
 ```
@@ -198,7 +201,7 @@ mat.Transpose();  // Transpose in-place
 ### Chaining Operations
 Build complex transform:
 ```cpp
-fmat3_t<true> mat;
+fmat3 mat;
 mat.setupIdentity().RotateX(xmath::pi_over4_v).Scale(2.0f);  // Rotate then scale
 fquat rot = mat.ExtractRotation();  // To quat
 fvec3 scale = mat.ExtractScale();  // (2,2,2)
@@ -209,7 +212,7 @@ Compose rotations:
 ```cpp
 mat.Rotate(fquat::fromAxisAngle(fvec3::fromUnitY(), xmath::pi_over2_v));  // Post
 mat.PreRotate(fquat::fromAxisAngle(fvec3::fromUnitX(), xmath::pi_over4_v));  // Pre
-fmat3_t copy = mat.RotateCopy(fquat());  // Immutable
+fmat3 copy = mat.RotateCopy(fquat());  // Immutable
 ```
 
 ### Validation and Directions
@@ -225,7 +228,7 @@ mat.SanityCheck();  // Assert in debug
 ### Advanced: Inverse and Orthogonalize
 For physics:
 ```cpp
-fmat3_t inv = mat.Inverse();  // Inverse copy
+fmat3 inv = mat.Inverse();  // Inverse copy
 mat.Orthogonalize();  // Make orthogonal
 float det = mat.Determinant();  // 1 for rotation
 ```

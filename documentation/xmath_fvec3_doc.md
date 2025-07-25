@@ -2,14 +2,21 @@
 
 ## Overview
 
-The `fvec3_t` class is a templated 3D vector implementation in the `xmath` namespace, supporting single-precision floating-point (`float`) components. It comes in two specializations:
-- **`fvec3` (alias for `fvec3_t<true>`)**: SIMD-optimized using SSE instructions (via `floatx4`, assumed to be `__m128`). Aligned to 16 bytes, pads with a dummy `m_W` component (ignore its value). This variant is faster for vector operations but consumes extra memory (4 floats instead of 3) and requires aligned allocation.
-- **`fvec3d` (alias for `fvec3_t<false>`)**: Standard CPU version with exactly 3 floats, no SIMD or padding. Portable but slower for bulk operations.
+The `fvec3_t` class is a templated 3D vector implementation in the `xmath` namespace, supporting single-precision floating-point 
+(`float`) components. It comes in two specializations:
+- **`fvec3` (alias for `fvec3_t<true>`)**: SIMD-optimized using SSE instructions 
+     (via `floatx4`, assumed to be `__m128`). Aligned to 16 bytes, pads with a dummy `m_W` component 
+     (ignore its value). This variant is faster for vector operations but consumes extra memory 
+     (4 floats instead of 3) and requires aligned allocation.
+- **`fvec3d` (alias for `fvec3_t<false>`)**: Standard CPU version with exactly 3 floats, no SIMD or padding. 
+     Portable but slower for bulk operations.
 
-Designed for performance-critical applications like 3D graphics, physics simulations, and game engines. It extends `fvec2`'s features to 3D, adding cross products, Euler angles, and plane projections.
+Designed for performance-critical applications like 3D graphics, physics simulations, and game engines. 
+It extends `fvec2`'s features to 3D, adding cross products, Euler angles, and plane projections.
 
 ### Key Features
-- **SIMD vs. CPU Variants**: Use `fvec3` for speed in loops; `fvec3d` for memory efficiency or non-SSE platforms. Conversions between them are supported.
+- **SIMD vs. CPU Variants**: Use `fvec3` for speed in loops; `fvec3d` for memory efficiency or non-SSE platforms. 
+     Conversions between them are supported.
 - **Uninitialized Default**: No initialization for speed; always set values explicitly.
 - **Mutable/Immutable Ops**: In-place methods (e.g., `Normalize()`) return `*this` for chaining; copies suffixed `_Copy`.
 - **Constexpr/Inline**: Many operations are `constexpr` or `inline` for optimization.
@@ -26,7 +33,8 @@ Requires `xmath_fvector.h`. Emphasizes performance—use `const` for safety.
 - Engine analogs: Unreal's `FVector`, Godot's `Vector3`, but standalone and templated.
 
 ### Performance Considerations
-- **SIMD (`fvec3`)**: Leverages SSE for dot/cross/normalize (~4x faster on compatible hardware). Ensure aligned memory (e.g., via `alignas(16)` or allocators).
+- **SIMD (`fvec3`)**: Leverages SSE for dot/cross/normalize (~4x faster on compatible hardware). 
+     Ensure aligned memory (e.g., via `alignas(16)` or allocators).
 - **CPU (`fvec3d`)**: Scalar ops; use for embedded systems or when alignment is an issue.
 - Benchmarks: In loops, SIMD excels for batched vectors; test with your workload.
 - Tip: Convert `fvec3d` to `fvec3` for hot paths: `fvec3 simd_vec(cpu_vec);`.
@@ -203,7 +211,7 @@ Example:
 fvec3 v(1, 2, 3);
 fvec2 xy = v.xy();  // (1, 2)
 fvec3 zyx = v.zyx();  // (3, 2, 1)
-fvec4 xyzw = v.xyzx();  // (1, 2, 3, 1) (W ignored in source)
+fvec4 xyzw = v.xyzx();  // (1, 2, 3, 1)
 ```
 
 ## Operator Overloads
@@ -242,7 +250,7 @@ if (velocity.isNormalized()) { /* Check */ }
 Camera direction:
 ```cpp
 fvec3 forward = fvec3::fromForward();
-forward.RotateY(XMATH_PI / 4.0f);  // 45° yaw
+forward.RotateY(xmath::pi_over4_v);  // 45° yaw
 auto [pitch, yaw] = forward.PitchYaw();
 fvec3 reflected = forward.Reflection(fvec3::fromUp());  // Bounce off ground
 ```

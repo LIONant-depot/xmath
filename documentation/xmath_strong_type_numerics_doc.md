@@ -2,12 +2,16 @@
 
 ## Overview
 
-The `xmath_strong_type_numberics.h` header in the `xmath` namespace defines a CRTP (Curiously Recurring Template Pattern) base class `strong_typing_numerics_t` for creating strongly-typed numeric wrappers. This template enables type-safe arithmetic on custom numeric types (e.g., `radian`, `degree`) while inheriting standard operator behavior from the underlying numeric type `T` (e.g., `float`, `double`, `int`).
+The `xmath_strong_type_numberics.h` header in the `xmath` namespace defines a CRTP (Curiously Recurring Template Pattern) base class `strong_typing_numerics_t` 
+for creating strongly-typed numeric wrappers. This template enables type-safe arithmetic on custom numeric types (e.g., `radian`, `degree`) while inheriting 
+standard operator behavior from the underlying numeric type `T` (e.g., `float`, `double`, `int`).
 
-The class promotes safety by preventing implicit mixing of unrelated numeric types (e.g., adding radians to degrees), while supporting common arithmetic, compound assignment, unary negation (for signed types), and comparisons via the spaceship operator. It is designed for performance-critical applications like math libraries in games or simulations, where type errors can be costly.
+The class promotes safety by preventing implicit mixing of unrelated numeric types (e.g., adding radians to degrees), while supporting common arithmetic, 
+compound assignment, unary negation (for signed types), and comparisons via the spaceship operator. It is designed for performance-critical applications 
+like math libraries in games or simulations, where type errors can be costly.
 
 ### Key Features
-- **CRTP Design**: Derived classes (e.g., `radian_t<T>`) inherit operators without virtual overhead.
+- **CRTP Design**: Derived classes (e.g., `radian`) inherit operators without virtual overhead.
 - **Type Safety**: Wrappers like `radian` ensure operations are only between compatible types.
 - **Arithmetic Support**: Binary operators (+, -, *, /) with scalars and same-type instances; compound assignments (+=, -=, *=, /=).
 - **Unary Negation**: For signed `T` (e.g., `float`, not `unsigned int`).

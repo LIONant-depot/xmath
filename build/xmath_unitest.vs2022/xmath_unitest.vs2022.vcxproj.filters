@@ -139,7 +139,7 @@
     <None Include="..\..\documentation\xmath_fvec4_doc.md">
       <Filter>Documentation</Filter>
     </None>
-    <None Include="..\..\documentation\xmath_quaternion_doc,md">
+    <None Include="..\..\documentation\xmath_quaternion_doc.md">
       <Filter>Documentation</Filter>
     </None>
     <None Include="..\..\documentation\xmath_radian3_doc.md">

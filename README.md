@@ -1,6 +1,7 @@
 ﻿# xmath: Fast C++ Math Library for Games & Graphics
 
-**xmath** is a simple, header-only C++ library for 3D math in games, graphics, and simulations. Made for C++20, it includes vectors, matrices, quaternions, angles, trig functions, and more. Focuses on speed, safety, and easy use—no extras or setup needed.
+**xmath** is a simple, header-only C++ library for 3D math in games, graphics, and simulations. Made for C++20, it includes vectors, matrices, quaternions, angles, trig functions, and more. 
+Focuses on speed, safety, and easy use—no extras or setup needed.
 
 ## Key Features
 - **Vectors & Matrices**: 2D/3D/4D vectors (`fvec2`, `fvec3`, `fvec4`) and 3x3/4x4 matrices (`fmat3`, `fmat4`). Choose SIMD or CPU mode for speed or small size.
@@ -20,7 +21,7 @@ xmath helps you write better code faster:
 
 - **No Setup Hassle**: Header-only—no builds or external libs. Works anywhere C++20 runs.
 - **Custom Speed**: SIMD for quick math, CPU for low memory. Switch as needed.
-- **Fewer Bugs**: Types like `radian` catch errors early; chaining makes code clean.
+- **Fewer Bugs**: Plenty of asserts, and safe types like `radian` catch errors early; chaining makes code clean.
 - **Game-Ready**: Tools for cameras, rotations, projections—perfect for engines.
 - **Modern & Efficient**: C++20 features like constexpr for safe, fast code.
 - **Great Docs**: Each part has clear guides, examples, and tables.

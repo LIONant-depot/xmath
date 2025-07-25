@@ -169,7 +169,7 @@
     <None Include="..\..\documentation\xmath_fvec2_doc.md" />
     <None Include="..\..\documentation\xmath_fvec3_doc.md" />
     <None Include="..\..\documentation\xmath_fvec4_doc.md" />
-    <None Include="..\..\documentation\xmath_quaternion_doc,md" />
+    <None Include="..\..\documentation\xmath_quaternion_doc.md" />
     <None Include="..\..\documentation\xmath_radian3_doc.md" />
     <None Include="..\..\documentation\xmath_strong_type_numerics_doc.md" />
     <None Include="..\..\documentation\xmath_trigonometry_doc.md" />

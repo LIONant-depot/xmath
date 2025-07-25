@@ -2,14 +2,17 @@
 
 ## Overview
 
-The `radian3` struct in the `xmath` namespace represents a 3D rotation using Euler angles in the `radian` type, a specialized wrapper for `float` values representing angles in radians. The angles are:
+The `radian3` struct in the `xmath` namespace represents a 3D rotation using Euler angles in the `radian` type, a specialized wrapper for `float` 
+values representing angles in radians. The angles are:
 - **Pitch**: Rotation around the X-axis.
 - **Yaw**: Rotation around the Y-axis.
 - **Roll**: Rotation around the Z-axis.
 
-The rotation order is ZXY (Roll, Pitch, Yaw), suitable for applications like aerospace, robotics, and game development (e.g., heading-attitude-bank). This class is lightweight, using three `radian` values (internally `float`) without SIMD or special alignment, prioritizing minimal memory footprint over computational speed.
+The rotation order is ZXY (Roll, Pitch, Yaw), suitable for applications like aerospace, robotics, and game development (e.g., heading-attitude-bank). 
+This class is lightweight, using three `radian` values (internally `float`) without SIMD or special alignment, prioritizing minimal memory footprint over computational speed.
 
-Euler angles are intuitive but prone to **gimbal lock** (loss of a degree of freedom when pitch is near ±π/2). `radian3` provides utilities like `hasGimbalLock()` and `MinAngleDiff()` to mitigate such issues, making it ideal for scenarios where memory efficiency or human-readable angles are preferred over quaternion or matrix representations.
+Euler angles are intuitive but prone to **gimbal lock** (loss of a degree of freedom when pitch is near ±π/2). `radian3` provides utilities like `hasGimbalLock()` 
+and `MinAngleDiff()` to mitigate such issues, making it ideal for scenarios where memory efficiency or human-readable angles are preferred over quaternion or matrix representations.
 
 ### Key Features
 - **Compact Storage**: Three `radian` values (~12 bytes), no padding.
@@ -24,7 +27,8 @@ Requires `xmath.h`. For performance-critical paths, convert to `fquat` (quaterni
 
 ### Comparison to Similar Classes
 - Unlike GLM's `glm::vec3` for Euler angles, `radian3` uses the `radian` type with dedicated angle operations (e.g., `ModAngle()`, `MinAngleDiff()`), tailored for rotations.
-- Compared to Eigen's `Eigen::AngleAxis`, `radian3` is lighter (no matrix dependencies) and game-focused with features like `hasGimbalLock()`. Eigen integrates better with linear algebra, but `radian3` excels in angle manipulation and memory efficiency.
+- Compared to Eigen's `Eigen::AngleAxis`, `radian3` is lighter (no matrix dependencies) and game-focused with features like `hasGimbalLock()`. 
+       Eigen integrates better with linear algebra, but `radian3` excels in angle manipulation and memory efficiency.
 - Engine analogs: Similar to Unity's `Transform.eulerAngles` (but using `radian`) or Unreal's `FRotator`, but standalone with advanced wrapping and difference calculations.
 
 ### Usage Notes
@@ -38,7 +42,7 @@ Requires `xmath.h`. For performance-critical paths, convert to `fquat` (quaterni
 #include "xmath.h"  // Includes radian3, radian, and xmath::pi_v
 
 int main() {
-    xmath::radian3 rot(xmath::pi_v / radian(2.0f), radian(0.0f), radian(0.0f));  // 90° pitch
+    xmath::radian3 rot(xmath::pi_over2_v, radian(0.0f), radian(0.0f));  // 90° pitch
     if (rot.hasGimbalLock()) {
         // Convert to fquat (assumed external toFquat())
     }
@@ -132,8 +136,8 @@ Direct access is allowed, but prefer methods for operations to maintain type saf
 ### Basic Rotation Composition
 Combine rotations for a camera orientation:
 ```cpp
-xmath::radian3 cam(xmath::pi_v / radian(4.0f), radian(0), radian(0));  // 45° pitch
-xmath::radian3 turn(radian(0), xmath::pi_v / radian(2.0f), radian(0));  // 90° yaw
+xmath::radian3 cam(xmath::pi_over4_v, radian(0), radian(0));  // 45° pitch
+xmath::radian3 turn(radian(0), xmath::pi_over2_v, radian(0));  // 90° yaw
 cam += turn;  // Combine
 cam.ModAngle();  // Wrap to [-π, π]
 if (!cam.isValid()) {
@@ -144,22 +148,22 @@ if (!cam.isValid()) {
 ### Handling Gimbal Lock
 Mitigate gimbal lock in a flight simulator:
 ```cpp
-xmath::radian3 plane(xmath::pi_v / radian(2.0f) + radian(0.01f), radian(0), radian(0));  // Near 90° pitch
+xmath::radian3 plane(xmath::pi_over2_v + radian(0.01f), radian(0), radian(0));  // Near 90° pitch
 if (plane.hasGimbalLock()) {
     // Convert to fquat (assumed external method, e.g., toFquat())
     // Use quaternion for rotation to avoid lock
 }
 xmath::radian3 safe = plane.ClampCopy(
-    -xmath::pi_v / radian(2.0f) + radian(0.01f),
-    xmath::pi_v / radian(2.0f) - radian(0.01f)
+    -xmath::pi_over2_v + radian(0.01f),
+     xmath::pi_over2_v - radian(0.01f)
 );  // Avoid lock
 ```
 
 ### Interpolation for Animation
 Smoothly transition an object's rotation:
 ```cpp
-xmath::radian3 start(radian(0), radian(0), radian(0));
-xmath::radian3 end(xmath::pi_v, xmath::pi_v / radian(2.0f), radian(0));
+xmath::radian3 start(xmath::radian3::fromZero());
+xmath::radian3 end(xmath::pi_v, xmath::pi_over2_v, radian(0));
 for (float t = 0; t <= 1; t += 0.1f) {
     xmath::radian3 frame = start.Lerp(t, end);
     frame.Normalize();  // Wrap to [-π, π]
@@ -172,7 +176,7 @@ Smooth character turning to face a target:
 ```cpp
 xmath::radian3 current(radian(0), radian(3.0f) * xmath::pi_v, radian(0));  // Overwrapped yaw (3π)
 current.ModAngle2();  // Yaw = π
-xmath::radian3 target(radian(0), xmath::pi_v / radian(2.0f), radian(0));  // 90° yaw
+xmath::radian3 target(radian(0), xmath::pi_over2_v, radian(0));  // 90° yaw
 xmath::radian3 diff = current.MinAngleDiff(target);  // Yaw diff = -π/2
 current += diff * 0.1f;  // Turn 10% per frame
 current.ModAngle();  // Keep in [-π, π]
@@ -220,7 +224,7 @@ Consider a character facing yaw = 3π (overwrapped) needing to turn to yaw = π/
 ```cpp
 xmath::radian3 current(radian(0), radian(3.0f) * xmath::pi_v, radian(0));  // Yaw = 3π
 current.ModAngle2();  // Yaw = π
-xmath::radian3 target(radian(0), xmath::pi_v / radian(2.0f), radian(0));  // Yaw = π/2
+xmath::radian3 target(radian(0), xmath::pi_over2_v, radian(0));  // Yaw = π/2
 xmath::radian3 diff = current.MinAngleDiff(target);  // Yaw diff = -π/2
 current += diff * 0.1f;  // Turn -π/20 per frame
 current.ModAngle();  // Stay in [-π, π]
