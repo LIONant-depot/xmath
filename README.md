@@ -12,8 +12,7 @@
 - **Graphics Helpers**: Look-at, billboard, perspective/ortho projections, from-to rotations, vector transforms.
 - **No Dependencies**: Pure C++20, header-only—drop in and go.
 - **MIT License**: Free to use, modify, and distribute.
-- **Documentation**: Read From here
-- **Unit-Tested**: Test functions to make sure everything is working...
+- **doubles, floats, and half-floats**: WIP
 
 ## Why Choose xmath?
 xmath stands out for developers seeking a lightweight, powerful math toolkit:
@@ -25,6 +24,8 @@ xmath stands out for developers seeking a lightweight, powerful math toolkit:
 - **Modern C++**: Leverages C++20 features (constexpr, concepts) for compile-time safety and efficiency.
 - **Comprehensive Documentation**: Each class/header has detailed docs with examples, tables, and tutorials (generated for clarity).
 - **MIT Licensed**: Open-source freedom without restrictions—use in commercial projects hassle-free.
+- **Unit-Tested**: Test functions to make sure everything is working...
+- **Sub-headers**: To only get what you need.
 
 If you're tired of bloated libraries or raw float errors, xmath streamlines your math code while boosting performance. Join developers building faster, safer apps—try it today!
 
