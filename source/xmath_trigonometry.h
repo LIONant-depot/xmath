@@ -125,9 +125,4 @@ namespace xmath
     template<std::floating_point T> inline      radian_t<T>     Asin            ( T x )                                             noexcept;
     template<std::floating_point T> inline      radian_t<T>     Acos            ( T x )                                             noexcept;
 }
-
-
-
-
-
 #endif

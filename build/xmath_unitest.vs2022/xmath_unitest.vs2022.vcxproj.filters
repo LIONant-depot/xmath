@@ -12,6 +12,9 @@
     <Filter Include="Unit-Tests">
       <UniqueIdentifier>{8267a244-bbc8-4b94-a92c-34a5d30bfd4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Documentation">
+      <UniqueIdentifier>{4a20dede-b0d8-4ea1-9da0-2a79bfb17390}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\xmath_basics.h">
@@ -116,5 +119,38 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\documentation\xmath_fmat3_doc.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\documentation\xmath_fmat4_doc.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\documentation\xmath_functions_doc.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\documentation\xmath_fvec2_doc.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\documentation\xmath_fvec3_doc.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\documentation\xmath_fvec4_doc.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\documentation\xmath_quaternion_doc,md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\documentation\xmath_radian3_doc.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\documentation\xmath_strong_type_numerics_doc.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\documentation\xmath_trigonometry_doc.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\README.md" />
   </ItemGroup>
 </Project>
