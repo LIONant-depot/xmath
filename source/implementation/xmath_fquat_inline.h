@@ -297,6 +297,24 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
+    // fquat_t
+    //------------------------------------------------------------------------------
+    //
+    // Constructor from float array.
+    //
+    // Params:
+    //  conversion - Array of 4 floats.
+    //
+    template <bool V >
+    constexpr fquat_t<V>::fquat_t(const std::array<float, 4>& conversion) noexcept
+    {
+        this->m_X = conversion[0];          
+        this->m_Y = conversion[1];
+        this->m_Z = conversion[2];
+        this->m_W = conversion[3];
+    }
+
+    //------------------------------------------------------------------------------
     // operator std::array<double,4>
     //------------------------------------------------------------------------------
     //
@@ -309,6 +327,21 @@ namespace xmath
     constexpr fquat_t<V>::operator std::array<double, 4>() const noexcept
     {
         return { static_cast<double>(this->m_X), static_cast<double>(this->m_Y), static_cast<double>(this->m_Z), static_cast<double>(this->m_W) };
+    }
+
+    //------------------------------------------------------------------------------
+    // operator std::array<float,4>
+    //------------------------------------------------------------------------------
+    //
+    // Converts to float array.
+    //
+    // Returns:
+    //  {x, y, z, w} as doubles.
+    //
+    template <bool V >
+    constexpr fquat_t<V>::operator std::array<float, 4>() const noexcept
+    {
+        return { this->m_X, this->m_Y, this->m_Z, this->m_W };
     }
 
     //------------------------------------------------------------------------------

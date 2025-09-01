@@ -66,11 +66,13 @@ namespace xmath
         constexpr explicit              fquat_t                (const floatx4& reg)                             noexcept requires T_USE_SIMD_V;
         constexpr                       fquat_t                (const fquat_t<!T_USE_SIMD_V>& other)            noexcept;
         constexpr                       fquat_t                (const std::array<double, 4>& conversion)        noexcept;
+        constexpr                       fquat_t                (const std::array<float, 4>& conversion)         noexcept;
 
         // Assignment and conversion operators
+        constexpr                       operator std::array<float, 4> ()                                const   noexcept;
         constexpr                       operator std::array<double, 4> ()                               const   noexcept;
         inline                          operator std::string    ()                                      const   noexcept;
-        std::string                     ToString                (void)                                  const   noexcept;
+        inline              std::string ToString                (void)                                  const   noexcept;
         template <bool V >
         inline friend std::ostream&     operator<<              (std::ostream& os, const fquat_t<V>& quat)      noexcept;
 

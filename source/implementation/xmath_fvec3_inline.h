@@ -199,6 +199,27 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
+    // Constructs from an array of doubles, casting to float.
+    //
+    // Parameters:
+    //  Conversion - The array with x, y, z values.
+    //
+    template <bool V >
+    constexpr fvec3_t<V>::fvec3_t(const std::array<float, 3>& Conversion) noexcept
+    {
+        if constexpr (V)
+        {
+            this->m_XYZW = _mm_set_ps(1.0f, Conversion[2], Conversion[1], Conversion[0]);
+        }
+        else
+        {
+            this->m_X = Conversion[0];
+            this->m_Y = Conversion[1];
+            this->m_Z = Conversion[2];
+        }
+    }
+
+    //------------------------------------------------------------------------------
     // Conversion to array of doubles.
     //
     // Returns:
@@ -208,6 +229,18 @@ namespace xmath
     constexpr fvec3_t<V>::operator std::array<double, 3>() const noexcept
     {
         return { static_cast<double>(this->m_X), static_cast<double>(this->m_Y), static_cast<double>(this->m_Z) };
+    }
+
+    //------------------------------------------------------------------------------
+    // Conversion to array of floats.
+    //
+    // Returns:
+    //  An array with x, y, z as doubles.
+    //
+    template <bool V >
+    constexpr fvec3_t<V>::operator std::array<float, 3>() const noexcept
+    {
+        return { this->m_X, this->m_Y, this->m_Z };
     }
 
     //------------------------------------------------------------------------------

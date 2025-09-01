@@ -58,6 +58,18 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
+    // Constructs a vector from an array of float.
+    //
+    // Parameters:
+    //  Conversion - The array with x and y values.
+    //
+    constexpr fvec2::fvec2(const std::array<float, 2>& Conversion) noexcept
+    {
+        m_X = Conversion[0];
+        m_Y = Conversion[1];
+    }
+
+    //------------------------------------------------------------------------------
     // Conversion to array of doubles.
     //
     // Returns:
@@ -66,6 +78,17 @@ namespace xmath
     constexpr fvec2::operator std::array<double,2> (void) const noexcept
     {
         return { static_cast<double>(m_X), static_cast<double>(m_Y) };
+    }
+
+    //------------------------------------------------------------------------------
+    // Conversion to array of doubles.
+    //
+    // Returns:
+    //  An array with x and y as doubles.
+    //
+    constexpr fvec2::operator std::array<float, 2>(void) const noexcept
+    {
+        return { m_X, m_Y };
     }
 
     //------------------------------------------------------------------------------

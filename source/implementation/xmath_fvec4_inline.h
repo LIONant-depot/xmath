@@ -89,10 +89,50 @@ namespace xmath
     // Parameters:
     //  Span - The span containing x, y, z, w.
     //
-    inline fvec4::fvec4(std::span<float> Span) noexcept
+    inline fvec4::fvec4(std::span<const float> Span) noexcept
     {
         assert(Span.size() >= 4);
         m_XYZW = _mm_loadu_ps(Span.data());
+    }
+
+    //------------------------------------------------------------------------------
+    // Constructs from a span of floats (at least 4 elements).
+    //
+    // Parameters:
+    //  Span - The span containing x, y, z, w.
+    //
+    inline fvec4::fvec4(std::span<const float,4> Span) noexcept
+    {
+        assert(Span.size() >= 4);
+        m_XYZW = _mm_loadu_ps(Span.data());
+    }
+
+    //------------------------------------------------------------------------------
+    // Constructs a vector from an array of doubles, casting to float.
+    //
+    // Parameters:
+    //  Conversion - The array with x y z and w values.
+    //
+    inline fvec4::fvec4(const std::array<double, 4>& Conversion) noexcept
+    {
+        m_X = static_cast<float>(Conversion[0]);
+        m_Y = static_cast<float>(Conversion[1]);
+        m_Z = static_cast<float>(Conversion[2]);
+        m_W = static_cast<float>(Conversion[3]);
+    }
+
+    //------------------------------------------------------------------------------
+    // Constructs a vector from an array of float.
+    //
+    // Parameters:
+    //  Conversion - The array with x y z and w values.
+    //
+    inline fvec4::fvec4(const std::array<float, 4>& Conversion) noexcept
+    {
+        m_X = Conversion[0];
+        m_Y = Conversion[1];
+        m_Z = Conversion[2];
+        m_W = Conversion[3];
     }
 
     //------------------------------------------------------------------------------
@@ -104,6 +144,17 @@ namespace xmath
     constexpr fvec4::operator std::array<double, 4>(void) const noexcept
     {
         return { static_cast<double>(m_X), static_cast<double>(m_Y), static_cast<double>(m_Z), static_cast<double>(m_W) };
+    }
+
+    //------------------------------------------------------------------------------
+    // Conversion to array of floats
+    //
+    // Returns:
+    //  An array with x, y, z, w as doubles.
+    //
+    constexpr fvec4::operator std::array<float, 4>(void) const noexcept
+    {
+        return { m_X, m_Y, m_Z, m_W };
     }
 
     //------------------------------------------------------------------------------

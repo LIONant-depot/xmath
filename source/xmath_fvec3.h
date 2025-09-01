@@ -63,11 +63,13 @@ namespace xmath
         inline                          fvec3_t                (float x, const fvec2& other )                       noexcept;
         inline                          fvec3_t                (std::span<float> Span )                             noexcept;
         constexpr                       fvec3_t                (const std::array<double,3>& Conversion )            noexcept;
+        constexpr                       fvec3_t                (const std::array<float, 3>& Conversion )            noexcept;
 
         // Assignment and conversion operators
+        constexpr                       operator std::array<float, 3>()                                 const       noexcept;
         constexpr                       operator std::array<double,3> ()                                const       noexcept;
         inline                          operator std::string    ()                                      const       noexcept;
-        std::string                     ToString                (void)                                  const       noexcept;
+        inline              std::string ToString                (void)                                  const       noexcept;
         template<bool V>
         inline friend std::ostream&     operator<<              (std::ostream& os, const fvec3_t<V>& vec)           noexcept;
 

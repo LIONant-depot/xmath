@@ -36,12 +36,14 @@ namespace xmath
         constexpr                       fvec2                   (float value)                                       noexcept;
         constexpr                       fvec2                   (std::span<float> Span)                             noexcept;
         constexpr                       fvec2                   (const std::array<double,2>& Conversion )           noexcept;
+        constexpr                       fvec2                   (const std::array<float,2>& Conversion )            noexcept;
 
         // Assignment and conversion operators
         constexpr           fvec2&      operator =              (const fvec2&)                                      noexcept = default;
-        constexpr                       operator std::array<double,2> (void)                            const       noexcept;
+        constexpr                       operator std::array<float, 2>(void)                             const       noexcept;
+        constexpr                       operator std::array<double,2>(void)                             const       noexcept;
         inline                          operator std::string    (void)                                  const       noexcept;
-        std::string                     ToString                (void)                                  const       noexcept;
+        inline              std::string ToString                (void)                                  const       noexcept;
         inline friend std::ostream&     operator<<              (std::ostream& os, const fvec2& vec)                noexcept;
 
         // Static properties

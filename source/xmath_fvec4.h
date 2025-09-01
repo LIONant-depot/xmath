@@ -41,12 +41,16 @@ namespace xmath
         inline                          fvec4                       (float x, const fvec3& other)                       noexcept;
         constexpr explicit              fvec4                       (const floatx4& reg)                                noexcept;
         inline                          fvec4                       (const fvec2& xy, const fvec2& zw)                  noexcept;
-        inline                          fvec4                       (std::span<float> Span)                             noexcept;
+        inline                          fvec4                       (std::span<const float> Span)                       noexcept;
+        inline                          fvec4                       (std::span<const float,4> Span)                     noexcept;
+        inline                          fvec4                       (const std::array<double,4>& Array)                 noexcept;
+        inline                          fvec4                       (const std::array<float,4>& Array)                  noexcept;
 
         // Assignment and conversion operators
+        constexpr                       operator std::array<float, 4>(void)                                 const       noexcept;
         constexpr                       operator std::array<double,4>(void)                                 const       noexcept;
         inline                          operator std::string        (void)                                  const       noexcept;
-        std::string                     ToString                    (void)                                  const       noexcept;
+        inline              std::string ToString                    (void)                                  const       noexcept;
         inline friend std::ostream&     operator<<                  (std::ostream& os, const fvec4& vec)                noexcept;
 
         // Static properties
