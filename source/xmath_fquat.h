@@ -141,6 +141,7 @@ namespace xmath
         inline              fquat_t&    setupRotationX          (radian rx)                                     noexcept;
         inline              fquat_t&    setupRotationY          (radian ry)                                     noexcept;
         inline              fquat_t&    setupRotationZ          (radian rz)                                     noexcept;
+        inline              fquat_t&    setupIdentity           (void)                                          noexcept;
         inline              fquat_t&    setupLookRotation       (const fvec3& forward, const fvec3& up)         noexcept;
         inline              fquat_t&    setupFromToRotation     (const fvec3& from, const fvec3& to, const fvec3& up) noexcept;
         inline              fquat_t     RotateXCopy             (radian rx)                             const   noexcept;

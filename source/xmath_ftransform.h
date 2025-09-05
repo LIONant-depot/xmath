@@ -7,7 +7,8 @@ namespace xmath
     //------------------------------------------------------------------------------
     struct transform3
     {
-        static inline   transform3      Blend           (const transform3& From, const transform3& To, const float T)   noexcept;
+        static inline   transform3      fromBlend       (const transform3& From, const transform3& To, const float T)   noexcept;
+        inline          transform3      BlendCopy       (const transform3& To, const float T)                   const   noexcept;
         inline          transform3&     Blend           (const transform3& To, const float T)                           noexcept;
         inline          void            setupIdentity   (void)                                                          noexcept;
         inline          fmat4           toMatrix        (void)                                                  const   noexcept;
@@ -21,7 +22,7 @@ namespace xmath
     //------------------------------------------------------------------------------
     struct transform2
     {
-        static inline   transform2      Blend           (const transform2& From, const transform2& To, const float T)   noexcept;
+        static inline   transform2      BlendCopy           (const transform2& From, const transform2& To, const float T)   noexcept;
         inline          transform2&     Blend           (const transform2& To, const float T)                           noexcept;
         inline          void            setupIdentity   (void)                                                          noexcept;
 

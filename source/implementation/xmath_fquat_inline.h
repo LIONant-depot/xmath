@@ -165,6 +165,26 @@ namespace xmath
         return *this;
     }
 
+
+    //--------------------------------------------------------------------------
+
+    template <bool V >
+    inline  fquat_t<V>& fquat_t<V>::setupIdentity(void) noexcept
+    {
+        if constexpr (V)
+        {
+            this->m_XYZW = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+        }
+        else
+        {
+            this->m_X = 0.0f;
+            this->m_Y = 0.0f;
+            this->m_Z = 0.0f;
+            this->m_W = 1.0f;
+        }
+        return *this;
+    }
+
     //------------------------------------------------------------------------------
     // fquat_t
     //------------------------------------------------------------------------------

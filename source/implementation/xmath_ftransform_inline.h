@@ -1,12 +1,17 @@
 namespace xmath
 {
-    inline transform3 transform3::Blend(const transform3& From, const transform3& To, const float T) noexcept
+    inline transform3 transform3::fromBlend(const transform3& From, const transform3& To, const float T) noexcept
     {
         transform3 B;
-        B.m_Scale       = From.m_Scale + T * (To.m_Scale - From.m_Scale);
+        B.m_Scale       = From.m_Scale.Lerp(To.m_Scale, T);
         B.m_Rotation    = From.m_Rotation.Slerp(To.m_Rotation, T);
-        B.m_Position    = From.m_Position + T * (To.m_Position - From.m_Position);
+        B.m_Position    = From.m_Position.Lerp(To.m_Position, T);
         return B;
+    }
+
+    inline transform3 transform3::BlendCopy(const transform3& To, const float T) const noexcept
+    {
+        return fromBlend(*this, To, T);
     }
 
     inline transform3& transform3::Blend(const transform3& To, const float T) noexcept
@@ -35,7 +40,7 @@ namespace xmath
     }
 
 
-    inline transform2 transform2::Blend(const transform2& From, const transform2& To, const float T) noexcept
+    inline transform2 transform2::BlendCopy(const transform2& From, const transform2& To, const float T) noexcept
     {
         transform2 B;
         B.m_Scale       = From.m_Scale    + T * (To.m_Scale    - From.m_Scale);

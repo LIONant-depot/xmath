@@ -4,6 +4,7 @@
 
 #include "xmath_basics.h"
 #include "xmath_flinear.h"
+#include "xmath_fshapes.h"
 
 
 #endif

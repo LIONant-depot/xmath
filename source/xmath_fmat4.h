@@ -102,7 +102,7 @@ namespace xmath
         static inline    fmat4_t        fromRotationZ           ( radian Angle )                                    noexcept;
 
         // Setup methods (mutable, replace)
-        inline fmat4_t&                 setup                   (const fvec3& translation, const fquat& rotation, const fvec3& scale) noexcept;
+        inline fmat4_t&                 setupSRT                (const fvec3& scale, const fquat& rotation, const fvec3& translation) noexcept;
         inline fmat4_t&                 setupIdentity           (void)                                              noexcept;
         inline fmat4_t&                 setupZero               (void)                                              noexcept;
         inline fmat4_t&                 setupTranslation        (const fvec3& t)                                    noexcept;
@@ -134,6 +134,8 @@ namespace xmath
         inline fmat4_t                  Inverse                 (void)                                      const   noexcept;
         inline fmat4_t                  InverseSRT              (void)                                      const   noexcept;
         inline fmat4_t                  InverseRT               (void)                                      const   noexcept;
+        inline fmat4_t                  InverseTranspose        (void)                                      const   noexcept;
+        inline fmat4_t                  InverseTransposeSRT     (void)                                      const   noexcept;
         inline float                    Determinant             (void)                                      const   noexcept;
         inline fmat4_t&                 Orthogonalize           (void)                                              noexcept;
 

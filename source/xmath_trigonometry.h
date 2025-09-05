@@ -88,18 +88,20 @@ namespace xmath
     using degree    = degree_t<float>;
     using dradian   = radian_t<double>;
     using ddegree   = degree_t<double>;
-
+}
 
     // User-defined literals
-    constexpr degree   operator"" _xdeg(long double deg)          noexcept { return degree{ static_cast<float>(deg) }; }
-    constexpr degree   operator"" _xdeg(unsigned long long deg)   noexcept { return degree{ static_cast<float>(deg) }; }
+    constexpr xmath::degree   operator"" _xdeg(long double deg)          noexcept { return xmath::degree{ static_cast<float>(deg) }; }
+    constexpr xmath::degree   operator"" _xdeg(unsigned long long deg)   noexcept { return xmath::degree{ static_cast<float>(deg) }; }
 
-    constexpr radian   operator"" _xrad(long double rad)          noexcept { return radian{ static_cast<float>(rad) }; }
-    constexpr radian   operator"" _xrad(unsigned long long rad)   noexcept { return radian{ static_cast<float>(rad) }; }
+    constexpr xmath::radian   operator"" _xrad(long double rad)          noexcept { return xmath::radian{ static_cast<float>(rad) }; }
+    constexpr xmath::radian   operator"" _xrad(unsigned long long rad)   noexcept { return xmath::radian{ static_cast<float>(rad) }; }
 
-    constexpr dradian operator"" _xrad64(long double rad)        noexcept { return dradian{ static_cast<double>(rad) }; }
-    constexpr dradian operator"" _xrad64(unsigned long long rad) noexcept { return dradian{ static_cast<double>(rad) }; }
+    constexpr xmath::dradian operator"" _xrad64(long double rad)        noexcept { return xmath::dradian{ static_cast<double>(rad) }; }
+    constexpr xmath::dradian operator"" _xrad64(unsigned long long rad) noexcept { return xmath::dradian{ static_cast<double>(rad) }; }
 
+namespace xmath
+{
     //==============================================================================
     // CONSTANTS (Aliases from std::numbers for convenience)
     //==============================================================================

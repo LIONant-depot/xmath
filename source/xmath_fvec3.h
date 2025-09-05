@@ -102,6 +102,8 @@ namespace xmath
         inline              float       DistanceSquare          (const fvec3_t& v)                      const       noexcept;
 
         // Instance methods - Basic operations
+        inline              fvec3_t&    setup                   (float x, float y, float z)                         noexcept;
+        inline              fvec3_t&    setup                   (float xyz)                                         noexcept;
         inline              float       Length                  (void)                                  const       noexcept;
         inline              float       LengthSq                (void)                                  const       noexcept;
         inline              fvec3_t     NormalizeCopy           (void)                                  const       noexcept;
