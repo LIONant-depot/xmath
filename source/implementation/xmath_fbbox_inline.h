@@ -34,18 +34,18 @@ namespace xmath
     // Constructs a bounding box from an array of vertices by computing their bounds.
     //
     // Parameters:
-    // Verts - Array of vertices to enclose.
-    // NVerts - Number of vertices in the array.
+    // Verts - span of vertices to enclose.
     //
     // Notes:
     // Asserts NVerts > 0 and Verts is not null.
     //
     template <bool V>
-    inline fbbox_t<V>::fbbox_t(const fvec3* Verts, std::int32_t NVerts) noexcept
+    inline fbbox_t<V>::fbbox_t(const std::span<const fvec3> Verts) noexcept
     {
-        assert(NVerts > 0 && Verts);
-        setupFromVerts(Verts, NVerts);
+        assert(Verts.empty()==false);
+        setupFromVerts(Verts);
     }
+
 
     //------------------------------------------------------------------------------
     // Constructs a bounding box from a center point and radius, approximating a sphere.
@@ -71,7 +71,7 @@ namespace xmath
     // Only available when T_USE_SIMD_V is true.
     //
     template <bool V>
-    constexpr fbbox_t<V>::fbbox_t(const floatx4 MinMax[2]) noexcept requires V
+    constexpr fbbox_t<V>::fbbox_t(const std::array<floatx4,2>& MinMax ) noexcept requires V
     {
         this->m_MinMax[0] = MinMax[0];
         this->m_MinMax[1] = MinMax[1];
@@ -102,7 +102,7 @@ namespace xmath
         this->m_Min = fvec3(Conversion[0], Conversion[1], Conversion[2]);
         this->m_Max = fvec3(Conversion[3], Conversion[4], Conversion[5]);
     }
-
+    
     //------------------------------------------------------------------------------
     // Assignment and conversion operators
     //------------------------------------------------------------------------------
@@ -239,8 +239,7 @@ namespace xmath
     // Creates a bounding box from an array of vertices.
     //
     // Parameters:
-    // Verts - Array of vertices to enclose.
-    // NVerts - Number of vertices in the array.
+    // Verts - Span of vertices to enclose.
     //
     // Returns:
     // A bounding box enclosing all vertices.
@@ -249,9 +248,9 @@ namespace xmath
     // Asserts NVerts > 0 and Verts is not null.
     //
     template <bool V>
-    inline fbbox_t<V> fbbox_t<V>::fromVerts(const fvec3* Verts, std::int32_t NVerts) noexcept
+    inline fbbox_t<V> fbbox_t<V>::fromVerts(const std::span<const fvec3> Verts) noexcept
     {
-        return fbbox_t<V>(Verts, NVerts);
+        return fbbox_t<V>(Verts);
     }
 
     //------------------------------------------------------------------------------
@@ -365,11 +364,11 @@ namespace xmath
     // True if any vertex is inside the box, false otherwise.
     //
     template <bool V>
-    inline bool fbbox_t<V>::Intersect(const fbbox_t& BBox, const std::span<fvec3> Verts) noexcept
+    inline bool fbbox_t<V>::Intersect(const fbbox_t& BBox, const std::span<const fvec3> Verts) noexcept
     {
         for (auto& E : Verts)
         {
-            if (BBox.containsPoint(E))
+            if (BBox.ContainsPoint(E))
                 return true;
         }
         return false;
@@ -396,11 +395,11 @@ namespace xmath
         fbbox_t<V> triBox(P0);
         triBox += P1;
         triBox += P2;
-        if (!intersect(BBox, triBox)) return false;
+        if (!Intersect(BBox, triBox)) return false;
 
-        fvec3 normal = fvec3::Cross(P1 - P0, P2 - P0);
+        fvec3 normal = fvec3::Cross(P1 - P0, P2 - P0).Normalize();
         fplane plane(normal, fvec3::Dot(normal, P0));
-        if (!intersect(BBox, plane)) return false;
+        if (!Intersect(BBox, plane)) return false;
 
         for (int i = 0; i < 3; ++i)
         {
@@ -572,9 +571,9 @@ namespace xmath
     inline bool fbbox_t<V>::isValid(void) const noexcept
     {
         return this->m_Min.m_X <= this->m_Max.m_X &&
-            this->m_Min.m_Y <= this->m_Max.m_Y &&
-            this->m_Min.m_Z <= this->m_Max.m_Z &&
-            isFinite();
+               this->m_Min.m_Y <= this->m_Max.m_Y &&
+               this->m_Min.m_Z <= this->m_Max.m_Z &&
+               isFinite();
     }
 
     //------------------------------------------------------------------------------
@@ -703,7 +702,7 @@ namespace xmath
     template <bool V>
     inline fvec3 fbbox_t<V>::getClosestPoint(const fvec3& Point) const noexcept
     {
-        return fvec3::Clamp(Point, this->m_Min, this->m_Max);
+        return Point.ClampCopy( this->m_Min, this->m_Max);
     }
 
     //------------------------------------------------------------------------------
@@ -715,17 +714,19 @@ namespace xmath
     //
     // Notes:
     // Asserts NVerts >= 8.
+    // its binary - indexed order(z LSB, y, x MSB)
     //
     template <bool V>
-    inline void fbbox_t<V>::getVerts(fvec3* Dst, std::int32_t NVerts) const noexcept
+    inline void fbbox_t<V>::getVerts(std::span<fvec3> Dst) const noexcept
     {
-        assert(NVerts >= 8);
+        assert(Dst.size() >= 8);
         fvec3 min = this->m_Min;
         fvec3 max = this->m_Max;
+
         Dst[0] = min;
-        Dst[1] = fvec3(min.m_X, min.m_Y, max.m_Z);
+        Dst[1] = fvec3(min.m_X, max.m_Y, max.m_Z);
         Dst[2] = fvec3(min.m_X, max.m_Y, min.m_Z);
-        Dst[3] = fvec3(min.m_X, max.m_Y, max.m_Z);
+        Dst[3] = fvec3(min.m_X, min.m_Y, max.m_Z);
         Dst[4] = fvec3(max.m_X, min.m_Y, min.m_Z);
         Dst[5] = fvec3(max.m_X, min.m_Y, max.m_Z);
         Dst[6] = fvec3(max.m_X, max.m_Y, min.m_Z);
@@ -792,8 +793,7 @@ namespace xmath
     // Sets up the box from an array of vertices by computing their bounds.
     //
     // Parameters:
-    // Verts - Array of vertices to enclose.
-    // NVerts - Number of vertices in the array.
+    // Verts - span of vertices to enclose.
     //
     // Returns:
     // Reference to this box (chainable).
@@ -802,15 +802,15 @@ namespace xmath
     // Asserts NVerts > 0 and Verts is not null.
     //
     template <bool V>
-    inline fbbox_t<V>& fbbox_t<V>::setupFromVerts(const fvec3* Verts, std::int32_t NVerts) noexcept
+    inline fbbox_t<V>& fbbox_t<V>::setupFromVerts(const std::span<const fvec3> Verts) noexcept
     {
-        assert(NVerts > 0 && Verts);
+        assert(!Verts.empty());
         this->m_Min = Verts[0];
         this->m_Max = Verts[0];
-        for (std::int32_t i = 1; i < NVerts; ++i)
+        for (auto& E : Verts)
         {
-            this->m_Min = fvec3::Min(this->m_Min, Verts[i]);
-            this->m_Max = fvec3::Max(this->m_Max, Verts[i]);
+            this->m_Min = fvec3::Min(this->m_Min, E);
+            this->m_Max = fvec3::Max(this->m_Max, E);
         }
         return *this;
     }
@@ -928,8 +928,8 @@ namespace xmath
     template <bool V>
     inline fbbox_t<V> fbbox_t<V>::TransformCopy(const fmat4& Matrix) const noexcept
     {
-        fvec3 verts[8];
-        getVerts(verts, 8);
+        std::array<fvec3,8> verts;
+        getVerts(verts);
         fbbox_t<V> result(Matrix * verts[0]);
         for (int i = 1; i < 8; ++i)
         {
@@ -1072,6 +1072,7 @@ namespace xmath
     inline float& fbbox_t<V>::operator[](std::int32_t Index) noexcept
     {
         assert(Index >= 0 && Index < 6);
+        if (Index>3)Index++;
         return this->m_Elements[Index];
     }
 

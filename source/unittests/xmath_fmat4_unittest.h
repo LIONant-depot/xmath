@@ -75,13 +75,13 @@ namespace xmath::unit_test::_fmat4
         // TRS
         fvec3 trans(1, 2, 3), scale(4, 5, 6);
         fquat rot = fquat::fromIdentity();
-        fmat4_t<V> from_trs(trans, rot, scale);
+        fmat4_t<V> from_trs(scale, rot, trans);
         assert(vec3_approx_equal(from_trs.ExtractPosition(), trans));
         assert(quat_approx_equal(from_trs.ExtractRotation(), rot));
         assert(vec3_approx_equal(from_trs.ExtractScale(), scale));
 
         // Cross-SIMD
-        fmat4_t<!V> other = fmat4_t<!V>(trans, rot, scale);
+        fmat4_t<!V> other = fmat4_t<!V>(scale, rot, trans);
         fmat4_t<V> from_other(other);
         assert(mat4_approx_equal(from_other, from_trs));
     }
@@ -220,7 +220,7 @@ namespace xmath::unit_test::_fmat4
         // setup (TRS)
         fvec3 trans(1, 2, 3), scale(4, 5, 6);
         fquat rot = fquat::fromAxisAngle(fvec3(0, 1, 0), xmath::pi_over2_v);
-        m.setup(trans, rot, scale);
+        m.setupSRT(scale, rot, trans);
         assert(vec3_approx_equal(m.ExtractPosition(), trans));
         assert(quat_approx_equal(m.ExtractRotation(), rot, SMALL_EPSILON));
         assert(vec3_approx_equal(m.ExtractScale(), scale));
@@ -338,7 +338,7 @@ namespace xmath::unit_test::_fmat4
     void test_geometry_helpers() {
         fvec3 pos(1, 2, 3), sc(4, 5, 6);
         fquat rot = fquat::fromAxisAngle(fvec3(0, 1, 0), xmath::pi_over2_v);
-        auto m = fmat4_t<V>(pos, rot, sc);
+        auto m = fmat4_t<V>( sc, rot, pos);
         assert(vec3_approx_equal(m.ExtractPosition(), pos));
         assert(quat_approx_equal(m.ExtractRotation(), rot, SMALL_EPSILON));
         assert(vec3_approx_equal(m.ExtractScale(), sc));

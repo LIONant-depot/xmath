@@ -26,14 +26,14 @@ namespace xmath
     {
         if constexpr (V)
         {
-            this->m_XYZD = _mm_set_ps(D, Z, Y, X);
+            this->m_XYZD = _mm_set_ps(-D, Z, Y, X);
         }
         else
         {
             this->m_X = X;
             this->m_Y = Y;
             this->m_Z = Z;
-            this->m_D = D;
+            this->m_D = -D;
         }
     }
 
@@ -243,9 +243,7 @@ namespace xmath
     template <bool V >
     inline std::string fplane_t<V>::ToString(void) const noexcept
     {
-        std::stringstream ss;
-        ss << "fplane_t<" << this->m_X << ", " << this->m_Y << ", " << this->m_Z << ", " << this->m_D << ">";
-        return ss.str();
+        return std::format("plane({}, {}, {}, {})", this->m_X, this->m_Y, this->m_Z, this->m_D);
     }
 
     //------------------------------------------------------------------------------
@@ -379,7 +377,7 @@ namespace xmath
     inline fplane_t<V> fplane_t<V>::fromThreePoints(const fvec3& P1, const fvec3& P2, const fvec3& P3) noexcept
     {
         assert(P1.isFinite() && P2.isFinite() && P3.isFinite());
-        fvec3 normal = (P2 - P1).Cross(P3 - P1).NormalizeSafeCopy();
+        fvec3 normal = (P3 - P1).Cross(P2 - P1).NormalizeSafeCopy();
         assert(!normal.isNearlyZero(1e-6f));
         return fromNormalPoint(normal, P1);
     }
@@ -682,7 +680,12 @@ namespace xmath
         }
         else
         {
-            return fplane_t<V>(this->m_X * inv_len, this->m_Y * inv_len, this->m_Z * inv_len, this->m_D * inv_len);
+            fplane_t<V> result;
+            result.m_X = this->m_X * inv_len;
+            result.m_Y = this->m_Y * inv_len;
+            result.m_Z = this->m_Z * inv_len;
+            result.m_D = this->m_D * inv_len;
+            return result;
         }
     }
 
@@ -814,8 +817,10 @@ namespace xmath
     template <bool V >
     inline bool fplane_t<V>::Equals(const fplane_t& Other, float Tolerance) const noexcept
     {
-        return xmath::Abs(this->m_X - Other.m_X) < Tolerance && xmath::Abs(this->m_Y - Other.m_Y) < Tolerance &&
-            xmath::Abs(this->m_Z - Other.m_Z) < Tolerance && xmath::Abs(this->m_D - Other.m_D) < Tolerance;
+        return xmath::Abs(this->m_X - Other.m_X) < Tolerance
+            && xmath::Abs(this->m_Y - Other.m_Y) < Tolerance
+            && xmath::Abs(this->m_Z - Other.m_Z) < Tolerance
+            && xmath::Abs(this->m_D - Other.m_D) < Tolerance;
     }
 
     //------------------------------------------------------------------------------
@@ -1225,8 +1230,8 @@ namespace xmath
     // Notes:
     //  Flips normal and offset.
     //
-    template <bool V >
-    inline fplane_t<V> fplane_t<V>::operator- () const noexcept
+    template <bool V>
+    inline fplane_t<V> fplane_t<V>::operator-() const noexcept
     {
         if constexpr (V)
         {
@@ -1234,10 +1239,14 @@ namespace xmath
         }
         else
         {
-            return fplane_t<V>(-this->m_X, -this->m_Y, -this->m_Z, -this->m_D);
+            fplane_t<V> result;
+            result.m_X = -this->m_X;
+            result.m_Y = -this->m_Y;
+            result.m_Z = -this->m_Z;
+            result.m_D = -this->m_D;
+            return result;
         }
     }
-
     //------------------------------------------------------------------------------
     // operator[]
     //------------------------------------------------------------------------------

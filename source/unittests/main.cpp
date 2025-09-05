@@ -1,4 +1,4 @@
-#include "../../source/xmath_flinear.h"
+#include "../../source/xmath.h"
 
 #include "../../source/unittests/xmath_unittest.h"
 #include "../../source/unittests/xmath_fvec4_unittest.h"
@@ -8,6 +8,8 @@
 #include "../../source/unittests/xmath_fquat_unittest.h"
 #include "../../source/unittests/xmath_fmat4_unittest.h"
 #include "../../source/unittests/xmath_fmat3_unittest.h"
+#include "../../source/unittests/xmath_fbbox_unittest.h"
+#include "../../source/unittests/xmath_fplane_unittest.h"
 
 int main()
 {
@@ -19,6 +21,8 @@ int main()
     if (true) xmath::unit_test::_fquat::RunTests();
     if (true) xmath::unit_test::_fmat4::RunTests();
     if (true) xmath::unit_test::_fmat3::RunTests();
+    if (true) xmath::unit_test::_fbbox::RunTests();
+    if (true) xmath::unit_test::_fplane::RunTests();
 
     return 0;
 }

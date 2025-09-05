@@ -19,12 +19,10 @@ namespace xmath
     struct fbbox_t;
     using fbbox  = fbbox_t<true>;
     using fbboxd = fbbox_t<false>;
-
 }
 
 #include "xmath_fplane.h"
 #include "xmath_fbbox.h"
-
 
 
 

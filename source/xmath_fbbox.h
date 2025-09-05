@@ -14,6 +14,7 @@ namespace xmath
         {
             union
             {
+                std::array<float, 4+4>  m_Elements;
                 floatx4                 m_MinMax[2];
                 struct
                 {
@@ -60,9 +61,9 @@ namespace xmath
         constexpr                           fbbox_t                     (void)                                                          noexcept = default;
         constexpr                           fbbox_t                     (const fvec3& Point)                                            noexcept;
         constexpr                           fbbox_t                     (const fvec3& Min, const fvec3& Max)                            noexcept;
-        inline                              fbbox_t                     (const fvec3* Verts, std::int32_t NVerts)                       noexcept;
+        inline                              fbbox_t                     (const std::span<const fvec3> Verts )                           noexcept;
         constexpr                           fbbox_t                     (const fvec3& Center, float Radius)                             noexcept;
-        constexpr explicit                  fbbox_t                     (const floatx4 MinMax[2])                                       noexcept requires T_USE_SIMD_V;
+        constexpr explicit                  fbbox_t                     (const std::array<floatx4, 2>& MinMax)                          noexcept requires T_USE_SIMD_V;
         constexpr                           fbbox_t                     (const fbbox_t<!T_USE_SIMD_V>& Other)                           noexcept;
         constexpr                           fbbox_t                     (const std::array<float, 6>& Conversion)                        noexcept;
 
@@ -79,14 +80,14 @@ namespace xmath
         static inline       fbbox_t         fromPoint                   (const fvec3& Point)                                            noexcept;
         static inline       fbbox_t         fromMinMax                  (const fvec3& Min, const fvec3& Max)                            noexcept;
         static inline       fbbox_t         fromCenterRadius            (const fvec3& Center, float Radius)                             noexcept;
-        static inline       fbbox_t         fromVerts                   (const fvec3* Verts, std::int32_t NVerts)                       noexcept;
+        static inline       fbbox_t         fromVerts                   (const std::span<const fvec3> Verts )                           noexcept;
 
         // Static methods
         static inline       bool            Intersect                   (const fbbox_t& BBox1, const fbbox_t& BBox2)                    noexcept;
         static inline       bool            Intersect                   (const fbbox_t& BBox, const fvec3& Point)                       noexcept;
         static inline       bool            Intersect                   (const fbbox_t& BBox, const fplane& Plane)                      noexcept;
         static inline       bool            Intersect                   (const fbbox_t& BBox, float& T, const fvec3& P0, const fvec3& P1) noexcept;
-        static inline       bool            Intersect                   (const fbbox_t& BBox, const std::span<fvec3> Verts)             noexcept;
+        static inline       bool            Intersect                   (const fbbox_t& BBox, const std::span<const fvec3> Verts)       noexcept;
         static inline       bool            IntersectTriangle           (const fbbox_t& BBox, const fvec3& P0, const fvec3& P1, const fvec3& P2) noexcept;
         static inline       fbbox_t         Intersection                (const fbbox_t& BBox1, const fbbox_t& BBox2)                    noexcept;
 
@@ -111,13 +112,13 @@ namespace xmath
         inline              bool            Contains                    (const fbbox_t& Other)                                  const   noexcept;
         inline              bool            ContainsPoint               (const fvec3& Point)                                    const   noexcept;
         inline              fvec3           getClosestPoint             (const fvec3& Point)                                    const   noexcept;
-        inline              void            getVerts                    (fvec3* Dst, std::int32_t NVerts)                       const   noexcept;
+        inline              void            getVerts                    (std::span<fvec3> Dst)                                  const   noexcept;
 
         // Instance methods - Setup operations
         inline              fbbox_t&        setupFromPoint              (const fvec3& Point)                                            noexcept;
         inline              fbbox_t&        setupFromMinMax             (const fvec3& Min, const fvec3& Max)                            noexcept;
         inline              fbbox_t&        setupFromCenterRadius       (const fvec3& Center, float Radius)                             noexcept;
-        inline              fbbox_t&        setupFromVerts              (const fvec3* Verts, std::int32_t NVerts)                       noexcept;
+        inline              fbbox_t&        setupFromVerts              (const std::span<const fvec3> Verts)                            noexcept;
         inline              fbbox_t&        setZero                     (void)                                                          noexcept;
         inline              fbbox_t&        setIdentity                 (void)                                                          noexcept;
         inline              fbbox_t&        Inflate                     (const fvec3& Delta)                                            noexcept;

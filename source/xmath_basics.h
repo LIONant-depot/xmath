@@ -11,6 +11,7 @@
 #include <bit>
 #include <limits>
 #include <cassert>
+#include <span>
 
 #include "xmath_strong_typing_numerics.h"
 #include "xmath_functions.h"
