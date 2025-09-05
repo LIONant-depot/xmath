@@ -1,7 +1,7 @@
-#pragma once
 #ifndef XMATH_FLOAT_VECTOR_H
-#error "You must include xmath_vector.h"
+    #error "You must include xmath_fvector.h"
 #endif
+#pragma once
 namespace xmath
 {
     //------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ namespace xmath
     //  y - The y component.
     //  z - The z component.
     //
-    template <bool V >
+    template <bool V > 
     constexpr fvec3_t<V>::fvec3_t(float x, float y, float z) noexcept
     {
         if constexpr (V)
@@ -28,6 +28,22 @@ namespace xmath
             this->m_Y = y;
             this->m_Z = z;
         }
+    }
+
+    //------------------------------------------------------------------------------
+
+    template <bool V >
+    inline fvec3_t<V>& fvec3_t<V>::setup(float x, float y, float z) noexcept
+    {
+        return *this = fvec3_t(x,y,z);
+    }
+
+    //------------------------------------------------------------------------------
+
+    template <bool V >
+    inline fvec3_t<V>& fvec3_t<V>::setup(float xyz) noexcept
+    {
+        return *this = fvec3_t(xyz, xyz, xyz);
     }
 
     //------------------------------------------------------------------------------
