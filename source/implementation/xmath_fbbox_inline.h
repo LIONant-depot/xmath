@@ -177,7 +177,8 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
-    // Returns an identity bounding box with min at (-1,-1,-1) and max at (1,1,1).
+    // Returns an identity bounding box with min at max_floating_point and max at min_floating_point
+    // This creates an inside out bbox which is ready to be inflated
     //
     // Returns:
     // An identity bounding box.
@@ -185,7 +186,7 @@ namespace xmath
     template <bool V>
     constexpr fbbox_t<V> fbbox_t<V>::fromIdentity(void) noexcept
     {
-        return fbbox_t<V>(fvec3(-1.f), fvec3(1.f));
+        return fbbox_t<V>(fvec3(std::numeric_limits<float>::max()), fvec3(std::numeric_limits<float>::min()));
     }
 
     //------------------------------------------------------------------------------
@@ -807,6 +808,22 @@ namespace xmath
         assert(!Verts.empty());
         this->m_Min = Verts[0];
         this->m_Max = Verts[0];
+        if (Verts.size()>1) return AddVerts(Verts.subspan(1));
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+    // Adds to the extent of the box an array of vertices by computing their bounds.
+    //
+    // Parameters:
+    // Verts - span of vertices to enclose.
+    //
+    // Returns:
+    // Reference to this box (chainable).
+    //
+    template <bool V>
+    inline fbbox_t<V>& fbbox_t<V>::AddVerts(const std::span<const fvec3> Verts) noexcept
+    {
         for (auto& E : Verts)
         {
             this->m_Min = fvec3::Min(this->m_Min, E);

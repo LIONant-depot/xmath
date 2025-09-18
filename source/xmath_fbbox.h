@@ -121,6 +121,7 @@ namespace xmath
         inline              fbbox_t&        setupFromVerts              (const std::span<const fvec3> Verts)                            noexcept;
         inline              fbbox_t&        setZero                     (void)                                                          noexcept;
         inline              fbbox_t&        setIdentity                 (void)                                                          noexcept;
+        inline              fbbox_t&        AddVerts                    (const std::span<const fvec3> Verts)                            noexcept;
         inline              fbbox_t&        Inflate                     (const fvec3& Delta)                                            noexcept;
         inline              fbbox_t&        Deflate                     (const fvec3& Delta)                                            noexcept;
         inline              fbbox_t&        Translate                   (const fvec3& Delta)                                            noexcept;
