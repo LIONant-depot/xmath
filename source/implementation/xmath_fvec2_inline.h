@@ -1881,6 +1881,23 @@ namespace xmath
     // operator*
     //------------------------------------------------------------------------------
     //
+    // Multiply two vectors.
+    //
+    // Parameters:
+    //  other - The vector to multiply
+    //
+    // Returns:
+    //  The multiplication of two vector.
+    //
+    constexpr fvec2 fvec2::operator*(const fvec2& other) const noexcept
+    {
+        return fvec2(m_X * other.m_X, m_Y * other.m_Y);
+    }
+
+    //------------------------------------------------------------------------------
+    // operator*
+    //------------------------------------------------------------------------------
+    //
     // Multiplies by a scalar.
     //
     // Parameters:

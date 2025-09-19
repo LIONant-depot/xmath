@@ -99,8 +99,8 @@ namespace xmath::unit_test::_fbbox
 
         // fromIdentity
         auto id_bbox = fbbox_t<V>::fromIdentity();
-        assert(vec3_approx_equal(id_bbox.m_Min, fvec3(-1.f)));
-        assert(vec3_approx_equal(id_bbox.m_Max, fvec3(1.f)));
+        assert(vec3_approx_equal(id_bbox.m_Min, fvec3(std::numeric_limits<float>::max())));
+        assert(vec3_approx_equal(id_bbox.m_Max, fvec3(std::numeric_limits<float>::min())));
 
         // fromPoint
         fvec3 point(1.f, 2.f, 3.f);

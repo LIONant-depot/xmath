@@ -195,6 +195,7 @@ namespace xmath
         // Operator overloads
         constexpr           fvec2       operator+               (const fvec2& other)                    const       noexcept;
         constexpr           fvec2       operator-               (const fvec2& other)                    const       noexcept;
+        constexpr           fvec2       operator*               (const fvec2& other)                    const       noexcept;
         constexpr           fvec2       operator*               (float scalar)                          const       noexcept;
         constexpr           fvec2       operator/               (float scalar)                          const       noexcept;
         constexpr           fvec2&      operator+=              (const fvec2& other)                                noexcept;
