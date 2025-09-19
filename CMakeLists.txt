@@ -29,6 +29,8 @@ add_executable(${TARGET_PROJECT}
   "source/unittests/xmath_fvec4_unittest.h"
   "source/unittests/xmath_radian3_unittest.h"
   "source/unittests/xmath_unittest.h"
+  "source/unittests/xmath_ivec2_unittest.h"
+  "source/unittests/xmath_irect_unittest.h"
   "source/unittests/main.cpp"
 )
 
@@ -41,6 +43,8 @@ source_group("Unit Tests" FILES
   "source/unittests/xmath_fvec4_unittest.h"
   "source/unittests/xmath_radian3_unittest.h"
   "source/unittests/xmath_unittest.h"
+  "source/unittests/xmath_ivec2_unittest.h"
+  "source/unittests/xmath_irect_unittest.h"
 )
 
 source_group("" FILES
