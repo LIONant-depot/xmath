@@ -7,5 +7,4 @@
 #include "xmath_fshapes.h"
 #include "xmath_imath.h"
 
-
 #endif
