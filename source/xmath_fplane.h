@@ -14,7 +14,7 @@ namespace xmath
         {
             union
             {
-                floatx4                 m_XYZD;
+                xmath::floatx4          m_XYZD;
                 std::array<float,4>     m_Elements;
                 xmath::fvec3            m_Normal;
                 struct

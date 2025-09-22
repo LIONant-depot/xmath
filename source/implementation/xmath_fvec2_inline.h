@@ -70,6 +70,24 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
+
+    fvec2& fvec2::setup(float x, float y) noexcept
+    {
+        m_X = x;
+        m_Y = y;
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
+
+    fvec2& fvec2::setup(float value) noexcept
+    {
+        m_X = value;
+        m_Y = value;
+        return *this;
+    }
+
+    //------------------------------------------------------------------------------
     // Conversion to array of doubles.
     //
     // Returns:

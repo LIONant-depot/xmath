@@ -1879,7 +1879,7 @@ namespace xmath
     {
         float s, c;
         xmath::SinCos(rx, s, c);
-        return fvec3_t<V>(this->m_X, this->m_Y * c + this->m_Z * s, -this->m_Y * s + this->m_Z * c);
+        return fvec3_t<V>(this->m_X, this->m_Y * c - this->m_Z * s, this->m_Z * c - this->m_Y * s);
     }
 
     //------------------------------------------------------------------------------
@@ -1912,7 +1912,7 @@ namespace xmath
     {
         float s, c;
         xmath::SinCos(ry, s, c);
-        return fvec3_t<V>(c * this->m_X + s * this->m_Z, this->m_Y, -s * this->m_X + c * this->m_Z);
+        return fvec3_t<V>(c * this->m_X + s * this->m_Z, this->m_Y, c * this->m_Z - s * this->m_X);
     }
 
     //------------------------------------------------------------------------------
@@ -2074,7 +2074,7 @@ namespace xmath
     template <bool V >
     inline bool fvec3_t<V>::isRightHanded(const fvec3_t& p1, const fvec3_t& p2) const noexcept
     {
-        return ((p1.m_X - this->m_X) * (p2.m_Y - this->m_Y) - (p1.m_Y - this->m_Y) * (p2.m_X - this->m_X)) < 0.f;
+        return ((p1.m_X - this->m_X) * (p2.m_Y - this->m_Y) - (p1.m_Y - this->m_Y) * (p2.m_X - this->m_X)) > 0.f;
     }
 
     //------------------------------------------------------------------------------

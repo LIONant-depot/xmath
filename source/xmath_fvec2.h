@@ -38,6 +38,10 @@ namespace xmath
         constexpr                       fvec2                   (const std::array<double,2>& Conversion )           noexcept;
         constexpr                       fvec2                   (const std::array<float,2>& Conversion )            noexcept;
 
+        // Setup functions
+        inline              fvec2&      setup                   (float x, float y)                                  noexcept;
+        inline              fvec2&      setup                   (float value)                                       noexcept;
+
         // Assignment and conversion operators
         constexpr           fvec2&      operator =              (const fvec2&)                                      noexcept = default;
         constexpr                       operator std::array<float, 2>(void)                             const       noexcept;

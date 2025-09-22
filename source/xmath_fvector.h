@@ -29,7 +29,6 @@ namespace xmath
     struct  fvec3_t;
     using   fvec3     = fvec3_t<true>;      // * simd_data - is design for simd instructions which makes it very fast but it wastes 1 float, and requires a big alignment
     using   fvec3d    = fvec3_t<false>;     // * cpu_data  - is your standard 3 floats... but because is just standard it does not run as fast...
-    using   floatx4   = __m128;             // xmath own alias for simd data
     struct  fvec4;                          // This class is simd optimize so alignment requirements are more aggressive than your standard floats
     struct  fvec2;                          // Pretty much your standard vector2
 

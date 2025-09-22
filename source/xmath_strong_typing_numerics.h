@@ -19,6 +19,8 @@ namespace xmath
         // Arithmetic operators
         constexpr T_DERIVED         operator+   (const T_DERIVED rhs)               const   noexcept { return T_DERIVED{ m_Value + rhs.m_Value }; }
         constexpr T_DERIVED         operator-   (const T_DERIVED rhs)               const   noexcept { return T_DERIVED{ m_Value - rhs.m_Value }; }
+        constexpr T_DERIVED         operator*   (const T_DERIVED rhs)               const   noexcept { return T_DERIVED{ m_Value * rhs.m_Value }; }
+        constexpr T_DERIVED         operator/   (const T_DERIVED rhs)               const   noexcept { return T_DERIVED{ m_Value / rhs.m_Value }; }
         constexpr T_DERIVED         operator*   (T scalar)                          const   noexcept { return T_DERIVED{ m_Value * scalar }; }
         constexpr T_DERIVED         operator/   (T scalar)                          const   noexcept { return T_DERIVED{ m_Value / scalar }; }
         friend constexpr T_DERIVED  operator*   (T scalar, T_DERIVED rhs)                   noexcept { return rhs * scalar; }

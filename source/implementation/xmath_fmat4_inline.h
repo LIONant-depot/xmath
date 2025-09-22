@@ -874,6 +874,57 @@ namespace xmath
         return *this;
     }
 
+    //------------------------------------------------------------------------------
+    // setup
+    //------------------------------------------------------------------------------
+    //
+    // Sets to scale-rotation-translation (SRT) matrix.
+    //
+    // Params:
+    //  scale - Scale vector.
+    //  rotation - Rotation quaternion.
+    //  translation - Position vector.
+    //
+    // Returns:
+    //  Reference (chainable).
+    //
+    // Notes:
+    //  Asserts finite inputs, normalized rotation, non-zero scale.
+    //  Directly sets rotation, scales columns, and sets translation for efficiency.
+    //  Order: FinalM = translation * rotation * scale 
+    //
+    template <bool V>
+    inline fmat4_t<V>& fmat4_t<V>::setupSRT(const fvec3& scale, const radian3& rotation, const fvec3& translation) noexcept
+    {
+        assert(translation.isFinite());
+        assert(scale.isFinite() && scale.m_X != 0.0f && scale.m_Y != 0.0f && scale.m_Z != 0.0f);
+
+        // Set rotation
+        setupRotation(rotation);
+
+        // Set translation in last column
+        this->m_03 = translation.m_X;
+        this->m_13 = translation.m_Y;
+        this->m_23 = translation.m_Z;
+        this->m_33 = 1.0f;
+
+        // Scale the rotation columns
+        if constexpr (V)
+        {
+            floatx4 scale_wzyx = _mm_set_ps(0.0f, scale.m_Z, scale.m_Y, scale.m_X);
+            this->m_Columns[0] = _mm_mul_ps(this->m_Columns[0], _mm_shuffle_ps(scale_wzyx, scale_wzyx, _MM_SHUFFLE(0, 0, 0, 0)));
+            this->m_Columns[1] = _mm_mul_ps(this->m_Columns[1], _mm_shuffle_ps(scale_wzyx, scale_wzyx, _MM_SHUFFLE(1, 1, 1, 1)));
+            this->m_Columns[2] = _mm_mul_ps(this->m_Columns[2], _mm_shuffle_ps(scale_wzyx, scale_wzyx, _MM_SHUFFLE(2, 2, 2, 2)));
+        }
+        else
+        {
+            this->m_00 *= scale.m_X; this->m_10 *= scale.m_X; this->m_20 *= scale.m_X;
+            this->m_01 *= scale.m_Y; this->m_11 *= scale.m_Y; this->m_21 *= scale.m_Y;
+            this->m_02 *= scale.m_Z; this->m_12 *= scale.m_Z; this->m_22 *= scale.m_Z;
+        }
+
+        return *this;
+    }
 
     //------------------------------------------------------------------------------
     // Accessors
@@ -2034,6 +2085,14 @@ namespace xmath
         }
 
         return q;
+    }
+
+    //------------------------------------------------------------------------------
+
+    template <bool V>
+    inline xmath::radian3 fmat4_t<V>::ExtractEulers(void) const noexcept
+    {
+        return ExtractRotation().ToEuler();
     }
 
     //------------------------------------------------------------------------------

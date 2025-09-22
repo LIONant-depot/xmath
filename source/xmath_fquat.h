@@ -138,6 +138,7 @@ namespace xmath
         inline              fquat_t&    Exp                     (void)                                          noexcept;
 
         // Instance methods - Rotation operations
+        inline              fquat_t&    setup                   ( float x, float y, float z, float w )           noexcept;
         inline              fquat_t&    setupRotationX          (radian rx)                                     noexcept;
         inline              fquat_t&    setupRotationY          (radian ry)                                     noexcept;
         inline              fquat_t&    setupRotationZ          (radian rz)                                     noexcept;

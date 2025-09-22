@@ -197,8 +197,23 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
+
+    fvec4& fvec4::setup(float value) noexcept
+    {
+        return *this = fvec4(value);
+    }
+
+    //------------------------------------------------------------------------------
+
+    fvec4& fvec4::setup(float x, float y, float z, float w) noexcept
+    {
+        return *this = fvec4(x,y,z,w);
+    }
+
+    //------------------------------------------------------------------------------
     // Static properties
     //------------------------------------------------------------------------------
+
 
     //------------------------------------------------------------------------------
     // Returns a vector with all components set to 0.
@@ -540,7 +555,7 @@ namespace xmath
     // Notes:
     //  Faster than Length() for comparisons.
     //
-    inline float fvec4::LengthSq(void) const noexcept
+    inline float fvec4::LengthSquared(void) const noexcept
     {
         return _mm_cvtss_f32(_mm_dp_ps(m_XYZW, m_XYZW, 0xF1));
     }
@@ -556,7 +571,7 @@ namespace xmath
     //
     inline fvec4 fvec4::LimitLengthCopy(float MaxLength) const noexcept
     {
-        float l2 = LengthSq();
+        float l2 = LengthSquared();
         if (l2 > MaxLength * MaxLength)
         {
             float invLen = xmath::InvSqrt(l2);
@@ -734,7 +749,7 @@ namespace xmath
     //
     inline float fvec4::DistanceSquare(const fvec4& v) const noexcept
     {
-        return (*this - v).LengthSq();
+        return (*this - v).LengthSquared();
     }
 
     //------------------------------------------------------------------------------

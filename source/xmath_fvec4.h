@@ -53,6 +53,10 @@ namespace xmath
         inline              std::string ToString                    (void)                                  const       noexcept;
         inline friend std::ostream&     operator<<                  (std::ostream& os, const fvec4& vec)                noexcept;
 
+        // Setups
+        inline              fvec4&      setup                       ( float value )                                     noexcept;
+        inline              fvec4&      setup                       ( float x, float y, float z, float w )              noexcept;
+
         // Static properties
         static constexpr    fvec4       fromZero                    (void)                                              noexcept;
         static constexpr    fvec4       fromOne                     (void)                                              noexcept;
@@ -84,7 +88,7 @@ namespace xmath
 
         // Instance methods
         inline              float       Length                      (void)                                      const   noexcept;
-        inline              float       LengthSq                    (void)                                      const   noexcept;
+        inline              float       LengthSquared               (void)                                      const   noexcept;
         inline              fvec4       LimitLengthCopy             (float MaxLength)                           const   noexcept;
         inline              fvec4       NormalizeCopy               (void)                                      const   noexcept;
         inline              fvec4&      Normalize                   (void)                                              noexcept;

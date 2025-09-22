@@ -84,25 +84,26 @@ namespace xmath
         constexpr explicit              fmat4_t                 (const fmat4_t<!T_USE_SIMD_V>& other)               noexcept;
 
         // Static constructors
-        static constexpr fmat4_t        fromIdentity            (void)                                              noexcept;
-        static constexpr fmat4_t        fromZero                (void)                                              noexcept;
-        static inline    fmat4_t        fromTranslation         (const fvec3& t)                                    noexcept;
-        static inline    fmat4_t        fromRotation            (const fquat& q)                                    noexcept;
-        static inline    fmat4_t        fromRotation            (const fvec3& axis, radian angle)                   noexcept;
-        static inline    fmat4_t        fromRotation            (const radian3& Euler)                              noexcept;
-        static inline    fmat4_t        fromScale               (const fvec3& s)                                    noexcept;
-        static inline    fmat4_t        fromPerspective         (radian fov, float aspect, float near_plane, float far_plane) noexcept;
-        static inline    fmat4_t        fromPerspective         (float left, float right, float bottom, float top, float near_plane, float far_plane) noexcept;
-        static inline    fmat4_t        fromOrtho               (float left, float right, float bottom, float top, float near_plane, float far_plane) noexcept;
-        static inline    fmat4_t        fromOrtho               (float width, float height, float near_plane, float far_plane) noexcept;
-        static inline    fmat4_t        fromLookAt              (const fvec3& eye, const fvec3& target, const fvec3& up) noexcept;
-        static inline    fmat4_t        fromBillboard           (const fvec3& from, const fvec3& to, const fvec3& up) noexcept;
-        static inline    fmat4_t        fromRotationX           ( radian Angle )                                    noexcept;
-        static inline    fmat4_t        fromRotationY           ( radian Angle )                                    noexcept;
-        static inline    fmat4_t        fromRotationZ           ( radian Angle )                                    noexcept;
+static constexpr [[nodiscard]] fmat4_t  fromIdentity            (void)                                              noexcept;
+static constexpr [[nodiscard]] fmat4_t  fromZero                (void)                                              noexcept;
+static inline    [[nodiscard]] fmat4_t  fromTranslation         (const fvec3& t)                                    noexcept;
+static inline    [[nodiscard]] fmat4_t  fromRotation            (const fquat& q)                                    noexcept;
+static inline    [[nodiscard]] fmat4_t  fromRotation            (const fvec3& axis, radian angle)                   noexcept;
+static inline    [[nodiscard]] fmat4_t  fromRotation            (const radian3& Euler)                              noexcept;
+static inline    [[nodiscard]] fmat4_t  fromScale               (const fvec3& s)                                    noexcept;
+static inline    [[nodiscard]] fmat4_t  fromPerspective         (radian fov, float aspect, float near_plane, float far_plane) noexcept;
+static inline    [[nodiscard]] fmat4_t  fromPerspective         (float left, float right, float bottom, float top, float near_plane, float far_plane) noexcept;
+static inline    [[nodiscard]] fmat4_t  fromOrtho               (float left, float right, float bottom, float top, float near_plane, float far_plane) noexcept;
+static inline    [[nodiscard]] fmat4_t  fromOrtho               (float width, float height, float near_plane, float far_plane) noexcept;
+static inline    [[nodiscard]] fmat4_t  fromLookAt              (const fvec3& eye, const fvec3& target, const fvec3& up) noexcept;
+static inline    [[nodiscard]] fmat4_t  fromBillboard           (const fvec3& from, const fvec3& to, const fvec3& up) noexcept;
+static inline    [[nodiscard]] fmat4_t  fromRotationX           ( radian Angle )                                    noexcept;
+static inline    [[nodiscard]] fmat4_t  fromRotationY           ( radian Angle )                                    noexcept;
+static inline    [[nodiscard]] fmat4_t  fromRotationZ           ( radian Angle )                                    noexcept;
 
         // Setup methods (mutable, replace)
         inline fmat4_t&                 setupSRT                (const fvec3& scale, const fquat& rotation, const fvec3& translation) noexcept;
+        inline fmat4_t&                 setupSRT                (const fvec3& scale, const radian3& rotation, const fvec3& translation) noexcept;
         inline fmat4_t&                 setupIdentity           (void)                                              noexcept;
         inline fmat4_t&                 setupZero               (void)                                              noexcept;
         inline fmat4_t&                 setupTranslation        (const fvec3& t)                                    noexcept;
@@ -119,40 +120,41 @@ namespace xmath
         inline                          operator fquat          ()                                          const   noexcept;
 
         // Operations
-        inline fmat4_t                  operator+               (const fmat4_t& other)                      const   noexcept;
-        inline fmat4_t                  operator-               (const fmat4_t& other)                      const   noexcept;
-        inline fmat4_t                  operator*               (const fmat4_t& other)                      const   noexcept;
-        inline fmat4_t&                 operator+=              (const fmat4_t& other)                              noexcept;
-        inline fmat4_t&                 operator-=              (const fmat4_t& other)                              noexcept;
-        inline fmat4_t&                 operator*=              (const fmat4_t& other)                              noexcept;
-        inline fvec4                    operator*               (const fvec4& v)                            const   noexcept;
-        inline fvec3                    operator*               (const fvec3& v)                            const   noexcept;
-        inline bool                     Equals                  (const fmat4_t& other, float tolerance)     const   noexcept;
+        inline [[nodiscard]] fmat4_t    operator+               (const fmat4_t& other)                      const   noexcept;
+        inline [[nodiscard]] fmat4_t    operator-               (const fmat4_t& other)                      const   noexcept;
+        inline [[nodiscard]] fmat4_t    operator*               (const fmat4_t& other)                      const   noexcept;
+        inline [[nodiscard]] fmat4_t&   operator+=              (const fmat4_t& other)                              noexcept;
+        inline [[nodiscard]] fmat4_t&   operator-=              (const fmat4_t& other)                              noexcept;
+        inline [[nodiscard]] fmat4_t&   operator*=              (const fmat4_t& other)                              noexcept;
+        inline [[nodiscard]] fvec4      operator*               (const fvec4& v)                            const   noexcept;
+        inline [[nodiscard]] fvec3      operator*               (const fvec3& v)                            const   noexcept;
+        inline [[nodiscard]] bool       Equals                  (const fmat4_t& other, float tolerance)     const   noexcept;
 
         // Math functions
-        inline fmat4_t                  Transpose               (void)                                      const   noexcept;
-        inline fmat4_t                  Inverse                 (void)                                      const   noexcept;
-        inline fmat4_t                  InverseSRT              (void)                                      const   noexcept;
-        inline fmat4_t                  InverseRT               (void)                                      const   noexcept;
-        inline fmat4_t                  InverseTranspose        (void)                                      const   noexcept;
-        inline fmat4_t                  InverseTransposeSRT     (void)                                      const   noexcept;
-        inline float                    Determinant             (void)                                      const   noexcept;
-        inline fmat4_t&                 Orthogonalize           (void)                                              noexcept;
+        inline [[nodiscard]] fmat4_t    Transpose               (void)                                      const   noexcept;
+        inline [[nodiscard]] fmat4_t    Inverse                 (void)                                      const   noexcept;
+        inline [[nodiscard]] fmat4_t    InverseSRT              (void)                                      const   noexcept;
+        inline [[nodiscard]] fmat4_t    InverseRT               (void)                                      const   noexcept;
+        inline [[nodiscard]] fmat4_t    InverseTranspose        (void)                                      const   noexcept;
+        inline [[nodiscard]] fmat4_t    InverseTransposeSRT     (void)                                      const   noexcept;
+        inline [[nodiscard]] float      Determinant             (void)                                      const   noexcept;
+        inline [[nodiscard]] fmat4_t&   Orthogonalize           (void)                                              noexcept;
 
         // Geometry helpers
-        inline fvec3                    ExtractPosition         (void)                                      const   noexcept;
-        inline fquat                    ExtractRotation         (void)                                      const   noexcept;
-        inline fvec3                    ExtractScale            (void)                                      const   noexcept;
-        inline fvec3                    Forward                 (void)                                      const   noexcept;
-        inline fvec3                    Back                    (void)                                      const   noexcept;
-        inline fvec3                    Up                      (void)                                      const   noexcept;
-        inline fvec3                    Down                    (void)                                      const   noexcept;
-        inline fvec3                    Left                    (void)                                      const   noexcept;
-        inline fvec3                    Right                   (void)                                      const   noexcept;
-        inline fvec3                    RotateVector            (const fvec3& v)                            const   noexcept;
-        inline fvec3                    InvRotateVector         (const fvec3& v)                            const   noexcept;
-        inline fvec3                    TransformPosition       (const fvec3& p)                            const   noexcept;
-        inline fvec3                    TransformDirection      (const fvec3& d)                            const   noexcept;
+        inline [[nodiscard]] fvec3      ExtractPosition         (void)                                      const   noexcept;
+        inline [[nodiscard]] fquat      ExtractRotation         (void)                                      const   noexcept;
+        inline [[nodiscard]] radian3    ExtractEulers           (void)                                      const   noexcept;
+        inline [[nodiscard]] fvec3      ExtractScale            (void)                                      const   noexcept;
+        inline [[nodiscard]] fvec3      Forward                 (void)                                      const   noexcept;
+        inline [[nodiscard]] fvec3      Back                    (void)                                      const   noexcept;
+        inline [[nodiscard]] fvec3      Up                      (void)                                      const   noexcept;
+        inline [[nodiscard]] fvec3      Down                    (void)                                      const   noexcept;
+        inline [[nodiscard]] fvec3      Left                    (void)                                      const   noexcept;
+        inline [[nodiscard]] fvec3      Right                   (void)                                      const   noexcept;
+        inline [[nodiscard]] fvec3      RotateVector            (const fvec3& v)                            const   noexcept;
+        inline [[nodiscard]] fvec3      InvRotateVector         (const fvec3& v)                            const   noexcept;
+        inline [[nodiscard]] fvec3      TransformPosition       (const fvec3& p)                            const   noexcept;
+        inline [[nodiscard]] fvec3      TransformDirection      (const fvec3& d)                            const   noexcept;
 
         // Mutable chaining methods (post-multiply)
         inline fmat4_t&                 Translate               (const fvec3& t)                                    noexcept;
@@ -180,18 +182,18 @@ namespace xmath
         inline fmat4_t&                 ClearScale              (void)                                              noexcept;
 
         // Immutable versions (Copy suffix)
-        inline fmat4_t                  TranslateCopy           (const fvec3& t)                            const   noexcept;
-        inline fmat4_t                  RotateCopy              (const fquat& q)                            const   noexcept;
-        inline fmat4_t                  RotateCopy              (const fvec3& axis, radian angle)           const   noexcept;
-        inline fmat4_t                  ScaleCopy               (const fvec3& s)                            const   noexcept;
-        inline fmat4_t                  PreTranslateCopy        (const fvec3& t)                            const   noexcept;
-        inline fmat4_t                  PreRotateCopy           (const fquat& q)                            const   noexcept;
-        inline fmat4_t                  PreRotateCopy           (const fvec3& axis, radian angle)           const   noexcept;
-        inline fmat4_t                  PreScaleCopy            (const fvec3& s)                            const   noexcept;
+        inline [[nodiscard]] fmat4_t    TranslateCopy           (const fvec3& t)                            const   noexcept;
+        inline [[nodiscard]] fmat4_t    RotateCopy              (const fquat& q)                            const   noexcept;
+        inline [[nodiscard]] fmat4_t    RotateCopy              (const fvec3& axis, radian angle)           const   noexcept;
+        inline [[nodiscard]] fmat4_t    ScaleCopy               (const fvec3& s)                            const   noexcept;
+        inline [[nodiscard]] fmat4_t    PreTranslateCopy        (const fvec3& t)                            const   noexcept;
+        inline [[nodiscard]] fmat4_t    PreRotateCopy           (const fquat& q)                            const   noexcept;
+        inline [[nodiscard]] fmat4_t    PreRotateCopy           (const fvec3& axis, radian angle)           const   noexcept;
+        inline [[nodiscard]] fmat4_t    PreScaleCopy            (const fvec3& s)                            const   noexcept;
 
         // Safety and validation
-        inline bool                     isFinite                (void)                                      const   noexcept;
-        inline bool                     isIdentity              (void)                                      const   noexcept;
-        inline void                     SanityCheck             (void)                                      const   noexcept;
+        inline [[nodiscard]] bool       isFinite                (void)                                      const   noexcept;
+        inline [[nodiscard]] bool       isIdentity              (void)                                      const   noexcept;
+        inline [[nodiscard]] void       SanityCheck             (void)                                      const   noexcept;
     };
 }

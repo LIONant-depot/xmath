@@ -13,6 +13,11 @@
 #include <cassert>
 #include <span>
 
+namespace xmath
+{
+    using   floatx4 = __m128;             // xmath own alias for simd data
+}
+
 #include "xmath_strong_typing_numerics.h"
 #include "xmath_functions.h"
 #include "xmath_trigonometry.h"

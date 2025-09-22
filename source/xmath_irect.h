@@ -114,6 +114,6 @@ namespace xmath
         inline              int&                operator[]                  (int Index)                                                         noexcept;
 
         // Friend operators
-        friend              irect               operator+                   (const ivec2& Point, const irect& Rect)                             noexcept;
+        inline friend       irect               operator+                   (const ivec2& Point, const irect& Rect)                             noexcept;
     };
 }
