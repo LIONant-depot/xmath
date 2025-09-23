@@ -2,10 +2,6 @@
 #define _XMATH_RADIAN3_H
 #pragma once
 
-#ifndef XMATH_H
-    #include "xmath.h"
-#endif
-
 namespace xmath
 {
     //------------------------------------------------------------------------------

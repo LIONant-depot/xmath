@@ -1,6 +1,6 @@
 #pragma once
 #ifndef XMATH_FLOAT_VECTOR_H
-#error "You must include xmath_vector.h"
+    #error "You must include xmath_vector.h"
 #endif
 namespace xmath
 {
