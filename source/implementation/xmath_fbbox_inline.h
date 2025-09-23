@@ -839,7 +839,7 @@ namespace xmath
     // Reference to this box (chainable).
     //
     template <bool V>
-    inline fbbox_t<V>& fbbox_t<V>::setZero(void) noexcept
+    inline fbbox_t<V>& fbbox_t<V>::setupZero(void) noexcept
     {
         this->m_Min = fvec3::fromZero();
         this->m_Max = fvec3::fromZero();
@@ -853,10 +853,9 @@ namespace xmath
     // Reference to this box (chainable).
     //
     template <bool V>
-    inline fbbox_t<V>& fbbox_t<V>::setIdentity(void) noexcept
+    inline fbbox_t<V>& fbbox_t<V>::setupIdentity(void) noexcept
     {
-        this->m_Min = fvec3(-1.f);
-        this->m_Max = fvec3(1.f);
+        *this = fromIdentity();
         return *this;
     }
 

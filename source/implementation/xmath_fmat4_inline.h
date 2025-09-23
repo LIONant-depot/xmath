@@ -200,7 +200,7 @@ namespace xmath
     //  fromIdentity matrix.
     //
     template <bool V>
-    constexpr fmat4_t<V> fmat4_t<V>::fromIdentity(void) noexcept
+    constexpr [[nodiscard]] fmat4_t<V> fmat4_t<V>::fromIdentity(void) noexcept
     {
         fmat4_t<V> m;
         if constexpr (V)
@@ -230,7 +230,7 @@ namespace xmath
     //  fromZero matrix.
     //
     template <bool V>
-    constexpr fmat4_t<V> fmat4_t<V>::fromZero(void) noexcept
+    constexpr [[nodiscard]] fmat4_t<V> fmat4_t<V>::fromZero(void) noexcept
     {
         fmat4_t<V> m;
         if constexpr (V)
@@ -264,7 +264,7 @@ namespace xmath
     //  Sets identity with translation in last column (m_03, m_13, m_23, 1.0).
     //
     template <bool V>
-    inline fmat4_t<V> fmat4_t<V>::fromTranslation(const fvec3& t) noexcept
+    inline [[nodiscard]] fmat4_t<V> fmat4_t<V>::fromTranslation(const fvec3& t) noexcept
     {
         assert(t.isFinite());
         fmat4_t<V> m;
@@ -379,7 +379,7 @@ namespace xmath
     inline fmat4_t<V> fmat4_t<V>::fromRotation(const fquat& q) noexcept
     {
         assert(q.isFinite());
-        assert(q.isNormalized());
+    //    assert(q.isNormalized());
 
         const float xx = q.m_X * q.m_X;
         const float xy = q.m_X * q.m_Y;
@@ -844,7 +844,7 @@ namespace xmath
     inline fmat4_t<V>& fmat4_t<V>::setupSRT(const fvec3& scale, const fquat& rotation, const fvec3& translation) noexcept
     {
         assert(translation.isFinite());
-        assert(rotation.isNormalized());
+       // assert(rotation.isNormalized());
         assert(scale.isFinite() && scale.m_X != 0.0f && scale.m_Y != 0.0f && scale.m_Z != 0.0f);
 
         // Set rotation
@@ -1569,65 +1569,183 @@ namespace xmath
         fmat4_t<V> result;
         if constexpr (V)
         {
-            // SIMD branch: Adjoint method for 4x4
-            // Compute determinant using Laplace expansion along first row
-            float det_val = this->m_00 * (this->m_11 * this->m_22 * this->m_33 + this->m_12 * this->m_23 * this->m_31 + this->m_13 * this->m_21 * this->m_32 -
-                            this->m_11 *  this->m_23 * this->m_32 - this->m_12 * this->m_21 * this->m_33 - this->m_13 * this->m_22 * this->m_31) -
-                            this->m_01 * (this->m_10 * this->m_22 * this->m_33 + this->m_12 * this->m_23 * this->m_30 + this->m_13 * this->m_20 * this->m_32 -
-                            this->m_10 *  this->m_23 * this->m_32 - this->m_12 * this->m_20 * this->m_33 - this->m_13 * this->m_22 * this->m_30) +
-                            this->m_02 * (this->m_10 * this->m_21 * this->m_33 + this->m_11 * this->m_23 * this->m_30 + this->m_13 * this->m_20 * this->m_31 -
-                            this->m_10 *  this->m_23 * this->m_31 - this->m_11 * this->m_20 * this->m_33 - this->m_13 * this->m_21 * this->m_30) -
-                            this->m_03 * (this->m_10 * this->m_21 * this->m_32 + this->m_11 * this->m_22 * this->m_30 + this->m_12 * this->m_20 * this->m_31 -
-                            this->m_10 *  this->m_22 * this->m_31 - this->m_11 * this->m_20 * this->m_32 - this->m_12 * this->m_21 * this->m_30);
-            assert(std::abs(det_val) >= 0.00001f);
-            float inv_det = 1.0f / det_val;
+            if constexpr (false)
+            {
+                result = *this;
+                alignas(fmat4_t<V>) const float* src = &(result.m_Cells[0][0]);
 
-            // Compute adjoint (transpose of cofactors)
-            floatx4 inv_det_v = _mm_set1_ps(inv_det);
+                floatx4 minor0, minor1, minor2, minor3;
+                floatx4 row0, row1, row2, row3;
+                floatx4 det, tmp1;
 
-            // Cofactors for column 0 (result.m_00, m_10, m_20, m_30)
-            result.m_Columns[0] = _mm_set_ps(
-                -inv_det * (this->m_10 * this->m_21 * this->m_32 + this->m_11 * this->m_22 * this->m_30 + this->m_12 * this->m_20 * this->m_31 -
-                            this->m_10 * this->m_22 * this->m_31 - this->m_11 * this->m_20 * this->m_32 - this->m_12 * this->m_21 * this->m_30), // m_30
-                 inv_det * (this->m_10 * this->m_21 * this->m_33 + this->m_11 * this->m_23 * this->m_30 + this->m_13 * this->m_20 * this->m_31 -
-                            this->m_10 * this->m_23 * this->m_31 - this->m_11 * this->m_20 * this->m_33 - this->m_13 * this->m_21 * this->m_30), // m_20
-                -inv_det * (this->m_10 * this->m_22 * this->m_33 + this->m_12 * this->m_23 * this->m_30 + this->m_13 * this->m_20 * this->m_32 -
-                            this->m_10 * this->m_23 * this->m_32 - this->m_12 * this->m_20 * this->m_33 - this->m_13 * this->m_22 * this->m_30), // m_10
-                 inv_det * (this->m_11 * this->m_22 * this->m_33 + this->m_12 * this->m_23 * this->m_31 + this->m_13 * this->m_21 * this->m_32 -
-                            this->m_11 * this->m_23 * this->m_32 - this->m_12 * this->m_21 * this->m_33 - this->m_13 * this->m_22 * this->m_31)); // m_00
+                tmp1 = _mm_loadh_pi(_mm_loadl_pi(result.m_Columns[0], (const __m64*)(src)), (__m64*)(src + 4));
+                row1 = _mm_loadh_pi(_mm_loadl_pi(result.m_Columns[0], (const __m64*)(src + 8)), (__m64*)(src + 12));
 
-            // Cofactors for column 1 (result.m_01, m_11, m_21, m_31)
-            result.m_Columns[1] = _mm_set_ps(
-                 inv_det * (this->m_00 * this->m_21 * this->m_32 + this->m_01 * this->m_22 * this->m_30 + this->m_02 * this->m_20 * this->m_31 -
-                            this->m_00 * this->m_22 * this->m_31 - this->m_01 * this->m_20 * this->m_32 - this->m_02 * this->m_21 * this->m_30), // m_31
-                -inv_det * (this->m_00 * this->m_21 * this->m_33 + this->m_01 * this->m_23 * this->m_30 + this->m_03 * this->m_20 * this->m_31 -
-                            this->m_00 * this->m_23 * this->m_31 - this->m_01 * this->m_20 * this->m_33 - this->m_03 * this->m_21 * this->m_30), // m_21
-                 inv_det * (this->m_00 * this->m_22 * this->m_33 + this->m_02 * this->m_23 * this->m_30 + this->m_03 * this->m_20 * this->m_32 -
-                            this->m_00 * this->m_23 * this->m_32 - this->m_02 * this->m_20 * this->m_33 - this->m_03 * this->m_22 * this->m_30), // m_11
-                -inv_det * (this->m_01 * this->m_22 * this->m_33 + this->m_02 * this->m_23 * this->m_31 + this->m_03 * this->m_21 * this->m_32 -
-                            this->m_01 * this->m_23 * this->m_32 - this->m_02 * this->m_21 * this->m_33 - this->m_03 * this->m_22 * this->m_31)); // m_01
+                row0 = _mm_shuffle_ps(tmp1, row1, 0x88);
+                row1 = _mm_shuffle_ps(row1, tmp1, 0xDD);
 
-            // Cofactors for column 2 (result.m_02, m_12, m_22, m_32)
-            result.m_Columns[2] = _mm_set_ps(
-                -inv_det * (this->m_00 * this->m_11 * this->m_32 + this->m_01 * this->m_12 * this->m_30 + this->m_02 * this->m_10 * this->m_31 -
-                            this->m_00 * this->m_12 * this->m_31 - this->m_01 * this->m_10 * this->m_32 - this->m_02 * this->m_11 * this->m_30), // m_32
-                 inv_det * (this->m_00 * this->m_11 * this->m_33 + this->m_01 * this->m_13 * this->m_30 + this->m_03 * this->m_10 * this->m_31 -
-                            this->m_00 * this->m_13 * this->m_31 - this->m_01 * this->m_10 * this->m_33 - this->m_03 * this->m_11 * this->m_30), // m_22
-                -inv_det * (this->m_00 * this->m_12 * this->m_33 + this->m_02 * this->m_13 * this->m_30 + this->m_03 * this->m_10 * this->m_32 -
-                            this->m_00 * this->m_13 * this->m_32 - this->m_02 * this->m_10 * this->m_33 - this->m_03 * this->m_12 * this->m_30), // m_12
-                 inv_det * (this->m_01 * this->m_12 * this->m_33 + this->m_02 * this->m_13 * this->m_31 + this->m_03 * this->m_11 * this->m_32 -
-                            this->m_01 * this->m_13 * this->m_32 - this->m_02 * this->m_11 * this->m_33 - this->m_03 * this->m_12 * this->m_31)); // m_02
+                tmp1 = _mm_loadh_pi(_mm_loadl_pi(tmp1, (const __m64*)(src + 2)), (const __m64*)(src + 6));
+                row3 = _mm_loadh_pi(_mm_loadl_pi(result.m_Columns[2], (const __m64*)(src + 10)), (const __m64*)(src + 14));
 
-            // Cofactors for column 3 (result.m_03, m_13, m_23, m_33)
-            result.m_Columns[3] = _mm_set_ps(
-                 inv_det * (this->m_00 * this->m_11 * this->m_22 + this->m_01 * this->m_12 * this->m_20 + this->m_02 * this->m_10 * this->m_21 -
-                            this->m_00 * this->m_12 * this->m_21 - this->m_01 * this->m_10 * this->m_22 - this->m_02 * this->m_11 * this->m_20), // m_33
-                -inv_det * (this->m_00 * this->m_11 * this->m_23 + this->m_01 * this->m_13 * this->m_20 + this->m_03 * this->m_10 * this->m_21 -
-                            this->m_00 * this->m_13 * this->m_21 - this->m_01 * this->m_10 * this->m_23 - this->m_03 * this->m_11 * this->m_20), // m_23
-                 inv_det * (this->m_00 * this->m_12 * this->m_23 + this->m_02 * this->m_13 * this->m_20 + this->m_03 * this->m_10 * this->m_22 -
-                            this->m_00 * this->m_13 * this->m_22 - this->m_02 * this->m_10 * this->m_23 - this->m_03 * this->m_12 * this->m_20), // m_13
-                -inv_det * (this->m_01 * this->m_12 * this->m_23 + this->m_02 * this->m_13 * this->m_21 + this->m_03 * this->m_11 * this->m_22 -
-                            this->m_01 * this->m_13 * this->m_22 - this->m_02 * this->m_11 * this->m_23 - this->m_03 * this->m_12 * this->m_21)); // m_03
+                row2 = _mm_shuffle_ps(tmp1, row3, 0x88);
+                row3 = _mm_shuffle_ps(row3, tmp1, 0xDD);
+
+                tmp1 = _mm_mul_ps(row2, row3);
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+
+                minor0 = _mm_mul_ps(row1, tmp1);
+                minor1 = _mm_mul_ps(row0, tmp1);
+
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+
+                minor0 = _mm_sub_ps(_mm_mul_ps(row1, tmp1), minor0);
+                minor1 = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor1);
+                minor1 = _mm_shuffle_ps(minor1, minor1, 0x4E);
+
+                tmp1 = _mm_mul_ps(row1, row2);
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+
+                minor0 = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor0);
+                minor3 = _mm_mul_ps(row0, tmp1);
+
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+
+                minor0 = _mm_sub_ps(minor0, _mm_mul_ps(row3, tmp1));
+                minor3 = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor3);
+                minor3 = _mm_shuffle_ps(minor3, minor3, 0x4E);
+
+                tmp1 = _mm_mul_ps(_mm_shuffle_ps(row1, row1, 0x4E), row3);
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+                row2 = _mm_shuffle_ps(row2, row2, 0x4E);
+
+                minor0 = _mm_add_ps(_mm_mul_ps(row2, tmp1), minor0);
+                minor2 = _mm_mul_ps(row0, tmp1);
+
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+
+                minor0 = _mm_sub_ps(minor0, _mm_mul_ps(row2, tmp1));
+                minor2 = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor2);
+                minor2 = _mm_shuffle_ps(minor2, minor2, 0x4E);
+
+                tmp1 = _mm_mul_ps(row0, row1);
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+
+                minor2 = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor2);
+                minor3 = _mm_sub_ps(_mm_mul_ps(row2, tmp1), minor3);
+
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+
+                minor2 = _mm_sub_ps(_mm_mul_ps(row3, tmp1), minor2);
+                minor3 = _mm_sub_ps(minor3, _mm_mul_ps(row2, tmp1));
+
+                tmp1 = _mm_mul_ps(row0, row3);
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+
+                minor1 = _mm_sub_ps(minor1, _mm_mul_ps(row2, tmp1));
+                minor2 = _mm_add_ps(_mm_mul_ps(row1, tmp1), minor2);
+
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+
+                minor1 = _mm_add_ps(_mm_mul_ps(row2, tmp1), minor1);
+                minor2 = _mm_sub_ps(minor2, _mm_mul_ps(row1, tmp1));
+
+                tmp1 = _mm_mul_ps(row0, row2);
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+
+                minor1 = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor1);
+                minor3 = _mm_sub_ps(minor3, _mm_mul_ps(row1, tmp1));
+
+                tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+
+                minor1 = _mm_sub_ps(minor1, _mm_mul_ps(row3, tmp1));
+                minor3 = _mm_add_ps(_mm_mul_ps(row1, tmp1), minor3);
+
+                det = _mm_mul_ps(row0, minor0);
+                det = _mm_add_ps(_mm_shuffle_ps(det, det, 0x4E), det);
+                det = _mm_add_ss(_mm_shuffle_ps(det, det, 0xB1), det);
+                tmp1 = _mm_rcp_ss(det);
+
+                det = _mm_sub_ss(_mm_add_ss(tmp1, tmp1), _mm_mul_ss(det, _mm_mul_ss(tmp1, tmp1)));
+                det = _mm_shuffle_ps(det, det, 0x00);
+
+                minor0 = _mm_mul_ps(det, minor0);
+                _mm_storel_pi((__m64*)(src), minor0);
+                _mm_storeh_pi((__m64*)(src + 2), minor0);
+
+                minor1 = _mm_mul_ps(det, minor1);
+                _mm_storel_pi((__m64*)(src + 4), minor1);
+                _mm_storeh_pi((__m64*)(src + 6), minor1);
+
+                minor2 = _mm_mul_ps(det, minor2);
+                _mm_storel_pi((__m64*)(src + 8), minor2);
+                _mm_storeh_pi((__m64*)(src + 10), minor2);
+
+                minor3 = _mm_mul_ps(det, minor3);
+                _mm_storel_pi((__m64*)(src + 12), minor3);
+                _mm_storeh_pi((__m64*)(src + 14), minor3);
+            }
+            else
+            {
+                // SIMD branch: Adjoint method for 4x4
+                // Compute determinant using Laplace expansion along first row
+                float det_val = this->m_00 * (this->m_11 * this->m_22 * this->m_33 + this->m_12 * this->m_23 * this->m_31 + this->m_13 * this->m_21 * this->m_32 -
+                                this->m_11 *  this->m_23 * this->m_32 - this->m_12 * this->m_21 * this->m_33 - this->m_13 * this->m_22 * this->m_31) -
+                                this->m_01 * (this->m_10 * this->m_22 * this->m_33 + this->m_12 * this->m_23 * this->m_30 + this->m_13 * this->m_20 * this->m_32 -
+                                this->m_10 *  this->m_23 * this->m_32 - this->m_12 * this->m_20 * this->m_33 - this->m_13 * this->m_22 * this->m_30) +
+                                this->m_02 * (this->m_10 * this->m_21 * this->m_33 + this->m_11 * this->m_23 * this->m_30 + this->m_13 * this->m_20 * this->m_31 -
+                                this->m_10 *  this->m_23 * this->m_31 - this->m_11 * this->m_20 * this->m_33 - this->m_13 * this->m_21 * this->m_30) -
+                                this->m_03 * (this->m_10 * this->m_21 * this->m_32 + this->m_11 * this->m_22 * this->m_30 + this->m_12 * this->m_20 * this->m_31 -
+                                this->m_10 *  this->m_22 * this->m_31 - this->m_11 * this->m_20 * this->m_32 - this->m_12 * this->m_21 * this->m_30);
+              //  assert(std::abs(det_val) >= 0.00001f);
+                float inv_det = 1.0f / det_val;
+
+                // Compute adjoint (transpose of cofactors)
+                floatx4 inv_det_v = _mm_set1_ps(inv_det);
+
+                // Cofactors for column 0 (result.m_00, m_10, m_20, m_30)
+                result.m_Columns[0] = _mm_set_ps(
+                    -inv_det * (this->m_10 * this->m_21 * this->m_32 + this->m_11 * this->m_22 * this->m_30 + this->m_12 * this->m_20 * this->m_31 -
+                                this->m_10 * this->m_22 * this->m_31 - this->m_11 * this->m_20 * this->m_32 - this->m_12 * this->m_21 * this->m_30), // m_30
+                     inv_det * (this->m_10 * this->m_21 * this->m_33 + this->m_11 * this->m_23 * this->m_30 + this->m_13 * this->m_20 * this->m_31 -
+                                this->m_10 * this->m_23 * this->m_31 - this->m_11 * this->m_20 * this->m_33 - this->m_13 * this->m_21 * this->m_30), // m_20
+                    -inv_det * (this->m_10 * this->m_22 * this->m_33 + this->m_12 * this->m_23 * this->m_30 + this->m_13 * this->m_20 * this->m_32 -
+                                this->m_10 * this->m_23 * this->m_32 - this->m_12 * this->m_20 * this->m_33 - this->m_13 * this->m_22 * this->m_30), // m_10
+                     inv_det * (this->m_11 * this->m_22 * this->m_33 + this->m_12 * this->m_23 * this->m_31 + this->m_13 * this->m_21 * this->m_32 -
+                                this->m_11 * this->m_23 * this->m_32 - this->m_12 * this->m_21 * this->m_33 - this->m_13 * this->m_22 * this->m_31)); // m_00
+
+                // Cofactors for column 1 (result.m_01, m_11, m_21, m_31)
+                result.m_Columns[1] = _mm_set_ps(
+                     inv_det * (this->m_00 * this->m_21 * this->m_32 + this->m_01 * this->m_22 * this->m_30 + this->m_02 * this->m_20 * this->m_31 -
+                                this->m_00 * this->m_22 * this->m_31 - this->m_01 * this->m_20 * this->m_32 - this->m_02 * this->m_21 * this->m_30), // m_31
+                    -inv_det * (this->m_00 * this->m_21 * this->m_33 + this->m_01 * this->m_23 * this->m_30 + this->m_03 * this->m_20 * this->m_31 -
+                                this->m_00 * this->m_23 * this->m_31 - this->m_01 * this->m_20 * this->m_33 - this->m_03 * this->m_21 * this->m_30), // m_21
+                     inv_det * (this->m_00 * this->m_22 * this->m_33 + this->m_02 * this->m_23 * this->m_30 + this->m_03 * this->m_20 * this->m_32 -
+                                this->m_00 * this->m_23 * this->m_32 - this->m_02 * this->m_20 * this->m_33 - this->m_03 * this->m_22 * this->m_30), // m_11
+                    -inv_det * (this->m_01 * this->m_22 * this->m_33 + this->m_02 * this->m_23 * this->m_31 + this->m_03 * this->m_21 * this->m_32 -
+                                this->m_01 * this->m_23 * this->m_32 - this->m_02 * this->m_21 * this->m_33 - this->m_03 * this->m_22 * this->m_31)); // m_01
+
+                // Cofactors for column 2 (result.m_02, m_12, m_22, m_32)
+                result.m_Columns[2] = _mm_set_ps(
+                    -inv_det * (this->m_00 * this->m_11 * this->m_32 + this->m_01 * this->m_12 * this->m_30 + this->m_02 * this->m_10 * this->m_31 -
+                                this->m_00 * this->m_12 * this->m_31 - this->m_01 * this->m_10 * this->m_32 - this->m_02 * this->m_11 * this->m_30), // m_32
+                     inv_det * (this->m_00 * this->m_11 * this->m_33 + this->m_01 * this->m_13 * this->m_30 + this->m_03 * this->m_10 * this->m_31 -
+                                this->m_00 * this->m_13 * this->m_31 - this->m_01 * this->m_10 * this->m_33 - this->m_03 * this->m_11 * this->m_30), // m_22
+                    -inv_det * (this->m_00 * this->m_12 * this->m_33 + this->m_02 * this->m_13 * this->m_30 + this->m_03 * this->m_10 * this->m_32 -
+                                this->m_00 * this->m_13 * this->m_32 - this->m_02 * this->m_10 * this->m_33 - this->m_03 * this->m_12 * this->m_30), // m_12
+                     inv_det * (this->m_01 * this->m_12 * this->m_33 + this->m_02 * this->m_13 * this->m_31 + this->m_03 * this->m_11 * this->m_32 -
+                                this->m_01 * this->m_13 * this->m_32 - this->m_02 * this->m_11 * this->m_33 - this->m_03 * this->m_12 * this->m_31)); // m_02
+
+                // Cofactors for column 3 (result.m_03, m_13, m_23, m_33)
+                result.m_Columns[3] = _mm_set_ps(
+                     inv_det * (this->m_00 * this->m_11 * this->m_22 + this->m_01 * this->m_12 * this->m_20 + this->m_02 * this->m_10 * this->m_21 -
+                                this->m_00 * this->m_12 * this->m_21 - this->m_01 * this->m_10 * this->m_22 - this->m_02 * this->m_11 * this->m_20), // m_33
+                    -inv_det * (this->m_00 * this->m_11 * this->m_23 + this->m_01 * this->m_13 * this->m_20 + this->m_03 * this->m_10 * this->m_21 -
+                                this->m_00 * this->m_13 * this->m_21 - this->m_01 * this->m_10 * this->m_23 - this->m_03 * this->m_11 * this->m_20), // m_23
+                     inv_det * (this->m_00 * this->m_12 * this->m_23 + this->m_02 * this->m_13 * this->m_20 + this->m_03 * this->m_10 * this->m_22 -
+                                this->m_00 * this->m_13 * this->m_22 - this->m_02 * this->m_10 * this->m_23 - this->m_03 * this->m_12 * this->m_20), // m_13
+                    -inv_det * (this->m_01 * this->m_12 * this->m_23 + this->m_02 * this->m_13 * this->m_21 + this->m_03 * this->m_11 * this->m_22 -
+                                this->m_01 * this->m_13 * this->m_22 - this->m_02 * this->m_11 * this->m_23 - this->m_03 * this->m_12 * this->m_21)); // m_03
+            }
         }
         else
         {
@@ -1893,7 +2011,7 @@ namespace xmath
     //  Optimized for SIMD and scalar; matches Inverse() for RT matrices.
     //
     template <bool V>
-    inline fmat4_t<V> fmat4_t<V>::InverseRT(void) const noexcept
+    inline [[nodiscard]] fmat4_t<V> fmat4_t<V>::InverseRT(void) const noexcept
     {
         assert(this->isFinite());
         fmat4_t<V> result;
@@ -2719,8 +2837,43 @@ namespace xmath
     template <bool V>
     inline fmat4_t<V>& fmat4_t<V>::Scale(const fvec3& s) noexcept
     {
+        if constexpr (V)
+        {
+            const floatx4 GlobalScale = s.m_XYZW;
+
+            // If we ever hit this we may need to have an if statement to make sure not to scale
+            // anything in m_ColumnX.m128_float[3]
+            /*
+            assert(FEqual(reinterpret_cast<const float*>(&this->m_Columns[0])[3], 0.0f));
+            assert(FEqual(reinterpret_cast<const float*>(&this->m_Columns[1])[3], 0.0f));
+            assert(FEqual(reinterpret_cast<const float*>(&this->m_Columns[2])[3], 0.0f));
+            assert(FEqual(reinterpret_cast<const float*>(&this->m_Columns[3])[3], 1.0f));
+            */
+
+            this->m_Columns[0] = _mm_mul_ps(this->m_Columns[0], GlobalScale);
+            this->m_Columns[1] = _mm_mul_ps(this->m_Columns[1], GlobalScale);
+            this->m_Columns[2] = _mm_mul_ps(this->m_Columns[2], GlobalScale);
+            this->m_Columns[3] = _mm_mul_ps(this->m_Columns[3], GlobalScale);
+
+            // Hack fix
+            reinterpret_cast<float*>(&this->m_Columns[3])[3] = 1;
+        }
+        else
+        {
+            for (std::int32_t row = 0; row < 4; ++row)
+                for (std::int32_t col = 0; col < 4; ++col)
+                {
+                    this->m_Cells[row][col] *= Scale;
+                }
+
+            this->m_Cells[3][3] = 1;
+        }
+
+        return *this;
+/*
         assert(s.isFinite() && s.m_X != 0.0f && s.m_Y != 0.0f && s.m_Z != 0.0f);
         return *this = fromScale(s) * (*this);
+        */
     }
 
     //------------------------------------------------------------------------------
@@ -2832,14 +2985,12 @@ namespace xmath
             this->m_Columns[0] = _mm_mul_ps(this->m_Columns[0], _mm_set_ps1(s.m_X));
             this->m_Columns[1] = _mm_mul_ps(this->m_Columns[1], _mm_set_ps1(s.m_Y));
             this->m_Columns[2] = _mm_mul_ps(this->m_Columns[2], _mm_set_ps1(s.m_Z));
-            floatx4 scale_trans = _mm_set_ps(0.0f, s.m_Z, s.m_Y, s.m_X);
-            this->m_Columns[3] = _mm_mul_ps(this->m_Columns[3], _mm_set_ps(1.0f, scale_trans.m128_f32[2], scale_trans.m128_f32[1], scale_trans.m128_f32[0]));
         }
         else
         {
-            this->m_00 *= s.m_X; this->m_01 *= s.m_X; this->m_02 *= s.m_X; this->m_03 *= s.m_X;
-            this->m_10 *= s.m_Y; this->m_11 *= s.m_Y; this->m_12 *= s.m_Y; this->m_13 *= s.m_Y;
-            this->m_20 *= s.m_Z; this->m_21 *= s.m_Z; this->m_22 *= s.m_Z; this->m_23 *= s.m_Z;
+            this->m_00 *= s.m_X; this->m_10 *= s.m_X; this->m_20 *= s.m_X; this->m_30 *= s.m_X;
+            this->m_01 *= s.m_Y; this->m_11 *= s.m_Y; this->m_21 *= s.m_Y; this->m_31 *= s.m_Y;
+            this->m_02 *= s.m_Z; this->m_12 *= s.m_Z; this->m_22 *= s.m_Z; this->m_32 *= s.m_Z;
         }
         return *this;
     }

@@ -113,19 +113,19 @@ static inline    [[nodiscard]] fmat4_t  fromRotationZ           ( radian Angle )
         inline fmat4_t&                 setupScale              (float s)                                           noexcept;
 
         // Accessors (transposed for row-major feel: operator()(row, col) accesses m_Cells[col][row])
-        constexpr fvec4                 operator[]              (size_t row)                                const   noexcept;
-        constexpr float&                operator()              (size_t row, size_t col)                            noexcept;
-        constexpr const float&          operator()              (size_t row, size_t col)                    const   noexcept;
-        constexpr                       operator std::span<const float,16> ()                               const   noexcept;
-        inline                          operator fquat          ()                                          const   noexcept;
+constexpr [[nodiscard]] fvec4           operator[]              (size_t row)                                const   noexcept;
+constexpr [[nodiscard]] float&          operator()              (size_t row, size_t col)                            noexcept;
+constexpr [[nodiscard]] const float&    operator()              (size_t row, size_t col)                    const   noexcept;
+constexpr [[nodiscard]]      operator std::span<const float,16> ()                                          const   noexcept;
+inline    [[nodiscard]]                 operator fquat          ()                                          const   noexcept;
 
         // Operations
         inline [[nodiscard]] fmat4_t    operator+               (const fmat4_t& other)                      const   noexcept;
         inline [[nodiscard]] fmat4_t    operator-               (const fmat4_t& other)                      const   noexcept;
         inline [[nodiscard]] fmat4_t    operator*               (const fmat4_t& other)                      const   noexcept;
-        inline [[nodiscard]] fmat4_t&   operator+=              (const fmat4_t& other)                              noexcept;
-        inline [[nodiscard]] fmat4_t&   operator-=              (const fmat4_t& other)                              noexcept;
-        inline [[nodiscard]] fmat4_t&   operator*=              (const fmat4_t& other)                              noexcept;
+        inline               fmat4_t&   operator+=              (const fmat4_t& other)                              noexcept;
+        inline               fmat4_t&   operator-=              (const fmat4_t& other)                              noexcept;
+        inline               fmat4_t&   operator*=              (const fmat4_t& other)                              noexcept;
         inline [[nodiscard]] fvec4      operator*               (const fvec4& v)                            const   noexcept;
         inline [[nodiscard]] fvec3      operator*               (const fvec3& v)                            const   noexcept;
         inline [[nodiscard]] bool       Equals                  (const fmat4_t& other, float tolerance)     const   noexcept;

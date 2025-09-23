@@ -31,12 +31,12 @@ namespace xmath
 
     inline fmat4 transform3::toMatrix(void) const noexcept
     {
-        return { m_Position, m_Rotation, m_Scale };
+        return { m_Scale, m_Rotation, m_Position };
     }
 
     inline transform3::operator fmat4 () const noexcept
     {
-        return { m_Position, m_Rotation, m_Scale };
+        return { m_Scale, m_Rotation, m_Position };
     }
 
 
@@ -63,6 +63,4 @@ namespace xmath
         m_Scale     = fvec2::fromOne();
         m_Rotation  = 0_xdeg;
     }
-
-
 }
