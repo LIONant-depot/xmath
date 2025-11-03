@@ -332,6 +332,7 @@ namespace xmath
         inline              fvec3_t     operator+               (const fvec3_t& other)                  const       noexcept;
         inline              fvec3_t     operator-               (const fvec3_t& other)                  const       noexcept;
         inline              fvec3_t     operator*               (const fvec3_t& other)                  const       noexcept;
+        inline              fvec3_t     operator/               (const fvec3_t& other)                  const       noexcept;
         inline              fvec3_t     operator*               (float scalar)                          const       noexcept;
         inline              fvec3_t     operator/               (float scalar)                          const       noexcept;
         inline              fvec3_t&    operator+=              (const fvec3_t& other)                              noexcept;

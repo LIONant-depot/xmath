@@ -43,8 +43,9 @@ namespace xmath
     template <typename T>           constexpr   T               Lerp            ( float t, T a, T b )                               noexcept;
     template<std::floating_point T> inline      bool            isValid         ( T x )                                             noexcept;
     template<std::floating_point T> constexpr   T               Trunc           ( T x )                                             noexcept;
-    template <std::floating_point T>constexpr   bool            isFinite        ( T x )                                             noexcept;
-    template <std::floating_point T>constexpr   T               CopySign        ( T x, T y )                                        noexcept;
+    template<std::floating_point T> constexpr   bool            isFinite        ( T x )                                             noexcept;
+    template<std::floating_point T> constexpr   T               CopySign        ( T x, T y )                                        noexcept;
+    template<std::floating_point T> constexpr   T               Step            (const T& edge, const T& x)                         noexcept;
 
     inline bool                                                 SolvedQuadraticRoots(float& root1, float& root2, float a, float b, float c) noexcept;
 }

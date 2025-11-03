@@ -2449,6 +2449,28 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
+    // Component-wise divide by another vector.
+    //
+    // Parameters:
+    //  other - The other vector.
+    //
+    // Returns:
+    //  The product vector.
+    //
+    template <bool V >
+    inline fvec3_t<V> fvec3_t<V>::operator/(const fvec3_t& other) const noexcept
+    {
+        if constexpr (V)
+        {
+            return fvec3_t<V>(_mm_div_ps(this->m_XYZW, other.m_XYZW));
+        }
+        else
+        {
+            return fvec3_t<V>(this->m_X / other.m_X, this->m_Y / other.m_Y, this->m_Z / other.m_Z);
+        }
+    }
+
+    //------------------------------------------------------------------------------
     // Divides by a scalar.
     //
     // Parameters:

@@ -404,6 +404,32 @@ namespace xmath
     }
 
     //------------------------------------------------------------------------------
+    // Step
+    //------------------------------------------------------------------------------
+    //
+    // Returns 0 if x is less than edge, and 1 otherwise.
+    //
+    // Params:
+    //  edge - The threshold value to compare against.
+    //  x    - The input value to be tested.
+    //
+    // Returns:
+    //  0 if x < edge; otherwise, returns 1.
+    //
+    // Notes:
+    //  Commonly used in shader programming and signal processing to create a 
+    //  binary step function.
+    //  Assumes T is a floating-point type.
+    //  Does not interpolate or smooth the transition—this is a hard step.
+    //
+    //------------------------------------------------------------------------------
+    template<std::floating_point T>
+    constexpr T Step(const T& edge, const T& x) noexcept
+    {
+        return x < edge ? static_cast<T>(0) : static_cast<T>(1);
+    }
+
+    //------------------------------------------------------------------------------
     // FEqual
     //------------------------------------------------------------------------------
     //
