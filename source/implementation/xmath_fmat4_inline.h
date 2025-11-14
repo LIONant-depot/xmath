@@ -518,8 +518,8 @@ namespace xmath
         m(0, 0) = 1.0f / (aspect * tan_half);
         m(1, 1) = 1.0f / tan_half;
         m(2, 2) = far_plane / (far_plane - near_plane);
-        m(2, 3) = 1.0f;
-        m(3, 2) = -(far_plane * near_plane) / (far_plane - near_plane);
+        m(2, 3) = -(far_plane * near_plane) / (far_plane - near_plane);
+        m(3, 2) = 1.0f;
         return m;
     }
 
@@ -554,11 +554,11 @@ namespace xmath
         fmat4_t<V> m = fromZero();
         m(0, 0) = 2.0f * near_plane / (right - left);
         m(1, 1) = 2.0f * near_plane / (top - bottom);
-        m(0, 2) = (right + left) / (right - left);
-        m(1, 2) = (top + bottom) / (top - bottom);
+        m(2, 0) = (right + left) / (right - left);
+        m(2, 1) = (top + bottom) / (top - bottom);
         m(2, 2) = far_plane / (far_plane - near_plane);
-        m(2, 3) = 1.0f;
-        m(3, 2) = -(far_plane * near_plane) / (far_plane - near_plane);
+        m(2, 3) = -(far_plane * near_plane) / (far_plane - near_plane);
+        m(3, 2) = 1.0f;
         return m;
     }
 
@@ -593,9 +593,9 @@ namespace xmath
         m(0, 0) = 2.0f / (right - left);
         m(1, 1) = 2.0f / (top - bottom);
         m(2, 2) = 1.0f / (far_plane - near_plane);
-        m(0, 3) = -(right + left) / (right - left);
-        m(1, 3) = -(top + bottom) / (top - bottom);
-        m(2, 3) = -near_plane / (far_plane - near_plane);
+        m(3, 0) = -(right + left) / (right - left);
+        m(3, 1) = -(top + bottom) / (top - bottom);
+        m(3, 2) = -near_plane / (far_plane - near_plane);
         return m;
     }
 
