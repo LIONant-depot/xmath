@@ -26,6 +26,19 @@ namespace xmath
         )
     };
     XPROPERTY_REG(vec3_friend)
+
+    //------------------------------------------------------------------------------------------------
+
+    struct fbbox_friend : xmath::fbbox
+    {
+        XPROPERTY_DEF
+        ( "fbbox", xmath::fbbox
+        , obj_member<"Min", &xmath::fbbox::m_Min >
+        , obj_member<"Max", &xmath::fbbox::m_Max >
+        )
+    };
+    XPROPERTY_REG(fbbox_friend)
+
 }
 
 #endif
