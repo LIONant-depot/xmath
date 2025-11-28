@@ -35,7 +35,7 @@ namespace xmath
         constexpr                       fvec4                       (fvec4&&)                                           noexcept = default;
         constexpr                       fvec4                       (const fvec4&)                                      noexcept = default;
         constexpr                       fvec4&                      operator = (const fvec4&)                           noexcept = default;
-        inline                          fvec4                       (float x, float y, float z, float w)                noexcept;
+        constexpr                       fvec4                       (float x, float y, float z, float w)                noexcept;
         inline                          fvec4                       (float value)                                       noexcept;
         inline                          fvec4                       (const fvec3& other, float w)                       noexcept;
         inline                          fvec4                       (float x, const fvec3& other)                       noexcept;

@@ -17,8 +17,8 @@ namespace xmath
     //  z - The z component.
     //  w - The w component.
     //
-    inline fvec4::fvec4(float x, float y, float z, float w) noexcept
-        : m_XYZW(_mm_set_ps(w, z, y, x))
+    constexpr fvec4::fvec4(float x, float y, float z, float w) noexcept
+        : m_XYZW(floatx4{x, y, z, w})
     {
     }
 
