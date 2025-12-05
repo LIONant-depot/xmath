@@ -48,6 +48,38 @@ namespace xmath
     template<std::floating_point T> constexpr   T               Step            (const T& edge, const T& x)                         noexcept;
 
     inline bool                                                 SolvedQuadraticRoots(float& root1, float& root2, float a, float b, float c) noexcept;
+
+
+    struct half
+    {
+        std::uint16_t m_Value;
+
+        half() = default;
+
+        inline
+        half(float f) noexcept
+        {
+            __m128  vf = _mm_set_ss(f);
+            __m128i vh = _mm_cvtps_ph(vf, _MM_FROUND_TO_NEAREST_INT);
+            std::memcpy(&m_Value, &vh, sizeof(m_Value));
+        }
+
+        inline
+        operator float () const noexcept
+        {
+            return ToFloat();
+        }
+
+        inline
+        float ToFloat() const noexcept
+        {
+            __m128i vh = _mm_set1_epi16((int16_t)m_Value);
+            __m128 vf = _mm_cvtph_ps(vh);
+            float f;
+            std::memcpy(&f, &vf, sizeof(f));
+            return f;
+        }
+    };
 }
 #endif
 
