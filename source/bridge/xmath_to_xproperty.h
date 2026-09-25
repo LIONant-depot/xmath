@@ -14,6 +14,7 @@ namespace xmath
     struct vec2_friend;
     struct vec3_friend;
     struct fbbox_friend;
+    struct fquat_friend;
 }
 
 // These specializations must come before ANY friend struct body below is defined/registered.
@@ -26,6 +27,7 @@ namespace xmath
 template<> struct xproperty::settings::reflected_type<xmath::fvec2>  { using type = xmath::vec2_friend; };
 template<> struct xproperty::settings::reflected_type<xmath::fvec3>  { using type = xmath::vec3_friend; };
 template<> struct xproperty::settings::reflected_type<xmath::fbbox>  { using type = xmath::fbbox_friend; };
+template<> struct xproperty::settings::reflected_type<xmath::fquat>  { using type = xmath::fquat_friend; };
 
 namespace xmath
 {
@@ -64,6 +66,20 @@ namespace xmath
     };
     XPROPERTY_REG(fbbox_friend)
 
+
+    //------------------------------------------------------------------------------------------------
+
+    struct fquat_friend : xmath::fquat
+    {
+        XPROPERTY_DEF
+        ( "quat", xmath::fquat
+        , obj_member<"X", &xmath::fquat::m_X >
+        , obj_member<"Y", &xmath::fquat::m_Y >
+        , obj_member<"Z", &xmath::fquat::m_Z >
+        , obj_member<"W", &xmath::fquat::m_W >
+        )
+    };
+    XPROPERTY_REG(fquat_friend)
 }
 
 #endif
