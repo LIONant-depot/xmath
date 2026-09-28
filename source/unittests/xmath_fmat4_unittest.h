@@ -202,6 +202,15 @@ namespace xmath::unit_test::_fmat4
         m.setupRotation(q);
         assert(quat_approx_equal(m.ExtractRotation(), q, SMALL_EPSILON));
 
+        // ExtractRotation past 120 deg: trace goes negative, so each axis exercises its own
+        // m_00/m_11/m_22-dominant branch (two of them used to return the conjugate).
+        for (const fvec3 axis : { fvec3(1, 0, 0), fvec3(0, 1, 0), fvec3(0, 0, 1) })
+        {
+            const fquat big = fquat::fromAxisAngle(axis, radian{ 170.0f * xmath::pi_v.m_Value / 180.0f });
+            m.setupRotation(big);
+            assert(quat_approx_equal(m.ExtractRotation(), big, SMALL_EPSILON));
+        }
+
         // setupRotation (euler)
         radian3 euler(xmath::pi_over4_v, xmath::pi_over2_v, xmath::pi_v);
         m.setupRotation(euler);

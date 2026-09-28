@@ -2182,7 +2182,7 @@ namespace xmath
             if (normalized.m_00 > normalized.m_11 && normalized.m_00 > normalized.m_22)
             {
                 const float s = 2.0f * std::sqrt(1.0f + normalized.m_00 - normalized.m_11 - normalized.m_22);
-                q = fquat(0.25f * s, (normalized.m_01 + normalized.m_10) / s, (normalized.m_02 + normalized.m_20) / s, (normalized.m_12 - normalized.m_21) / s);
+                q = fquat(0.25f * s, (normalized.m_01 + normalized.m_10) / s, (normalized.m_02 + normalized.m_20) / s, (normalized.m_21 - normalized.m_12) / s);
             }
             else if (normalized.m_11 > normalized.m_22)
             {
@@ -2192,7 +2192,7 @@ namespace xmath
             else
             {
                 const float s = 2.0f * std::sqrt(1.0f + normalized.m_22 - normalized.m_00 - normalized.m_11);
-                q = fquat((normalized.m_02 + normalized.m_20) / s, (normalized.m_12 + normalized.m_21) / s, 0.25f * s, (normalized.m_01 - normalized.m_10) / s);
+                q = fquat((normalized.m_02 + normalized.m_20) / s, (normalized.m_12 + normalized.m_21) / s, 0.25f * s, (normalized.m_10 - normalized.m_01) / s);
             }
         }
 
