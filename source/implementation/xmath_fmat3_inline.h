@@ -951,7 +951,7 @@ namespace xmath
             result = _mm_add_ps(result, _mm_mul_ps(this->m_Columns[0], _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(0, 0, 0, 0))));
             result = _mm_add_ps(result, _mm_mul_ps(this->m_Columns[1], _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(1, 1, 1, 1))));
             result = _mm_add_ps(result, _mm_mul_ps(this->m_Columns[2], _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(2, 2, 2, 2))));
-            return fvec3(result.m128_f32[0], result.m128_f32[1], result.m128_f32[2]);
+            return fvec3(XMATH_FLOATX4_LANE(result, 0), XMATH_FLOATX4_LANE(result, 1), XMATH_FLOATX4_LANE(result, 2));
         }
         else
         {
@@ -1356,7 +1356,7 @@ namespace xmath
                 _mm_mul_ps(this->m_Columns[0], _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(0, 0, 0, 0))),
                 _mm_mul_ps(this->m_Columns[1], _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(1, 1, 1, 1)))),
                 _mm_mul_ps(this->m_Columns[2], _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(2, 2, 2, 2))));
-            return fvec3(result.m128_f32[0], result.m128_f32[1], result.m128_f32[2]);
+            return fvec3(XMATH_FLOATX4_LANE(result, 0), XMATH_FLOATX4_LANE(result, 1), XMATH_FLOATX4_LANE(result, 2));
         }
         else
         {
@@ -1415,7 +1415,7 @@ namespace xmath
                 _mm_mul_ps(inv_row0, _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(0, 0, 0, 0))),
                 _mm_mul_ps(inv_row1, _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(1, 1, 1, 1)))),
                 _mm_mul_ps(inv_row2, _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(2, 2, 2, 2))));
-            return fvec3(result.m128_f32[0], result.m128_f32[1], result.m128_f32[2]);
+            return fvec3(XMATH_FLOATX4_LANE(result, 0), XMATH_FLOATX4_LANE(result, 1), XMATH_FLOATX4_LANE(result, 2));
         }
         else
         {

@@ -314,7 +314,7 @@ namespace xmath
     template <bool V >
     consteval fvec3_t<V> fvec3_t<V>::fromZero(void) noexcept
     {
-        if constexpr (V) return fvec3_t{ floatx4{.m128_f32{ 0,0,0,0 }} };
+        if constexpr (V) return fvec3_t{ XMATH_FLOATX4( 0,0,0,0 ) };
         else             return { 0,0,0 };
     }
 
@@ -327,7 +327,7 @@ namespace xmath
     template <bool V >
     consteval fvec3_t<V> fvec3_t<V>::fromOne(void) noexcept
     {
-        if constexpr (V) return fvec3_t{ floatx4{.m128_f32{ 1,1,1,1 }} };
+        if constexpr (V) return fvec3_t{ XMATH_FLOATX4( 1,1,1,1 ) };
         else             return { 1,1,1 };
     }
 
@@ -340,7 +340,7 @@ namespace xmath
     template <bool V >
     consteval fvec3_t<V> fvec3_t<V>::fromUp(void) noexcept
     {
-        if constexpr (V) return fvec3_t{ floatx4{.m128_f32{ 0,1,0,0 }} };
+        if constexpr (V) return fvec3_t{ XMATH_FLOATX4( 0,1,0,0 ) };
         else             return { 0,1,0 };
     }
 
@@ -353,7 +353,7 @@ namespace xmath
     template <bool V >
     consteval fvec3_t<V> fvec3_t<V>::fromDown(void) noexcept
     {
-        if constexpr (V) return fvec3_t{ floatx4{.m128_f32{ 0,-1,0,0 }} };
+        if constexpr (V) return fvec3_t{ XMATH_FLOATX4( 0,-1,0,0 ) };
         else             return { 0,-1,0 };
     }
 
@@ -366,7 +366,7 @@ namespace xmath
     template <bool V >
     consteval fvec3_t<V> fvec3_t<V>::fromLeft(void) noexcept
     {
-        if constexpr (V) return fvec3_t{ floatx4{.m128_f32{ -1, 0, 0, 0 }} };
+        if constexpr (V) return fvec3_t{ XMATH_FLOATX4( -1, 0, 0, 0 ) };
         else             return { -1,0,0 };
     }
 
@@ -379,7 +379,7 @@ namespace xmath
     template <bool V >
     consteval fvec3_t<V> fvec3_t<V>::fromRight(void) noexcept
     {
-        if constexpr (V) return fvec3_t{ floatx4{.m128_f32{ 1,0,0,0 }} };
+        if constexpr (V) return fvec3_t{ XMATH_FLOATX4( 1,0,0,0 ) };
         else             return { 1,0,0 };
     }
 
@@ -392,7 +392,7 @@ namespace xmath
     template <bool V >
     consteval fvec3_t<V> fvec3_t<V>::fromForward(void) noexcept
     {
-        if constexpr (V) return fvec3_t{ floatx4{.m128_f32{ 0,0,1,0 }} };
+        if constexpr (V) return fvec3_t{ XMATH_FLOATX4( 0,0,1,0 ) };
         else             return { 0,0,1 };
     }
 
@@ -405,7 +405,7 @@ namespace xmath
     template <bool V >
     consteval fvec3_t<V> fvec3_t<V>::fromBack(void) noexcept
     {
-        if constexpr (V) return fvec3_t{ floatx4{.m128_f32{ 0,0,-1,0 }} };
+        if constexpr (V) return fvec3_t{ XMATH_FLOATX4( 0,0,-1,0 ) };
         else             return { 0,0,-1 };
     }
 
@@ -2231,7 +2231,7 @@ namespace xmath
 
     #define SWIZZLE3(func, a, b, c)                                                 \
         template <bool V> inline fvec3_t<V> fvec3_t<V>::func() const noexcept { using namespace xmath;           \
-            if constexpr (V) return fvec3_t{ _mm_shuffle_ps(this->m_XYZW, this->m_XYZW, _MM_SHUFFLE(simde::W,simde::##c,simde::##b,simde::##a)) }; \
+            if constexpr (V) return fvec3_t{ _mm_shuffle_ps(this->m_XYZW, this->m_XYZW, _MM_SHUFFLE(simde::W,simde::c,simde::b,simde::a)) }; \
             else             return fvec3_t(this->m_##a, this->m_##b, this->m_##c); \
         }
 
@@ -2268,7 +2268,7 @@ namespace xmath
 
     #define SWIZZLE4(func, a, b, c, d)                                                              \
         template <bool V> inline fvec4 fvec3_t<V>::func() const noexcept { using namespace xmath;   \
-            if constexpr (V) return fvec4{ _mm_shuffle_ps(this->m_XYZW, this->m_XYZW, _MM_SHUFFLE(simde::##d, simde::##c, simde::##b, simde::##a)) }; \
+            if constexpr (V) return fvec4{ _mm_shuffle_ps(this->m_XYZW, this->m_XYZW, _MM_SHUFFLE(simde::d, simde::c, simde::b, simde::a)) }; \
             else             return fvec4(this->m_##a, this->m_##b, this->m_##c, this->m_##d);      \
         }
 

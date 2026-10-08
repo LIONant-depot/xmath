@@ -200,7 +200,7 @@ namespace xmath
     //  fromIdentity matrix.
     //
     template <bool V>
-    constexpr [[nodiscard]] fmat4_t<V> fmat4_t<V>::fromIdentity(void) noexcept
+    [[nodiscard]] constexpr fmat4_t<V> fmat4_t<V>::fromIdentity(void) noexcept
     {
         fmat4_t<V> m;
         if constexpr (V)
@@ -230,7 +230,7 @@ namespace xmath
     //  fromZero matrix.
     //
     template <bool V>
-    constexpr [[nodiscard]] fmat4_t<V> fmat4_t<V>::fromZero(void) noexcept
+    [[nodiscard]] constexpr fmat4_t<V> fmat4_t<V>::fromZero(void) noexcept
     {
         fmat4_t<V> m;
         if constexpr (V)
@@ -264,7 +264,7 @@ namespace xmath
     //  Sets identity with translation in last column (m_03, m_13, m_23, 1.0).
     //
     template <bool V>
-    inline [[nodiscard]] fmat4_t<V> fmat4_t<V>::fromTranslation(const fvec3& t) noexcept
+    [[nodiscard]] inline fmat4_t<V> fmat4_t<V>::fromTranslation(const fvec3& t) noexcept
     {
         assert(t.isFinite());
         fmat4_t<V> m;
@@ -2011,7 +2011,7 @@ namespace xmath
     //  Optimized for SIMD and scalar; matches Inverse() for RT matrices.
     //
     template <bool V>
-    inline [[nodiscard]] fmat4_t<V> fmat4_t<V>::InverseRT(void) const noexcept
+    [[nodiscard]] inline fmat4_t<V> fmat4_t<V>::InverseRT(void) const noexcept
     {
         assert(this->isFinite());
         fmat4_t<V> result;
@@ -2099,7 +2099,7 @@ namespace xmath
     {
         if constexpr (V)
         {
-            return fvec3_t<V>(this->m_Columns[3].m128_f32[0], this->m_Columns[3].m128_f32[1], this->m_Columns[3].m128_f32[2]);
+            return fvec3_t<V>(XMATH_FLOATX4_LANE(this->m_Columns[3], 0), XMATH_FLOATX4_LANE(this->m_Columns[3], 1), XMATH_FLOATX4_LANE(this->m_Columns[3], 2));
         }
         else
         {
@@ -2418,7 +2418,7 @@ namespace xmath
                 _mm_mul_ps(inv_row0, _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(0, 0, 0, 0))),
                 _mm_mul_ps(inv_row1, _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(1, 1, 1, 1)))),
                 _mm_mul_ps(inv_row2, _mm_shuffle_ps(vec, vec, _MM_SHUFFLE(2, 2, 2, 2))));
-            return fvec3_t<V>(result.m128_f32[0], result.m128_f32[1], result.m128_f32[2]);
+            return fvec3_t<V>(XMATH_FLOATX4_LANE(result, 0), XMATH_FLOATX4_LANE(result, 1), XMATH_FLOATX4_LANE(result, 2));
         }
         else
         {

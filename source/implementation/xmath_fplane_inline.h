@@ -279,7 +279,7 @@ namespace xmath
     template <bool V >
     constexpr fplane_t<V> fplane_t<V>::fromZero(void) noexcept
     {
-        if constexpr (V) return fplane_t{ floatx4{.m128_f32{0,0,0,0}} };
+        if constexpr (V) return fplane_t{ XMATH_FLOATX4(0,0,0,0) };
         else             return { 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
@@ -292,7 +292,7 @@ namespace xmath
     template <bool V >
     constexpr fplane_t<V> fplane_t<V>::fromIdentity(void) noexcept
     {
-        if constexpr (V) return fplane_t{ floatx4{.m128_f32{0,0,1,0}} };
+        if constexpr (V) return fplane_t{ XMATH_FLOATX4(0,0,1,0) };
         else             return { 0.0f, 0.0f, 1.0f, 0.0f };
     }
 

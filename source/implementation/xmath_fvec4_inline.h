@@ -228,7 +228,7 @@ namespace xmath
     //
     constexpr fvec4 fvec4::fromOne(void) noexcept
     {
-        return fvec4{ floatx4{.m128_f32{ 1,1,1,1 }} };
+        return fvec4{ XMATH_FLOATX4( 1,1,1,1 ) };
     }
 
     //------------------------------------------------------------------------------
@@ -260,7 +260,7 @@ namespace xmath
     //
     constexpr fvec4 fvec4::fromUnitW(void) noexcept
     {
-        return fvec4{ floatx4{.m128_f32{ 0,0,0,1 }} };
+        return fvec4{ XMATH_FLOATX4( 0,0,0,1 ) };
     }
 
     //------------------------------------------------------------------------------
@@ -268,7 +268,7 @@ namespace xmath
     //
     constexpr fvec4 fvec4::fromUp(void) noexcept
     {
-        return fvec4{ floatx4{.m128_f32{ 0,1,0,0 }} };
+        return fvec4{ XMATH_FLOATX4( 0,1,0,0 ) };
     }
 
     //------------------------------------------------------------------------------
@@ -276,7 +276,7 @@ namespace xmath
     //
     constexpr fvec4 fvec4::fromDown(void) noexcept
     {
-        return fvec4{ floatx4{.m128_f32{ 0,-1,0,0 }} };
+        return fvec4{ XMATH_FLOATX4( 0,-1,0,0 ) };
     }
 
     //------------------------------------------------------------------------------
@@ -284,7 +284,7 @@ namespace xmath
     //
     constexpr fvec4 fvec4::fromLeft(void) noexcept
     {
-        return fvec4{ floatx4{.m128_f32{ -1, 0, 0, 0 }} };
+        return fvec4{ XMATH_FLOATX4( -1, 0, 0, 0 ) };
     }
 
     //------------------------------------------------------------------------------
@@ -292,7 +292,7 @@ namespace xmath
     //
     constexpr fvec4 fvec4::fromRight(void) noexcept
     {
-        return fvec4{ floatx4{.m128_f32{ 1,0,0,0 }} };
+        return fvec4{ XMATH_FLOATX4( 1,0,0,0 ) };
     }
 
     //------------------------------------------------------------------------------
@@ -300,7 +300,7 @@ namespace xmath
     //
     constexpr fvec4 fvec4::fromForward(void) noexcept
     {
-        return fvec4{ floatx4{.m128_f32{ 0,0,1,0 }} };
+        return fvec4{ XMATH_FLOATX4( 0,0,1,0 ) };
     }
 
     //------------------------------------------------------------------------------
@@ -308,7 +308,7 @@ namespace xmath
     //
     constexpr fvec4 fvec4::fromBack(void) noexcept
     {
-        return fvec4{ floatx4{.m128_f32{ 0,0,-1,0 }} };
+        return fvec4{ XMATH_FLOATX4( 0,0,-1,0 ) };
     }
 
     //------------------------------------------------------------------------------

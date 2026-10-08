@@ -389,7 +389,7 @@ namespace xmath
     template <bool V >
     constexpr fquat_t<V> fquat_t<V>::fromIdentity(void) noexcept
     {
-        if constexpr (V) return fquat_t{ floatx4{.m128_f32{ 0,0,0,1 }} };
+        if constexpr (V) return fquat_t{ XMATH_FLOATX4( 0,0,0,1 ) };
         else             return{ 0.0f, 0.0f, 0.0f, 1.0f };
     }
 
@@ -402,7 +402,7 @@ namespace xmath
     template <bool V >
     constexpr fquat_t<V> fquat_t<V>::fromZero(void) noexcept
     {
-        if constexpr (V) return fquat_t{ floatx4{.m128_f32{ 0,0,0,0 }} };
+        if constexpr (V) return fquat_t{ XMATH_FLOATX4( 0,0,0,0 ) };
         else             return{ 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
