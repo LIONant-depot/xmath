@@ -912,13 +912,13 @@ namespace xmath
     //  Perpendicular = V - Parallel.
     //
     template <bool V >
-    inline void fplane_t<V>::DecomposeVector(const fvec3& V, fvec3& Parallel, fvec3& Perpendicular) const noexcept
+    inline void fplane_t<V>::DecomposeVector(const fvec3& Vec, fvec3& Parallel, fvec3& Perpendicular) const noexcept
     {
         fvec3 n = Normal();
-        float dot = V.Dot(n);
+        float dot = Vec.Dot(n);
         float len_sq = NormalLengthSq();
         Parallel = (dot / len_sq) * n;
-        Perpendicular = V - Parallel;
+        Perpendicular = Vec - Parallel;
     }
 
     //------------------------------------------------------------------------------
@@ -962,10 +962,10 @@ namespace xmath
     //  Uses projection; assumes normalized normal.
     //
     template <bool V >
-    inline fvec3 fplane_t<V>::ReflectVector(const fvec3& V) const noexcept
+    inline fvec3 fplane_t<V>::ReflectVector(const fvec3& Vec) const noexcept
     {
         fvec3 n = Normal();
-        return V - 2.0f * (V.Dot(n)) * n;
+        return Vec - 2.0f * (Vec.Dot(n)) * n;
     }
 
     //------------------------------------------------------------------------------
@@ -1368,7 +1368,7 @@ namespace xmath
         fvec3 normal(P.m_X, P.m_Y, P.m_Z);
         fvec3 point = P.GetOrigin();
         fvec3 new_point = M * point;
-        fvec3 new_normal = M.InverseTranspose().TransformNormal(normal).NormalizeSafeCopy();
+        fvec3 new_normal = M.InverseTranspose().TransformDirection(normal).NormalizeSafeCopy();
         return fplane_t<V>(new_normal, new_point);
     }
 }

@@ -2860,10 +2860,12 @@ namespace xmath
         }
         else
         {
-            for (std::int32_t row = 0; row < 4; ++row)
-                for (std::int32_t col = 0; col < 4; ++col)
+            // (Was "*= Scale" - the member function - so this non-SIMD branch could never be instantiated.)
+            // Same math as the SIMD branch above: every column multiplied component-wise by s.m_XYZW.
+            for (std::int32_t col = 0; col < 4; ++col)
+                for (std::int32_t row = 0; row < 4; ++row)
                 {
-                    this->m_Cells[row][col] *= Scale;
+                    this->m_Cells[col][row] *= XMATH_FLOATX4_LANE(s.m_XYZW, row);
                 }
 
             this->m_Cells[3][3] = 1;

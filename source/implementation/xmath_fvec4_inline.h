@@ -220,7 +220,8 @@ namespace xmath
     //
     constexpr fvec4 fvec4::fromZero(void) noexcept
     {
-        return fvec4(_mm_setzero_ps());
+        // _mm_setzero_ps() is not constexpr outside MSVC; a literal zero vector is the same value
+        return fvec4(XMATH_FLOATX4(0.0f, 0.0f, 0.0f, 0.0f));
     }
 
     //------------------------------------------------------------------------------
