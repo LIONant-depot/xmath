@@ -254,7 +254,7 @@ namespace xmath
     //
     inline fvec2 fvec2::fromRandomUnitVector(void) noexcept
     {
-        float angle = static_cast<float>(rand()) / RAND_MAX * 2.f * 3.1415926535f;
+        float angle = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.f * 3.1415926535f;
         return fvec2(std::cos(angle), std::sin(angle));
     }
 

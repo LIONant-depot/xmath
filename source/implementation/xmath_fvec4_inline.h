@@ -323,8 +323,8 @@ namespace xmath
     //
     inline fvec4 fvec4::fromRandomUnitVector(void) noexcept
     {
-        const radian theta{ static_cast<float>(rand()) / RAND_MAX * 2.f * xmath::pi_v.m_Value };
-        const radian phi  { static_cast<float>(rand()) / RAND_MAX * xmath::pi_v.m_Value };
+        const radian theta{ static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.f * xmath::pi_v.m_Value };
+        const radian phi  { static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * xmath::pi_v.m_Value };
         const float sin_phi   = xmath::Sin(phi);
         const float cos_theta = xmath::Cos(theta);
         const float sin_theta = xmath::Sin(theta);
